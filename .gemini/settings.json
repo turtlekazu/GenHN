@@ -137,5 +137,8 @@
   },
   "hooksConfig": {
     "enabled": true
+  },
+  "general": {
+      "previewFeatures": true
   }
 }
