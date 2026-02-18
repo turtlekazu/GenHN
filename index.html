@@ -10,79 +10,87 @@
 
     <style>
         :root {
-            --os-bg: #222;
-            --os-text: #fff;
-            --os-accent: #6200ea;
-            --os-accent-hover: #7c43bd;
-            --os-height: 100px;
+            --os-bg: rgba(20, 20, 25, 0.85);
+            --os-text: #ffffff;
+            --os-accent: #0071e3;
+            --os-accent-hover: #0077ed;
         }
 
         /* OS UI Controls (Fixed) */
         .os-controls {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 800px;
+            height: 72px;
             background: var(--os-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             color: var(--os-text);
-            padding: 1rem 2rem;
+            padding: 0 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             z-index: 9999;
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
             box-sizing: border-box;
         }
 
         .os-input {
             flex: 1;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #333;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
         .os-input:focus {
             border-color: var(--os-accent);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
         }
 
         .os-btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 1.75rem;
             background: var(--os-accent);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 1rem;
-            transition: background 0.2s, transform 0.1s;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
             white-space: nowrap;
         }
 
         .os-btn:hover {
             background: var(--os-accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
         }
 
         .os-btn:active {
             transform: translateY(1px);
         }
         
-        /* Main content margin to avoid overlap with OS panel */
         body { 
             margin: 0;
             padding: 0;
-            margin-bottom: var(--os-height); 
+            margin-bottom: 120px; 
             min-height: 100vh;
         }
 
         #app-root {
-            transition: all 0.5s ease-in-out;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
     </style>
 </head>
@@ -141,130 +149,11 @@
     <!-- OS Interface Overlay -->
     <div class="os-controls">
         <input type="text" class="os-input" id="prompt-input" 
-               placeholder="AIへの指示: 「レトロ」「禅」「モダン」「サイバー」などと入力...">
+               placeholder="指示を入力 (例: モダン, サイバー, 禅, レトロ)">
         <button class="os-btn" id="generate-btn">Generate UI</button>
     </div>
 
     <!-- Application Logic -->
-    <script>
-        /**
-         * CSS Presets for Demonstration
-         */
-        const STYLE_PRESETS = {
-            "レトロ": `
-                body { background-color: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; }
-                .app-header { border-bottom: 2px dashed #0f0; margin-bottom: 20px; display: flex; justify-content: space-between; }
-                .task-list { list-style: none; padding: 0; }
-                .task-item { border: 1px solid #0f0; margin-bottom: 10px; padding: 10px; position: relative; }
-                .task-item[data-priority="high"] { border: 2px solid red; color: red; }
-                .task-item[data-priority="high"] .task-title:before { content: "!! WARNING !! "; }
-                button { background: #000; color: #0f0; border: 1px solid #0f0; cursor: pointer; text-transform: uppercase; padding: 5px 10px; }
-                button:hover { background: #0f0; color: #000; }
-                .task-tag { border: 1px solid currentColor; padding: 2px 5px; font-size: 0.8em; margin-right: 10px; }
-            `,
-
-            "禅": `
-                body { background-color: #f4f1ea; color: #5d5d5d; font-family: 'Georgia', serif; display: flex; justify-content: center; }
-                #app-root { max-width: 600px; width: 100%; padding: 40px; }
-                .app-header { text-align: center; margin-bottom: 60px; }
-                .app-title { font-weight: normal; letter-spacing: 0.2em; border-bottom: 1px solid #ddd; padding-bottom: 20px; display: inline-block; }
-                .task-list { list-style: none; padding: 0; }
-                .task-item { padding: 20px 0; border-bottom: 1px solid #e0e0e0; transition: 0.3s; }
-                .task-item:hover { transform: translateX(10px); }
-                .task-title { font-size: 1.2rem; font-weight: normal; margin: 0 0 5px 0; }
-                .task-tag, .user-status { display: none; }
-                button { background: none; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; float: right; }
-                button:hover { color: #333; }
-                .task-item[data-status="completed"] { opacity: 0.3; text-decoration: line-through; }
-            `,
-
-            "サイバー": `
-                body { background-color: #050505; color: #00e5ff; font-family: sans-serif; perspective: 1000px; overflow-x: hidden; }
-                #app-root { transform: rotateX(5deg); transform-origin: center top; margin: 20px; }
-                .app-title { font-size: 3rem; text-transform: uppercase; text-shadow: 2px 2px 0px #ff00ff; margin: 0; }
-                .task-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; list-style: none; padding: 0; margin-top: 40px; }
-                .task-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 20px; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%); transition: 0.2s; }
-                .task-item:hover { background: rgba(0, 229, 255, 0.1); border-color: #00e5ff; transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 229, 255, 0.5); }
-                .task-item[data-priority="high"] { border-color: #ff0055; color: #ff0055; box-shadow: inset 0 0 10px #ff0055; animation: pulse 1s infinite; }
-                @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-                button { width: 100%; margin-top: 10px; background: transparent; border: 1px solid currentColor; color: inherit; padding: 10px; font-weight: bold; cursor: pointer; }
-                button:hover { background: currentColor; color: #000; }
-            `,
-
-            "モダン": `
-                body { background-color: #ffcc00; color: #000; font-family: 'Helvetica Neue', sans-serif; padding: 20px; }
-                .app-header { border: 4px solid #000; background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 8px 8px 0 #000; }
-                .app-title { margin: 0; font-size: 2.5rem; text-transform: uppercase; font-weight: 900; }
-                .task-list { list-style: none; padding: 0; }
-                .task-item { background: #fff; border: 4px solid #000; margin-bottom: 15px; padding: 20px; box-shadow: 8px 8px 0 #000; display: flex; align-items: center; justify-content: space-between; }
-                .task-title { font-weight: 900; font-size: 1.5rem; margin: 0; }
-                .task-tag { background: #000; color: #fff; padding: 5px 10px; font-weight: bold; margin-right: 10px; }
-                button { background: #000; color: #fff; border: none; padding: 10px 20px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.1s; }
-                button:active { transform: translate(4px, 4px); }
-            `
-        };
-
-        /**
-         * Application Controller
-         */
-        const App = {
-            elements: {
-                styleTag: document.getElementById('generated-style'),
-                promptInput: document.getElementById('prompt-input'),
-                generateBtn: document.getElementById('generate-btn')
-            },
-
-            init() {
-                this.bindEvents();
-                console.log("Acephale Garden Initialized.");
-            },
-
-            bindEvents() {
-                this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
-                this.elements.promptInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleGenerate();
-                });
-            },
-
-            handleGenerate() {
-                const input = this.elements.promptInput.value.trim();
-                if (!input) return;
-
-                const style = this.matchStyle(input);
-                
-                if (style) {
-                    this.applyStyle(style, input);
-                } else {
-                    this.showError();
-                }
-            },
-
-            matchStyle(input) {
-                // Simple keyword matching logic
-                for (const key in STYLE_PRESETS) {
-                    if (input.includes(key)) return STYLE_PRESETS[key];
-                }
-                return null;
-            },
-
-            applyStyle(css, themeName) {
-                console.log(`Applying theme: ${themeName}`);
-                this.elements.styleTag.textContent = css;
-                
-                // Optional: Add transition effect or visual feedback
-                document.body.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.style.opacity = '1';
-                }, 50);
-            },
-
-            showError() {
-                alert("デモ用のキーワードを入力してください：\n「レトロ」「禅」「サイバー」「モダン」");
-            }
-        };
-
-        // Start the application
-        document.addEventListener('DOMContentLoaded', () => App.init());
-    </script>
+    <script src="gardener.js"></script>
 </body>
 </html>
