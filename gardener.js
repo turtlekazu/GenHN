@@ -52,96 +52,175 @@ const STYLE_PRESETS = {
 
     "サイバー": `
         :root {
-            --accent: #00f2ff;
-            --bg: #050508;
-            --card: rgba(16, 16, 24, 0.8);
-            --glow: rgba(0, 242, 255, 0.3);
+            --cp-yellow: #FCEE0A;
+            --cp-teal: #00FFFF;
+            --cp-red: #ff003c;
+            --cp-bg: #050505;
+            --cp-panel: #121212;
+            --cp-text: #e0e0e0;
         }
         body { 
-            background-color: var(--bg); 
-            color: #a0a0b0; 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--cp-bg); 
+            color: var(--cp-text); 
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
             background-image: 
-                radial-gradient(circle at 20% 30%, rgba(70, 0, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
+                linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)),
+                repeating-linear-gradient(0deg, transparent 0, transparent 1px, #222 1px, #222 2px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 1px, #222 1px, #222 2px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
             min-height: 100vh;
             margin: 0;
             padding: 40px;
+            text-transform: uppercase;
         }
-        #app-root { max-width: 1100px; margin: 0 auto; }
-        .app-header { margin-bottom: 60px; position: relative; }
+        #app-root { max-width: 1100px; margin: 0 auto; position: relative; }
+        
+        /* Decorative Line */
+        #app-root::before {
+            content: "NIGHT_CITY_OS_V.2.0.7.7";
+            position: absolute;
+            top: -30px;
+            right: 0;
+            color: var(--cp-yellow);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .app-header { 
+            margin-bottom: 60px; 
+            border-bottom: 2px solid var(--cp-yellow);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
         .app-title { 
-            font-size: 3.5rem; 
+            font-size: 4rem; 
             font-weight: 900; 
-            text-transform: uppercase; 
-            letter-spacing: -2px; 
-            color: #fff; 
+            color: var(--cp-yellow); 
             margin: 0;
-            background: linear-gradient(to bottom, #fff 40%, #555);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px var(--glow));
+            line-height: 0.9;
+            text-shadow: 2px 2px 0px var(--cp-teal);
+            transform: skewX(-10deg);
         }
-        .user-status { font-family: monospace; color: var(--accent); font-size: 0.8rem; letter-spacing: 2px; }
+        .user-status { 
+            background: var(--cp-teal); 
+            color: #000; 
+            padding: 4px 12px; 
+            font-weight: 800;
+            font-size: 0.9rem;
+            transform: skewX(-20deg);
+            box-shadow: 4px 4px 0px var(--cp-red);
+        }
+        
         .task-list { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 24px; 
+            gap: 30px; 
             list-style: none; 
             padding: 0; 
         }
-        .task-item { 
-            background: var(--card); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            padding: 30px; 
-            border-radius: 2px;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-        }
-        .task-item::after {
-            content: ''; position: absolute; bottom: 0; right: 0; width: 15px; height: 15px; background: var(--accent); opacity: 0.2;
-        }
-        .task-item:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px var(--glow);
-        }
-        .task-title { color: #fff; font-size: 1.4rem; margin: 0 0 12px 0; font-weight: 700; letter-spacing: -0.5px; }
-        .task-desc { font-size: 0.95rem; line-height: 1.6; color: #808090; margin-bottom: 20px; }
-        .task-tag { 
-            font-family: monospace; 
-            font-size: 0.7rem; 
-            text-transform: uppercase; 
-            color: var(--accent); 
-            border: 1px solid var(--accent); 
-            padding: 2px 8px; 
-            margin-right: 8px;
-            background: rgba(0, 242, 255, 0.05);
-        }
-        .task-item[data-priority="high"] { 
-            border-left: 4px solid #ff0055;
-        }
-        .task-item[data-priority="high"] .task-title { text-shadow: 0 0 8px rgba(255, 0, 85, 0.4); }
         
+        .task-item { 
+            background: var(--cp-panel); 
+            border: 1px solid #333; 
+            padding: 25px; 
+            position: relative;
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%
+            );
+            transition: all 0.2s ease;
+        }
+        
+        /* Yellow corner accent */
+        .task-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--cp-yellow);
+            opacity: 0.5;
+            transition: 0.2s;
+        }
+
+        .task-item:hover { 
+            transform: translate(-4px, -4px);
+            box-shadow: 8px 8px 0px rgba(0, 255, 255, 0.2);
+            border-color: var(--cp-teal);
+        }
+        .task-item:hover::before {
+            opacity: 1;
+            box-shadow: 0 0 10px var(--cp-yellow);
+        }
+
+        .task-title { 
+            color: #fff; 
+            font-size: 1.5rem; 
+            margin: 0 0 15px 0; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+        }
+        
+        .task-desc { 
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem; 
+            line-height: 1.4; 
+            color: var(--cp-teal); 
+            margin-bottom: 25px; 
+            text-transform: none;
+        }
+        
+        .task-tag { 
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #333;
+            color: #fff;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .task-item[data-priority="high"] .task-tag { background: var(--cp-red); }
+        .task-item[data-priority="high"]::before { background: var(--cp-red); }
+
         button { 
             width: 100%;
             background: transparent; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            color: #fff; 
-            padding: 12px; 
-            font-weight: 600; 
+            border: 2px solid var(--cp-yellow); 
+            color: var(--cp-yellow); 
+            padding: 10px; 
+            font-weight: 900; 
             text-transform: uppercase; 
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer; 
-            transition: 0.3s;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
         }
+        
         button:hover { 
-            background: var(--accent); 
+            background: var(--cp-yellow); 
             color: #000; 
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
+            box-shadow: 0 0 15px var(--cp-yellow);
+        }
+        
+        /* Glitchy element for button */
+        button::after {
+            content: 'R_25';
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+            font-size: 8px;
+            color: currentColor;
+            opacity: 0.5;
         }
     `,
 
