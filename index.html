@@ -5,47 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Gen Garden | Acephale OS</title>
     
+    <!-- Dynamic style tag for AI-generated CSS -->
     <style id="generated-style"></style>
 
     <style>
-        /* OS自体のUI（ここだけは固定） */
+        :root {
+            --os-bg: #222;
+            --os-text: #fff;
+            --os-accent: #6200ea;
+            --os-accent-hover: #7c43bd;
+            --os-height: 100px;
+        }
+
+        /* OS UI Controls (Fixed) */
         .os-controls {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #222;
-            color: white;
-            padding: 1rem;
+            height: 80px;
+            background: var(--os-bg);
+            color: var(--os-text);
+            padding: 1rem 2rem;
             display: flex;
-            gap: 1rem;
+            align-items: center;
+            gap: 1.5rem;
             z-index: 9999;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
-            font-family: sans-serif;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
         }
+
         .os-input {
             flex: 1;
-            padding: 0.5rem;
-            border-radius: 4px;
-            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
         }
+
+        .os-input:focus {
+            border-color: var(--os-accent);
+        }
+
         .os-btn {
-            padding: 0.5rem 1rem;
-            background: #6200ea;
+            padding: 0.75rem 1.5rem;
+            background: var(--os-accent);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
         }
-        .os-btn:hover { background: #7c43bd; }
+
+        .os-btn:hover {
+            background: var(--os-accent-hover);
+        }
+
+        .os-btn:active {
+            transform: translateY(1px);
+        }
         
-        /* コンテンツエリアに余白を空ける（OSパネルとかぶらないように） */
-        body { margin-bottom: 100px; }
+        /* Main content margin to avoid overlap with OS panel */
+        body { 
+            margin: 0;
+            padding: 0;
+            margin-bottom: var(--os-height); 
+            min-height: 100vh;
+        }
+
+        #app-root {
+            transition: all 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Application Content Area -->
     <div id="app-root">
         <header class="app-header">
             <h1 class="app-title">Acephale Task</h1>
@@ -54,6 +97,7 @@
 
         <main class="board">
             <ul class="task-list">
+                <!-- Priority: High -->
                 <li class="task-item" data-priority="high" data-status="pending">
                     <div class="task-content">
                         <span class="task-tag">Urgent</span>
@@ -62,10 +106,11 @@
                         <time>Due: Tomorrow</time>
                     </div>
                     <div class="task-actions">
-                        <button>Done</button>
+                        <button class="btn-complete">Done</button>
                     </div>
                 </li>
 
+                <!-- Priority: Normal -->
                 <li class="task-item" data-priority="normal" data-status="pending">
                     <div class="task-content">
                         <span class="task-tag">Dev</span>
@@ -74,10 +119,11 @@
                         <time>Due: Next Week</time>
                     </div>
                     <div class="task-actions">
-                        <button>Done</button>
+                        <button class="btn-complete">Done</button>
                     </div>
                 </li>
 
+                <!-- Priority: Low -->
                 <li class="task-item" data-priority="low" data-status="completed">
                     <div class="task-content">
                         <span class="task-tag">Life</span>
@@ -85,29 +131,26 @@
                         <time>Done: Today</time>
                     </div>
                     <div class="task-actions">
-                        <button>Delete</button>
+                        <button class="btn-delete">Delete</button>
                     </div>
                 </li>
             </ul>
         </main>
     </div>
+
+    <!-- OS Interface Overlay -->
     <div class="os-controls">
         <input type="text" class="os-input" id="prompt-input" 
                placeholder="AIへの指示: 「レトロ」「禅」「モダン」「サイバー」などと入力...">
         <button class="os-btn" id="generate-btn">Generate UI</button>
     </div>
 
-
+    <!-- Application Logic -->
     <script>
-        // 1. 要素の取得
-        const styleTag = document.getElementById('generated-style');
-        const promptInput = document.getElementById('prompt-input');
-        const generateBtn = document.getElementById('generate-btn');
-
-        // 2. プリセットCSS (AIの代わり)
-        const presets = {
-            
-            // Style A: 80年代レトロフューチャー
+        /**
+         * CSS Presets for Demonstration
+         */
+        const STYLE_PRESETS = {
             "レトロ": `
                 body { background-color: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; }
                 .app-header { border-bottom: 2px dashed #0f0; margin-bottom: 20px; display: flex; justify-content: space-between; }
@@ -115,12 +158,11 @@
                 .task-item { border: 1px solid #0f0; margin-bottom: 10px; padding: 10px; position: relative; }
                 .task-item[data-priority="high"] { border: 2px solid red; color: red; }
                 .task-item[data-priority="high"] .task-title:before { content: "!! WARNING !! "; }
-                button { background: #000; color: #0f0; border: 1px solid #0f0; cursor: pointer; text-transform: uppercase; }
+                button { background: #000; color: #0f0; border: 1px solid #0f0; cursor: pointer; text-transform: uppercase; padding: 5px 10px; }
                 button:hover { background: #0f0; color: #000; }
                 .task-tag { border: 1px solid currentColor; padding: 2px 5px; font-size: 0.8em; margin-right: 10px; }
             `,
 
-            // Style B: 禅・ミニマリスト
             "禅": `
                 body { background-color: #f4f1ea; color: #5d5d5d; font-family: 'Georgia', serif; display: flex; justify-content: center; }
                 #app-root { max-width: 600px; width: 100%; padding: 40px; }
@@ -130,13 +172,12 @@
                 .task-item { padding: 20px 0; border-bottom: 1px solid #e0e0e0; transition: 0.3s; }
                 .task-item:hover { transform: translateX(10px); }
                 .task-title { font-size: 1.2rem; font-weight: normal; margin: 0 0 5px 0; }
-                .task-tag, .user-status { display: none; } /* 不要な情報は隠す */
+                .task-tag, .user-status { display: none; }
                 button { background: none; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; float: right; }
                 button:hover { color: #333; }
                 .task-item[data-status="completed"] { opacity: 0.3; text-decoration: line-through; }
             `,
 
-            // Style C: サイバーパンク / グリッチ
             "サイバー": `
                 body { background-color: #050505; color: #00e5ff; font-family: sans-serif; perspective: 1000px; overflow-x: hidden; }
                 #app-root { transform: rotateX(5deg); transform-origin: center top; margin: 20px; }
@@ -150,7 +191,6 @@
                 button:hover { background: currentColor; color: #000; }
             `,
 
-            // Style D: ブルータリスト（モダン・大胆）
             "モダン": `
                 body { background-color: #ffcc00; color: #000; font-family: 'Helvetica Neue', sans-serif; padding: 20px; }
                 .app-header { border: 4px solid #000; background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 8px 8px 0 #000; }
@@ -164,49 +204,67 @@
             `
         };
 
-        // 3. 生成ロジック (イベントリスナー)
-        generateBtn.addEventListener('click', () => {
-            const input = promptInput.value;
-            let foundStyle = null;
+        /**
+         * Application Controller
+         */
+        const App = {
+            elements: {
+                styleTag: document.getElementById('generated-style'),
+                promptInput: document.getElementById('prompt-input'),
+                generateBtn: document.getElementById('generate-btn')
+            },
 
-            // キーワードマッチング (簡易AI)
-            if (input.includes("レトロ")) foundStyle = presets["レトロ"];
-            else if (input.includes("禅")) foundStyle = presets["禅"];
-            else if (input.includes("サイバー")) foundStyle = presets["サイバー"];
-            else if (input.includes("モダン")) foundStyle = presets["モダン"];
-            
-            // Hitした場合
-            if (foundStyle) {
-                // ここが「置換」の瞬間！
-                // 既存のCSSを全て消し去り、新しいCSSを注入する
-                styleTag.textContent = foundStyle;
+            init() {
+                this.bindEvents();
+                console.log("Acephale Garden Initialized.");
+            },
+
+            bindEvents() {
+                this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
+                this.elements.promptInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleGenerate();
+                });
+            },
+
+            handleGenerate() {
+                const input = this.elements.promptInput.value.trim();
+                if (!input) return;
+
+                const style = this.matchStyle(input);
                 
-                console.log(`Injecting Style: ${input}`);
-            } else {
+                if (style) {
+                    this.applyStyle(style, input);
+                } else {
+                    this.showError();
+                }
+            },
+
+            matchStyle(input) {
+                // Simple keyword matching logic
+                for (const key in STYLE_PRESETS) {
+                    if (input.includes(key)) return STYLE_PRESETS[key];
+                }
+                return null;
+            },
+
+            applyStyle(css, themeName) {
+                console.log(`Applying theme: ${themeName}`);
+                this.elements.styleTag.textContent = css;
+                
+                // Optional: Add transition effect or visual feedback
+                document.body.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 50);
+            },
+
+            showError() {
                 alert("デモ用のキーワードを入力してください：\n「レトロ」「禅」「サイバー」「モダン」");
             }
-        });
+        };
 
-        // 4. (Future) 本物のAIに繋ぐ場合のコードイメージ
-        /*
-        async function fetchAIStyle(prompt) {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer YOUR_KEY' },
-                body: JSON.stringify({
-                    model: "gpt-4",
-                    messages: [{
-                        role: "system",
-                        content: "あなたはCSSジェネレーターです。以下のHTML構造に対して、ユーザーの要望に沿ったCSSのみを出力してください..."
-                    }, {
-                        role: "user",
-                        content: prompt
-                    }]
-                })
-            });
-            // ... parse and inject ...
-        }
-        */
+        // Start the application
+        document.addEventListener('DOMContentLoaded', () => App.init());
     </script>
 </body>
 </html>
