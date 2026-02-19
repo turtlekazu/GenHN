@@ -264,6 +264,206 @@ const STYLE_PRESETS = {
         .task-item[data-status="completed"] { opacity: 0.5; }
         .task-item[data-status="completed"] .task-title { text-decoration: line-through; }
         .task-item[data-priority="high"] { border-left: 8px solid #ff3b30; }
+    `,
+
+    "オーロラ": `
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes itemEntry {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #fff;
+            padding: 80px 20px;
+            perspective: 1000px;
+        }
+
+        #app-root { max-width: 900px; margin: 0 auto; }
+        
+        .app-header { 
+            margin-bottom: 80px; 
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+        .app-title { 
+            font-size: 5rem; 
+            font-weight: 900; 
+            letter-spacing: -3px; 
+            margin: 0; 
+            text-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .task-list { display: grid; gap: 30px; list-style: none; padding: 0; }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255,255,255,0.2);
+            animation: itemEntry 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-15px) scale(1.02) rotateX(2deg);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 50px 80px rgba(0, 0, 0, 0.25);
+        }
+
+        .task-item:nth-child(1) { animation-delay: 0.1s; }
+        .task-item:nth-child(2) { animation-delay: 0.2s; }
+        .task-item:nth-child(3) { animation-delay: 0.3s; }
+
+        .task-title { font-size: 1.8rem; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -0.5px; }
+        .task-desc { font-size: 1.1rem; opacity: 0.9; line-height: 1.6; font-weight: 400; }
+        .task-tag { 
+            background: rgba(255,255,255,0.2); 
+            padding: 6px 14px; 
+            border-radius: 100px; 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        button {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 16px 36px;
+            border-radius: 100px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        button:active { transform: scale(0.95); }
+    `,
+
+    "クリスタル": `
+        @keyframes bgRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes glassShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 100px 20px;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 180deg at 50% 50%, #12c2e9, #c471ed, #f64f59, #12c2e9);
+            animation: bgRotate 20s linear infinite;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+
+        #app-root { width: 100%; max-width: 800px; }
+        
+        .app-header { margin-bottom: 100px; text-align: left; }
+        .app-title { 
+            font-size: 4.5rem; 
+            font-weight: 900; 
+            letter-spacing: -4px;
+            background: linear-gradient(120deg, #fff 0%, rgba(255,255,255,0.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            padding: 40px;
+            margin-bottom: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .task-item::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-20deg);
+            transition: 0.6s;
+            left: -150%;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 60px;
+            border-left: 1px solid #fff;
+        }
+
+        .task-item:hover::after {
+            left: 100%;
+        }
+
+        .task-title { font-size: 2rem; font-weight: 200; text-transform: uppercase; letter-spacing: 2px; }
+        .task-desc { font-weight: 300; color: rgba(255,255,255,0.6); margin-top: 10px; }
+        
+        button {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 10px 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #fff;
+            color: #000;
+        }
     `
 };
 
@@ -327,7 +527,7 @@ const App = {
     },
 
     showError() {
-        alert("デモ用のキーワードを入力してください：\n「レトロ」「禅」「サイバー」「モダン」");
+        alert("デモ用のキーワードを入力してください：\n「レトロ」「禅」「サイバー」「モダン」「オーロラ」「クリスタル」");
     }
 };
 
