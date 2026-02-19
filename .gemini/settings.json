@@ -1,4 +1,7 @@
 {
+  "general": {
+    "previewFeatures": true
+  },
   "hooks": {
     "AfterAgent": [
       {
@@ -137,8 +140,5 @@
   },
   "hooksConfig": {
     "enabled": true
-  },
-  "general": {
-      "previewFeatures": true
   }
 }
