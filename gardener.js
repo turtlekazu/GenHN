@@ -85,6 +85,7 @@ const STYLE_PRESETS = {
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            margin-bottom: 40px;
         }
         .hn-load-more:hover { background: var(--accent); color: white; }
 
@@ -174,6 +175,7 @@ const STYLE_PRESETS = {
             width: 100%;
             font-family: inherit;
             font-size: 20px;
+            margin-bottom: 40px;
         }
         .hn-load-more:hover {
             background: var(--cyber-blue);
@@ -255,6 +257,7 @@ const STYLE_PRESETS = {
             border-radius: 4px;
             font-weight: 500;
             cursor: pointer;
+            margin-bottom: 40px;
         }
         .hn-load-more:hover { background: #f8f9fa; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
@@ -332,6 +335,7 @@ const STYLE_PRESETS = {
             border: none;
             cursor: pointer;
             margin-top: 40px;
+            margin-bottom: 40px;
         }
 
         .hn-footer {
@@ -355,22 +359,30 @@ const STYLE_PRESETS = {
  * Data Fetching Logic
  */
 const HNData = {
-    async fetchStories() {
+    allStoryIds: [],
+
+    async fetchAllIds() {
+        if (this.allStoryIds.length > 0) return this.allStoryIds;
         try {
             const response = await fetch(`${BASE_URL}/topstories.json`);
-            const storyIds = await response.json();
-            const top30Ids = storyIds.slice(0, 30);
-
-            const storyPromises = top30Ids.map(async (id) => {
-                const storyRes = await fetch(`${BASE_URL}/item/${id}.json`);
-                return await storyRes.json();
-            });
-
-            return await Promise.all(storyPromises);
+            this.allStoryIds = await response.json();
+            return this.allStoryIds;
         } catch (error) {
-            console.error("データの取得に失敗しました:", error);
+            console.error("IDリストの取得に失敗しました:", error);
             return [];
         }
+    },
+
+    async fetchStoriesBatch(offset, limit = 30) {
+        const ids = await this.fetchAllIds();
+        const batchIds = ids.slice(offset, offset + limit);
+
+        const storyPromises = batchIds.map(async (id) => {
+            const storyRes = await fetch(`${BASE_URL}/item/${id}.json`);
+            return await storyRes.json();
+        });
+
+        return await Promise.all(storyPromises);
     },
 
     formatTime(timestamp) {
@@ -393,22 +405,26 @@ const HNData = {
  * Application Controller
  */
 const App = {
+    currentOffset: 0,
+    isLoading: false,
+
     elements: {
         styleTag: document.getElementById('generated-style'),
         promptInput: document.getElementById('prompt-input'),
         generateBtn: document.getElementById('generate-btn'),
-        listElement: document.querySelector('.hn-story-list')
+        listElement: document.querySelector('.hn-story-list'),
+        loadMoreBtn: document.querySelector('.hn-load-more')
     },
 
     async init() {
         this.bindEvents();
-        console.log("Generative UI - Real Data Mode Initialized.");
+        console.log("Generative UI - More Stories Mode Initialized.");
         
         // Initial style
         this.applyStyle(STYLE_PRESETS["Apple"], "Apple (Initial)");
 
-        // Load data
-        await this.loadAndRender();
+        // Initial load
+        await this.loadInitial();
     },
 
     bindEvents() {
@@ -416,18 +432,42 @@ const App = {
         this.elements.promptInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleGenerate();
         });
+        this.elements.loadMoreBtn.addEventListener('click', () => this.loadMore());
     },
 
-    async loadAndRender() {
+    async loadInitial() {
+        this.currentOffset = 0;
         this.elements.listElement.innerHTML = '<div style="padding: 20px; text-align: center;">Loading stories...</div>';
-        const stories = await HNData.fetchStories();
-        this.renderStories(stories);
+        await this.loadAndRender();
     },
 
-    renderStories(stories) {
-        this.elements.listElement.innerHTML = ''; 
+    async loadMore() {
+        if (this.isLoading) return;
+        this.isLoading = true;
+        const originalText = this.elements.loadMoreBtn.textContent;
+        this.elements.loadMoreBtn.textContent = 'Loading...';
+        
+        await this.loadAndRender(true);
+        
+        this.elements.loadMoreBtn.textContent = originalText;
+        this.isLoading = false;
+    },
+
+    async loadAndRender(append = false) {
+        const stories = await HNData.fetchStoriesBatch(this.currentOffset);
+        this.renderStories(stories, append);
+        this.currentOffset += stories.length;
+    },
+
+    renderStories(stories, append = false) {
+        if (!append) {
+            this.elements.listElement.innerHTML = '';
+        }
 
         stories.forEach((story, index) => {
+            if (!story) return;
+            
+            const rank = this.currentOffset + index + 1;
             const domain = story.url ? new URL(story.url).hostname : '';
             const domainHtml = domain ? `<a href="${story.url}" class="hn-story-domain" target="_blank">(${domain})</a>` : '';
             const timeAgo = HNData.formatTime(story.time);
@@ -435,7 +475,7 @@ const App = {
             const listItem = document.createElement('li');
             listItem.className = 'hn-story-item';
             listItem.innerHTML = `
-                <div class="hn-story-rank">${index + 1}.</div>
+                <div class="hn-story-rank">${rank}.</div>
                 <button class="hn-upvote" aria-label="upvote">▲</button>
                 <div class="hn-story-content">
                     <div class="hn-story-title-row">
