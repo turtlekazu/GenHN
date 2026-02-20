@@ -1,35 +1,35 @@
 # Generative Hacker News (Acephale Garden)
 
 ## Project Overview
-**Generative Hacker News** は、Hacker Newsのインターフェースを様々な企業ブランドのデザインシステム（Generative UI）に動的に変換する実験的なプロジェクトです。
-Acephale OSのコンセプトに基づき、UIを固定されたものではなく「生成され、入れ替え可能なもの」として扱います。
+**Generative Hacker News** is an experimental project that dynamically transforms the Hacker News interface into various corporate brand design systems (Generative UI). 
+Based on the Acephale OS concept, it treats UI not as a fixed entity, but as something "generative and interchangeable."
 
 ## Core Features
-- **Real-time HN Integration**: Hacker News APIを使用して最新のトップ記事を動的に取得。
-- **Brand Identity Swap**: Apple, Google, Samsung, Cyberpunk 2077といった象徴的なブランドの「らしさ」をCSSインジェクションで即座に適用。
-- **Infinite Scrolling**: 「More」ボタンにより、本家のページネーションではなく、カードが積み重なっていくモダンな無限スクロール体験を提供。
-- **Sticky Footer**: 各ブランドのデザイン言語に合わせたレスポンシブなフッターレイアウト。
+- **Real-time HN Integration**: Dynamically fetches the latest top stories using the Hacker News API.
+- **Brand Identity Swap**: Instantly applies the "essence" of iconic brands like Apple, Google, Samsung, and Cyberpunk 2077 via CSS injection.
+- **Infinite Scrolling**: Provides a modern infinite scroll experience where cards stack up, replacing the original pagination via the "More" button.
+- **Sticky Footer**: Responsive footer layouts tailored to each brand's design language.
 
 ## Tech Stack
 - **Frontend**: HTML5, Vanilla JavaScript (ES6+).
 - **Styling**: Dynamic CSS Injection via JavaScript.
 - **API**: Hacker News Firebase API.
-- **No Build Step**: 依存関係なし、ブラウザで直接動作。
+- **No Build Step**: No dependencies; runs directly in the browser.
 
 ## Key Files
-- **`index.html`**: アプリケーションの骨格。テーマ制御用のフローティングUIとHNのデータ表示領域を提供。
+- **`index.html`**: The application skeleton. Provides the floating UI for theme control and the data display area for HN stories.
 - **`gardener.js`**: 
-    - 各ブランドのCSSプリセット（STYLE_PRESETS）を保持。
-    - HN APIからのデータ取得とフォーマッティング（HNData）。
-    - DOM操作とイベント管理（App）。
+    - Holds CSS presets for each brand (STYLE_PRESETS).
+    - Handles data fetching and formatting from the HN API (HNData).
+    - Manages DOM operations and events (App).
 
 ## Available Themes (Keywords)
-右下のプロンプト入力欄に以下のキーワードを入力して適用します：
-- `Apple`: 洗練された透明感とSF Proタイポグラフィ。
-- `Google`: Material DesignとProduct Sans風の清潔なUI。
-- `Samsung`: One UI風の大きな角丸カード。
-- `Cyberpunk 2077`: 鮮烈なイエローとグリッチ感のあるブラックデザイン。
+Enter the following keywords into the prompt input field at the bottom right to apply themes:
+- `Apple`: Sophisticated transparency and SF Pro typography.
+- `Google`: Clean UI featuring Material Design and Product Sans vibes.
+- `Samsung`: Large rounded cards inspired by One UI.
+- `Cyberpunk 2077`: Striking yellow and glitch-inspired black design.
 
 ## Development Status
-- **Current State**: 安定したプロトタイプ。リアルデータ連携および主要ブランドの実装完了。
-- **Future Plans**: 記事詳細（コメント）の表示機能、さらなるブランド（Nintendo, Sony, etc.）の追加。
+- **Current State**: Stable prototype. Real-time data integration and core brand implementations are complete.
+- **Future Plans**: Implementation of story details (comments) and additional brands (e.g., Nintendo, Sony).
