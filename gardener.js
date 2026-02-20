@@ -705,6 +705,12 @@ const STYLE_PRESETS = {
     `
 };
 
+const COMMON_STYLE = `
+    ul, ol { list-style: none; padding: 0; margin: 0; }
+    button { font-family: inherit; }
+    * { box-sizing: border-box; }
+`;
+
 /**
  * Data Fetching Logic
  */
@@ -871,7 +877,7 @@ const App = {
         document.body.style.opacity = '0';
         
         setTimeout(() => {
-            this.elements.styleTag.textContent = css;
+            this.elements.styleTag.textContent = COMMON_STYLE + css;
             document.body.style.opacity = '1';
         }, 200);
     },
