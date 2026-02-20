@@ -714,18 +714,50 @@ const STYLE_PRESETS = {
             min-height: 100vh;
         }
         .hn-header {
-            padding: 60px 100px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 30px 40px;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--a-bg);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .hn-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: baseline;
         }
         .hn-logo { font-size: 34px; color: var(--a-text); text-decoration: none; font-weight: 600; }
-        .hn-nav-links a { color: var(--a-sub); text-decoration: none; margin-left: 40px; font-size: 16px; border-bottom: 1px solid transparent; }
+        .hn-site-title { display: none; }
+        .hn-nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .hn-nav-links a {
+            color: var(--a-sub);
+            text-decoration: none;
+            font-size: 16px;
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+        }
         .hn-nav-links a:hover { color: var(--a-text); border-bottom-color: var(--a-accent); }
+        .hn-auth a {
+            color: var(--a-text);
+            text-decoration: none;
+            font-size: 16px;
+            border: 1px solid var(--a-text);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .hn-auth a:hover { background: var(--a-text); color: var(--a-bg); }
         
         .hn-main { max-width: 800px; margin: 0 auto; flex: 1; padding: 0 40px; }
         .hn-story-item {
