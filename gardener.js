@@ -230,17 +230,61 @@ const STYLE_PRESETS = {
         .hn-header {
             background: var(--yellow);
             color: #000;
-            padding: 20px 40px;
+            padding: 10px 40px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             clip-path: polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%);
             border-bottom: 5px solid var(--blue);
             animation: glitch 0.2s infinite;
             animation-play-state: paused;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .hn-header:hover { animation-play-state: running; }
-        .hn-logo { font-size: 40px; font-weight: 900; letter-spacing: -2px; border: 4px solid #000; padding: 0 10px; }
+        .hn-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hn-logo { font-size: 32px; font-weight: 900; letter-spacing: -2px; border: 4px solid #000; padding: 0 10px; color: #000; text-decoration: none; }
+        .hn-site-title { display: none; }
+        .hn-nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .hn-nav-links a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .hn-nav-links a:hover {
+            background: #000;
+            color: var(--yellow);
+            transform: skewX(-10deg);
+        }
+        .hn-auth a {
+            color: #fff;
+            background: var(--pink);
+            padding: 8px 16px;
+            text-decoration: none;
+            font-weight: 900;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            transition: 0.2s;
+        }
+        .hn-auth a:hover {
+            background: var(--blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--blue);
+        }
         
         .hn-main { max-width: 1200px; margin: 60px auto; padding: 0 20px; flex: 1; }
         .hn-story-item {
