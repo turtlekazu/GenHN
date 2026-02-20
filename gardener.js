@@ -1040,6 +1040,21 @@ const STYLE_PRESETS = {
         .hn-footer-links a:hover {
             opacity: 0.7;
         }
+        .hn-load-more {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 20px 80px;
+            border-radius: 100px;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 60px auto;
+            display: block;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .hn-load-more:hover { transform: scale(1.05); }
+        .hn-load-more:active { transform: scale(0.95); }
     `
 };
 
