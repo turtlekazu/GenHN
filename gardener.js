@@ -1055,6 +1055,139 @@ const STYLE_PRESETS = {
         }
         .hn-load-more:hover { transform: scale(1.05); }
         .hn-load-more:active { transform: scale(0.95); }
+    `,
+
+    "Intelligence": `
+        :root {
+            --bg: #0d0d0d;
+            --card: #171717;
+            --accent: #10a37f;
+            --text: #ececec;
+            --subtext: #b4b4b4;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: ui-sans-serif, -apple-system, system-ui, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .hn-header {
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .hn-nav {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hn-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hn-logo::before {
+            content: "";
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .hn-site-title { display: none; }
+        .hn-nav-links { display: flex; gap: 20px; }
+        .hn-nav-links a {
+            color: var(--subtext);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .hn-nav-links a:hover { color: var(--text); }
+        .hn-auth a {
+            background: var(--accent);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .hn-main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+        }
+        .hn-story-list { display: flex; flex-direction: column; gap: 16px; }
+        .hn-story-item {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            transition: border-color 0.2s;
+        }
+        .hn-story-item:hover { border-color: var(--accent); }
+        .hn-story-rank { font-size: 14px; color: var(--subtext); width: 20px; }
+        .hn-story-title { font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; line-height: 1.5; }
+        .hn-story-meta { color: var(--subtext); font-size: 13px; margin-top: 8px; }
+        .hn-upvote {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--subtext);
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .hn-upvote:hover { border-color: var(--accent); color: var(--accent); }
+
+        .hn-load-more {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 40px auto;
+            display: block;
+            cursor: pointer;
+        }
+        .hn-load-more:hover { background: var(--card); }
+
+        .hn-footer {
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--subtext);
+            font-size: 12px;
+        }
+        .hn-footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; list-style: none; }
+        .hn-footer-links a { color: var(--subtext); text-decoration: none; }
+        .hn-footer::after {
+            content: "Shaping the future of Intelligence.";
+            display: block;
+            margin-top: 20px;
+            font-style: italic;
+        }
     `
 };
 

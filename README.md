@@ -14,11 +14,12 @@ An experimental project that dynamically reconstructs the Hacker News interface 
 
 1. Open `index.html` in your browser.
 2. Enter a theme name in the input field at the bottom right and click "Apply".
-   - Examples: `Minimalist`, `Search`, `Universal`, `Glitch`, `Playful`, `Glow`, `Academic`
+   - Examples: `Minimalist`, `Intelligence`, `Search`, `Universal`, `Glitch`, `Playful`, `Glow`, `Academic`
 
 ## Available Design Essences
 
 - **Minimalist**: Sophisticated transparency and clean typography on a white base.
+- **Intelligence**: A modern, dark AI-inspired interface with deep black backgrounds and neon green accents.
 - **Search**: A classic search engine style focused on whitespace and functional beauty.
 - **Universal**: Friendly rounded corners and bold, highly legible card UI.
 - **Glitch**: High-contrast yellow and black with cyber-edge noise.
