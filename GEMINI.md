@@ -1,26 +1,35 @@
-# Acephale Task / CSS Gen Garden
+# Generative Hacker News (Acephale Garden)
 
 ## Project Overview
-**Acephale Task** (also referred to as "CSS Gen Garden") is a frontend task management application prototype. Its unique feature appears to be the ability to generate UI designs based on user prompts (e.g., "80s neon style", "Zen garden").
+**Generative Hacker News** は、Hacker Newsのインターフェースを様々な企業ブランドのデザインシステム（Generative UI）に動的に変換する実験的なプロジェクトです。
+Acephale OSのコンセプトに基づき、UIを固定されたものではなく「生成され、入れ替え可能なもの」として扱います。
 
-The project embraces a "Headless Future" theme (`Acephale OS`).
+## Core Features
+- **Real-time HN Integration**: Hacker News APIを使用して最新のトップ記事を動的に取得。
+- **Brand Identity Swap**: Apple, Google, Samsung, Cyberpunk 2077といった象徴的なブランドの「らしさ」をCSSインジェクションで即座に適用。
+- **Infinite Scrolling**: 「More」ボタンにより、本家のページネーションではなく、カードが積み重なっていくモダンな無限スクロール体験を提供。
+- **Sticky Footer**: 各ブランドのデザイン言語に合わせたレスポンシブなフッターレイアウト。
 
-## Architecture & Tech Stack
-- **Frontend:** HTML5, Vanilla JavaScript.
-- **Styling:** Dynamic CSS generation (intended).
-- **No Build Step:** Currently runs as a static site.
+## Tech Stack
+- **Frontend**: HTML5, Vanilla JavaScript (ES6+).
+- **Styling**: Dynamic CSS Injection via JavaScript.
+- **API**: Hacker News Firebase API.
+- **No Build Step**: 依存関係なし、ブラウザで直接動作。
 
 ## Key Files
-- **`index.html`**: The main entry point. It contains the DOM structure for the task board, input controls, and a text area for design prompts. It references `gardener.js`.
-- **`gardener.js`**: The main script file. currently empty. It is intended to handle task management logic and the AI-driven style generation.
-- **`.entire/`**: Directory containing configuration for the `entire` tool (likely an AI or version control assistant).
+- **`index.html`**: アプリケーションの骨格。テーマ制御用のフローティングUIとHNのデータ表示領域を提供。
+- **`gardener.js`**: 
+    - 各ブランドのCSSプリセット（STYLE_PRESETS）を保持。
+    - HN APIからのデータ取得とフォーマッティング（HNData）。
+    - DOM操作とイベント管理（App）。
 
-## Usage
-1.  **Run:** Open `index.html` directly in a web browser.
-2.  **Interact:**
-    -   Add tasks via the "Add" button.
-    -   Enter a design prompt in the textarea and click "Generate UI" to change the look and feel (Implementation pending in `gardener.js`).
+## Available Themes (Keywords)
+右下のプロンプト入力欄に以下のキーワードを入力して適用します：
+- `Apple`: 洗練された透明感とSF Proタイポグラフィ。
+- `Google`: Material DesignとProduct Sans風の清潔なUI。
+- `Samsung`: One UI風の大きな角丸カード。
+- `Cyberpunk 2077`: 鮮烈なイエローとグリッチ感のあるブラックデザイン。
 
 ## Development Status
-- **Current State:** Prototype / Skeleton.
-- **Pending:** Implementation of `gardener.js` to make the application functional (handling events, managing state, API integration for CSS generation).
+- **Current State**: 安定したプロトタイプ。リアルデータ連携および主要ブランドの実装完了。
+- **Future Plans**: 記事詳細（コメント）の表示機能、さらなるブランド（Nintendo, Sony, etc.）の追加。
