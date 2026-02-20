@@ -1,7 +1,9 @@
 /**
  * Acephale OS | Gardener.js
- * Hacker News Interface Styling
+ * Hacker News Interface Styling & Data Fetching
  */
+
+const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
 const STYLE_PRESETS = {
     "Apple": `
@@ -20,6 +22,9 @@ const STYLE_PRESETS = {
             line-height: 1.47;
             letter-spacing: -0.022em;
             -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .hn-header {
             background: var(--header-bg);
@@ -49,7 +54,7 @@ const STYLE_PRESETS = {
         .hn-nav-links a { color: inherit; text-decoration: none; }
         .hn-auth a { color: var(--accent); text-decoration: none; font-size: 12px; }
         
-        .hn-main { max-width: 980px; margin: 40px auto; padding: 0 22px; }
+        .hn-main { max-width: 980px; margin: 40px auto; padding: 0 22px; flex: 1; width: 100%; box-sizing: border-box; }
         .hn-story-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
         .hn-story-item {
             background: var(--card);
@@ -62,7 +67,7 @@ const STYLE_PRESETS = {
             transition: transform 0.2s ease;
         }
         .hn-story-item:hover { transform: scale(1.01); }
-        .hn-story-rank { font-size: 12px; color: #86868b; width: 20px; margin-top: 4px; }
+        .hn-story-rank { font-size: 12px; color: #86868b; width: 24px; margin-top: 4px; }
         .hn-upvote { border: none; background: #f5f5f7; border-radius: 4px; cursor: pointer; color: #86868b; font-size: 10px; padding: 4px; }
         .hn-story-title { font-weight: 600; font-size: 18px; color: var(--text); text-decoration: none; }
         .hn-story-domain { font-size: 12px; color: #86868b; margin-left: 6px; text-decoration: none; }
@@ -82,6 +87,25 @@ const STYLE_PRESETS = {
             transition: all 0.2s;
         }
         .hn-load-more:hover { background: var(--accent); color: white; }
+
+        .hn-footer {
+            background: #f5f5f7;
+            padding: 40px 22px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            margin-top: 60px;
+        }
+        .hn-footer-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .hn-footer-links a { color: #86868b; text-decoration: none; font-size: 12px; }
+        .hn-footer-links a:hover { color: var(--text); }
     `,
 
     "Cyberpunk 2077": `
@@ -98,6 +122,9 @@ const STYLE_PRESETS = {
             margin: 0;
             text-transform: uppercase;
             font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .hn-header {
             background: black;
@@ -122,7 +149,7 @@ const STYLE_PRESETS = {
         .hn-nav-links a { color: var(--neon-yellow); text-decoration: none; }
         .hn-nav-links a:hover { color: var(--cyber-blue); }
         
-        .hn-main { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .hn-main { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex: 1; width: 100%; box-sizing: border-box; }
         .hn-story-item {
             background: black;
             color: white;
@@ -153,6 +180,22 @@ const STYLE_PRESETS = {
             color: black;
             border-color: var(--cyber-blue);
         }
+
+        .hn-footer {
+            background: black;
+            padding: 40px 20px;
+            clip-path: polygon(2% 0, 100% 0, 100% 100%, 0 100%, 0 20%);
+        }
+        .hn-footer-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .hn-footer-links a { color: var(--neon-yellow); text-decoration: none; font-size: 14px; border-bottom: 2px solid transparent; }
+        .hn-footer-links a:hover { border-bottom-color: var(--cyber-blue); color: var(--cyber-blue); }
     `,
 
     "Google": `
@@ -168,6 +211,9 @@ const STYLE_PRESETS = {
             color: #202124;
             font-family: 'Roboto', 'Product Sans', Arial, sans-serif;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .hn-header {
             padding: 12px 24px;
@@ -188,7 +234,7 @@ const STYLE_PRESETS = {
         .hn-nav-links a { color: #5f6368; text-decoration: none; padding: 8px 12px; border-radius: 20px; }
         .hn-nav-links a:hover { background: var(--g-gray); }
         
-        .hn-main { max-width: 800px; margin: 30px auto; }
+        .hn-main { max-width: 800px; margin: 30px auto; flex: 1; width: 100%; box-sizing: border-box; }
         .hn-story-item {
             padding: 16px;
             border-bottom: 1px solid #eee;
@@ -211,6 +257,22 @@ const STYLE_PRESETS = {
             cursor: pointer;
         }
         .hn-load-more:hover { background: #f8f9fa; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+        .hn-footer {
+            background: var(--g-gray);
+            padding: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .hn-footer-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+        .hn-footer-links a { color: #5f6368; text-decoration: none; font-size: 14px; }
+        .hn-footer-links a:hover { text-decoration: underline; }
     `,
 
     "Samsung": `
@@ -224,6 +286,9 @@ const STYLE_PRESETS = {
             color: #000;
             font-family: 'SamsungOne', 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .hn-header {
             background: white;
@@ -242,7 +307,7 @@ const STYLE_PRESETS = {
         .hn-nav-links { list-style: none; display: flex; gap: 30px; }
         .hn-nav-links a { font-weight: 600; text-decoration: none; color: #333; font-size: 14px; }
         
-        .hn-main { max-width: 1200px; margin: 0 auto; padding: 40px; }
+        .hn-main { max-width: 1200px; margin: 0 auto; padding: 40px; flex: 1; width: 100%; box-sizing: border-box; }
         .hn-story-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
         .hn-story-item {
             background: var(--s-gray);
@@ -268,7 +333,60 @@ const STYLE_PRESETS = {
             cursor: pointer;
             margin-top: 40px;
         }
+
+        .hn-footer {
+            padding: 60px 40px;
+            border-top: 1px solid #eee;
+        }
+        .hn-footer-links {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hn-footer-links a { color: #000; text-decoration: none; font-size: 13px; font-weight: 600; }
     `
+};
+
+/**
+ * Data Fetching Logic
+ */
+const HNData = {
+    async fetchStories() {
+        try {
+            const response = await fetch(`${BASE_URL}/topstories.json`);
+            const storyIds = await response.json();
+            const top30Ids = storyIds.slice(0, 30);
+
+            const storyPromises = top30Ids.map(async (id) => {
+                const storyRes = await fetch(`${BASE_URL}/item/${id}.json`);
+                return await storyRes.json();
+            });
+
+            return await Promise.all(storyPromises);
+        } catch (error) {
+            console.error("データの取得に失敗しました:", error);
+            return [];
+        }
+    },
+
+    formatTime(timestamp) {
+        const seconds = Math.floor((new Date() - timestamp * 1000) / 1000);
+        let interval = Math.floor(seconds / 31536000);
+        if (interval > 1) return interval + " years ago";
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) return interval + " months ago";
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) return interval + " days ago";
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) return interval + " hours ago";
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) return interval + " minutes ago";
+        return Math.floor(seconds) + " seconds ago";
+    }
 };
 
 /**
@@ -278,21 +396,61 @@ const App = {
     elements: {
         styleTag: document.getElementById('generated-style'),
         promptInput: document.getElementById('prompt-input'),
-        generateBtn: document.getElementById('generate-btn')
+        generateBtn: document.getElementById('generate-btn'),
+        listElement: document.querySelector('.hn-story-list')
     },
 
-    init() {
+    async init() {
         this.bindEvents();
-        console.log("Generative UI - Brand Experience Initialized.");
+        console.log("Generative UI - Real Data Mode Initialized.");
         
         // Initial style
         this.applyStyle(STYLE_PRESETS["Apple"], "Apple (Initial)");
+
+        // Load data
+        await this.loadAndRender();
     },
 
     bindEvents() {
         this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
         this.elements.promptInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleGenerate();
+        });
+    },
+
+    async loadAndRender() {
+        this.elements.listElement.innerHTML = '<div style="padding: 20px; text-align: center;">Loading stories...</div>';
+        const stories = await HNData.fetchStories();
+        this.renderStories(stories);
+    },
+
+    renderStories(stories) {
+        this.elements.listElement.innerHTML = ''; 
+
+        stories.forEach((story, index) => {
+            const domain = story.url ? new URL(story.url).hostname : '';
+            const domainHtml = domain ? `<a href="${story.url}" class="hn-story-domain" target="_blank">(${domain})</a>` : '';
+            const timeAgo = HNData.formatTime(story.time);
+
+            const listItem = document.createElement('li');
+            listItem.className = 'hn-story-item';
+            listItem.innerHTML = `
+                <div class="hn-story-rank">${index + 1}.</div>
+                <button class="hn-upvote" aria-label="upvote">▲</button>
+                <div class="hn-story-content">
+                    <div class="hn-story-title-row">
+                        <a href="${story.url || '#'}" class="hn-story-title" target="_blank">${story.title}</a>
+                        ${domainHtml}
+                    </div>
+                    <div class="hn-story-meta">
+                        <span class="hn-story-points">${story.score} points</span> by
+                        <a href="#" class="hn-story-author">${story.by}</a>
+                        <span class="hn-story-time">${timeAgo}</span> |
+                        <a href="#" class="hn-story-comments" target="_blank">${story.descendants || 0} comments</a>
+                    </div>
+                </div>
+            `;
+            this.elements.listElement.appendChild(listItem);
         });
     },
 
@@ -310,7 +468,6 @@ const App = {
     },
 
     matchStyle(input) {
-        // Case-insensitive matching
         const normalizedInput = input.toLowerCase();
         for (const key in STYLE_PRESETS) {
             if (normalizedInput.includes(key.toLowerCase())) return STYLE_PRESETS[key];
@@ -320,8 +477,6 @@ const App = {
 
     applyStyle(css, themeName) {
         console.log(`Applying theme: ${themeName}`);
-        
-        // Visual feedback
         document.body.style.transition = 'opacity 0.2s ease';
         document.body.style.opacity = '0';
         
