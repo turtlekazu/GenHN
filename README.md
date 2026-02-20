@@ -1,29 +1,31 @@
 # Acephale - Brand Identity Hacker News
 
-Hacker Newsのインターフェースを、世界的に有名なプロダクトやデザインシステムの「本質（エッセンス）」を用いて動的に再構築する実験的プロジェクトです。
+An experimental project that dynamically reconstructs the Hacker News interface using the "essences" of world-renowned product design systems.
 
-## 特徴
+[日本語版 (Japanese README)](README-ja.md)
 
-- **Brand Swap Engine**: インプットに応じて、瞬時にデザインシステムを切り替えます。
-- **Generative Styling**: 特定のブランド名ではなく、そのデザイン哲学を模したCSSを動的に適用。
-- **Modern Web Tech**: Vanilla JS, CSS Glassmorphism, Hacker News API.
+## Features
 
-## 使い方
+- **Brand Swap Engine**: Instantly switch between design systems based on your input.
+- **Generative Styling**: Dynamically applies CSS that reflects design philosophies rather than specific brand names.
+- **Modern Web Tech**: Built with Vanilla JS, CSS Glassmorphism, and the Hacker News API.
 
-1.  `index.html`をブラウザで開きます。
-2.  右下の入力欄にテーマ名を入力して「適用」をクリック。
-    -   入力例: `Minimalist`, `Search`, `Universal`, `Glitch`, `Playful`, `Glow`, `Academic`
+## Usage
 
-## 利用可能なデザインエッセンス
+1. Open `index.html` in your browser.
+2. Enter a theme name in the input field at the bottom right and click "Apply".
+   - Examples: `Minimalist`, `Search`, `Universal`, `Glitch`, `Playful`, `Glow`, `Academic`
 
-- **Minimalist**: 洗練された透明感、白を基調としたクリーンなタイポグラフィ。
-- **Search**: 余白を重視し、機能美を追求した王道の検索エンジンスタイル。
-- **Universal**: 親しみやすい角丸と、大胆で視認性の高いカードUI。
-- **Glitch**: コントラストの強いイエローとブラック、ノイズを感じさせるサイバーなエッジ。
-- **Playful**: 赤と白を基調としたポップで親しみやすいゲーム機のようなUI。
-- **Glow**: 深いネイビーと光り輝くブルーのアクセントが特徴的な次世代機風スタイル。
-- **Academic**: セリフ体と暖色系の背景を用いた、思慮深く落ち着いた読書体験。
+## Available Design Essences
 
-## 注意事項
+- **Minimalist**: Sophisticated transparency and clean typography on a white base.
+- **Search**: A classic search engine style focused on whitespace and functional beauty.
+- **Universal**: Friendly rounded corners and bold, highly legible card UI.
+- **Glitch**: High-contrast yellow and black with cyber-edge noise.
+- **Playful**: A pop and friendly UI inspired by game consoles, featuring red and white colors.
+- **Glow**: A next-gen console style with deep navy and radiant blue accents.
+- **Academic**: A thoughtful and calm reading experience using serif fonts and warm backgrounds.
 
-このプロジェクトはデザインの実験を目的としており、既存のいかなるブランドとも直接の関係はありません。商標およびブランドの直接的な表現は排除されています。
+## Disclaimer
+
+This project is for design experimentation purposes only and has no direct affiliation with any existing brands. All trademarks and direct brand representations have been excluded.
