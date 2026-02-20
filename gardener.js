@@ -6,7 +6,7 @@
 const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
 const STYLE_PRESETS = {
-    "Apple": `
+    "Minimalist": `
         :root {
             --bg: #f5f5f7;
             --card: #ffffff;
@@ -17,7 +17,7 @@ const STYLE_PRESETS = {
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -159,17 +159,40 @@ const STYLE_PRESETS = {
         .hn-load-more:active { transform: scale(0.98); }
 
         .hn-footer { 
-            padding: 80px 20px; 
+            padding: 80px 20px 40px; 
             background: var(--bg); 
             border-top: 1px solid rgba(0,0,0,0.1); 
             color: var(--subtext); 
-            text-align: center;
-            font-size: 12px;
+            font-size: 11px;
+            max-width: 980px;
+            margin: 0 auto;
+            text-align: left;
         }
-        .hn-footer-links a { color: var(--subtext); text-decoration: none; margin: 0 15px; font-size: 12px; }
+        .hn-footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            list-style: none;
+        }
+        .hn-footer-links li:not(:last-child)::after {
+            content: "|";
+            margin-left: 15px;
+            opacity: 0.3;
+        }
+        .hn-footer-links a { color: var(--subtext); text-decoration: none; }
+        .hn-footer-links a:hover { text-decoration: underline; color: var(--text); }
+        .hn-footer::after {
+            content: "© 2026 Designed for Humanity.";
+            display: block;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
     `,
 
-    "Cyberpunk 2077": `
+    "Glitch": `
         @keyframes glitch {
             0% { transform: translate(0) }
             20% { transform: translate(-2px, 2px) }
@@ -191,7 +214,7 @@ const STYLE_PRESETS = {
         body {
             background: var(--black);
             color: var(--yellow);
-            font-family: 'Rajdhani', sans-serif;
+            font-family: sans-serif;
             margin: 0;
             text-transform: uppercase;
             overflow-x: hidden;
@@ -256,10 +279,52 @@ const STYLE_PRESETS = {
         }
         .hn-load-more:hover { background: var(--blue); color: #000; }
 
-        .hn-footer { background: #000; color: var(--yellow); padding: 100px 40px; border-top: 2px solid var(--blue); }
+        .hn-footer { 
+            background: var(--black); 
+            color: var(--yellow); 
+            padding: 150px 40px; 
+            border-top: 5px solid var(--blue); 
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hn-footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 60px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: var(--yellow);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 900;
+            padding: 10px 30px;
+            border: 2px solid var(--blue);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
+            transition: 0.2s;
+            letter-spacing: 2px;
+        }
+        .hn-footer-links a:hover {
+            background: var(--blue);
+            color: #000;
+            box-shadow: 0 0 20px var(--blue);
+            transform: skewX(-10deg);
+        }
+        .hn-footer::after {
+            content: ">>> ACCESS GRANTED <<<";
+            display: block;
+            font-size: 12px;
+            color: var(--pink);
+            margin-top: 80px;
+            text-shadow: 2px 2px 0 #000;
+            animation: glitch 0.5s infinite;
+        }
     `,
 
-    "Nintendo": `
+    "Playful": `
         :root {
             --red: #e60012;
             --blue: #00a0e9;
@@ -269,7 +334,7 @@ const STYLE_PRESETS = {
         body {
             background-color: #eee;
             color: #333;
-            font-family: "Arial Rounded MT Bold", sans-serif;
+            font-family: sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -277,32 +342,73 @@ const STYLE_PRESETS = {
         }
         .hn-header {
             background: var(--red);
-            padding: 30px 40px;
+            padding: 20px 40px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
             border-bottom: 12px solid #000;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .hn-nav {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .hn-logo {
             background: #fff;
             color: var(--red);
-            padding: 10px 30px;
+            padding: 5px 20px;
             border-radius: 100px;
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 900;
             text-decoration: none;
-            border: 5px solid #000;
-            box-shadow: 8px 8px 0 #000;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            transition: 0.1s;
         }
-        .hn-site-title { color: #fff; font-size: 40px; letter-spacing: -2px; text-shadow: 4px 4px 0 #000; }
+        .hn-logo:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+        .hn-site-title { display: none; }
+        .hn-nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .hn-nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0 #000;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .hn-nav-links a:hover { background: rgba(0,0,0,0.2); }
+        .hn-auth a {
+            background: var(--blue);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 12px;
+            border: 4px solid #000;
+            text-decoration: none;
+            font-weight: 900;
+            box-shadow: 4px 4px 0 #000;
+        }
         
         .hn-main {
             max-width: 1100px;
             margin: 40px auto;
             flex: 1;
             display: flex;
+            flex-direction: column;
             padding: 0 40px;
-            gap: 20px;
+            gap: 40px;
         }
         .hn-story-list {
             display: grid;
@@ -350,22 +456,57 @@ const STYLE_PRESETS = {
             margin-top: auto;
         }
         .hn-load-more {
-            grid-column: 1 / -1;
             background: #fff;
             border: 8px solid #000;
             border-radius: 100px;
-            padding: 25px;
+            padding: 25px 60px;
             font-size: 28px;
             font-weight: 900;
             cursor: pointer;
             box-shadow: 0 10px 0 #000;
+            align-self: center;
+            margin: 40px 0;
         }
         .hn-load-more:active { transform: translateY(10px); box-shadow: 0 0px 0 #000; }
 
-        .hn-footer { background: #000; color: #fff; padding: 100px; text-align: center; }
+        .hn-footer { 
+            background: #000; 
+            color: #fff; 
+            padding: 100px 40px; 
+            text-align: center; 
+            border-top: 12px solid var(--red);
+        }
+        .hn-footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: #fff;
+            font-weight: 900;
+            font-size: 20px;
+            text-decoration: none;
+            border: 4px solid #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 var(--blue);
+            transition: 0.1s;
+        }
+        .hn-footer-links a:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--blue); background: var(--blue); }
+        .hn-footer::after {
+            content: "STAY PLAYFUL!";
+            display: block;
+            font-size: 40px;
+            font-weight: 900;
+            margin-top: 60px;
+            text-shadow: 4px 4px 0 var(--red), 8px 8px 0 var(--blue);
+        }
     `,
 
-    "SONY": `
+    "Glow": `
         :root {
             --ps-blue: #0037c1;
             --ps-dark: #000000;
@@ -375,7 +516,7 @@ const STYLE_PRESETS = {
         body {
             background-color: var(--ps-bg);
             color: var(--ps-white);
-            font-family: "SST", Arial, sans-serif;
+            font-family: sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -446,10 +587,41 @@ const STYLE_PRESETS = {
         }
         .hn-load-more:hover { background: #fff; color: #000; box-shadow: 0 0 50px rgba(255,255,255,0.2); }
 
-        .hn-footer { padding: 150px 80px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .hn-footer { 
+            padding: 150px 80px; 
+            background: #000; 
+            border-top: 2px solid var(--ps-blue); 
+            text-align: center; 
+            box-shadow: 0 -20px 40px rgba(0, 55, 193, 0.2);
+        }
+        .hn-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: rgba(255,255,255,0.4);
+            text-decoration: none;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: 0.5s;
+        }
+        .hn-footer-links a:hover { color: #fff; text-shadow: 0 0 15px var(--ps-blue); }
+        .hn-footer::after {
+            content: "○ △ □ ✕";
+            display: block;
+            font-size: 24px;
+            font-weight: 100;
+            color: rgba(255,255,255,0.1);
+            letter-spacing: 20px;
+            margin-top: 50px;
+        }
     `,
 
-    "Anthropic": `
+    "Academic": `
         :root {
             --a-bg: #fdfaf5;
             --a-text: #1b1b1b;
@@ -459,7 +631,7 @@ const STYLE_PRESETS = {
         body {
             background-color: var(--a-bg);
             color: var(--a-text);
-            font-family: "Inter", system-ui, sans-serif;
+            font-family: serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -475,7 +647,7 @@ const STYLE_PRESETS = {
             justify-content: space-between;
             align-items: baseline;
         }
-        .hn-logo { font-family: "Ibarra Real Nova", serif; font-size: 34px; color: var(--a-text); text-decoration: none; font-weight: 600; }
+        .hn-logo { font-size: 34px; color: var(--a-text); text-decoration: none; font-weight: 600; }
         .hn-nav-links a { color: var(--a-sub); text-decoration: none; margin-left: 40px; font-size: 16px; border-bottom: 1px solid transparent; }
         .hn-nav-links a:hover { color: var(--a-text); border-bottom-color: var(--a-accent); }
         
@@ -487,7 +659,6 @@ const STYLE_PRESETS = {
             gap: 30px;
         }
         .hn-story-title {
-            font-family: "Ibarra Real Nova", serif;
             font-size: 32px;
             font-weight: 500;
             line-height: 1.25;
@@ -523,10 +694,40 @@ const STYLE_PRESETS = {
             cursor: pointer;
         }
 
-        .hn-footer { padding: 100px 40px; border-top: 1px solid rgba(0,0,0,0.05); text-align: center; color: var(--a-sub); }
+        .hn-footer { 
+            padding: 120px 40px; 
+            background: var(--a-bg); 
+            border-top: 1px solid rgba(0,0,0,0.1); 
+            text-align: center; 
+            color: var(--a-sub);
+            font-style: italic;
+        }
+        .hn-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: var(--a-sub);
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+            border-bottom: 1px solid transparent;
+        }
+        .hn-footer-links a:hover { color: var(--a-text); border-bottom-color: var(--a-accent); }
+        .hn-footer::after {
+            content: "Thoughtful AI for a Better Future.";
+            display: block;
+            font-size: 18px;
+            color: var(--a-accent);
+            margin-top: 50px;
+            font-weight: 500;
+        }
     `,
 
-    "Google": `
+    "Search": `
         :root {
             --g-blue: #1a73e8;
             --g-bg: #f8f9fa;
@@ -534,7 +735,7 @@ const STYLE_PRESETS = {
         body {
             background: #fff;
             color: #202124;
-            font-family: "Roboto", Arial, sans-serif;
+            font-family: sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -578,9 +779,27 @@ const STYLE_PRESETS = {
             margin: 30px 0;
             cursor: pointer;
         }
+        .hn-footer {
+            background: #f2f2f2;
+            padding: 20px 30px;
+            border-top: 1px solid #dadce0;
+            font-size: 14px;
+        }
+        .hn-footer-links {
+            display: flex;
+            gap: 27px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: #70757a;
+            text-decoration: none;
+        }
+        .hn-footer-links a:hover {
+            text-decoration: underline;
+        }
     `,
 
-    "Samsung": `
+    "Universal": `
         :root {
             --s-blue: #034EA2;
             --s-gray: #f4f4f4;
@@ -588,7 +807,7 @@ const STYLE_PRESETS = {
         body {
             background: #fff;
             color: #000;
-            font-family: "SamsungOne", sans-serif;
+            font-family: sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -617,6 +836,37 @@ const STYLE_PRESETS = {
         .hn-story-item:hover { background: #e8e8e8; transform: scale(1.02); }
         .hn-story-title { font-size: 28px; font-weight: 700; text-decoration: none; color: #000; margin-bottom: 20px; }
         .hn-upvote { background: var(--s-blue); color: #fff; border: none; padding: 15px 30px; border-radius: 100px; font-weight: 700; width: fit-content; cursor: pointer; }
+        .hn-footer {
+            background: #000;
+            color: #fff;
+            padding: 100px 60px;
+            text-align: left;
+        }
+        .hn-footer-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+            list-style: none;
+        }
+        .hn-footer-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .hn-footer-links a:hover {
+            opacity: 0.7;
+        }
+        .hn-footer::after {
+            content: "CONNECTED UNIVERSE TECH";
+            display: block;
+            font-size: 80px;
+            font-weight: 800;
+            opacity: 0.1;
+            letter-spacing: -2px;
+            margin-top: 40px;
+        }
     `
 };
 
@@ -692,7 +942,7 @@ const App = {
         console.log("Generative UI - Enhanced Brand Mode Initialized.");
         
         // Initial style
-        this.applyStyle(STYLE_PRESETS["Apple"], "Apple (Initial)");
+        this.applyStyle(STYLE_PRESETS["Minimalist"], "Minimalist (Initial)");
 
         // Initial load
         await this.loadInitial();
@@ -798,7 +1048,7 @@ const App = {
 
     showError() {
         const available = Object.keys(STYLE_PRESETS).join('」「');
-        alert(`対応しているブランドを入力してください：\n「${available}」`);
+        alert(`対応しているテーマを入力してください：\n「${available}」`);
     }
 };
 

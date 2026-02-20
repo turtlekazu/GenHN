@@ -1,40 +1,29 @@
-# Generative Hacker News (Acephale Garden)
+# Acephale - Brand Identity Hacker News
 
-## Project Overview
-**Generative Hacker News** is an experimental project that dynamically transforms the Hacker News interface into various corporate brand design systems (Generative UI). 
-Based on the Acephale OS concept, it treats UI not as a fixed entity, but as something "generative and interchangeable."
+Hacker Newsのインターフェースを、世界的に有名なプロダクトやデザインシステムの「本質（エッセンス）」を用いて動的に再構築する実験的プロジェクトです。
 
-## Core Features
-- **Real-time HN Integration**: Dynamically fetches the latest top stories using the Hacker News API.
-- **Brand Identity Swap**: Instantly applies the "essence" of iconic brands like Apple, Google, Samsung, and Cyberpunk 2077 via CSS injection.
-- **Infinite Scrolling**: Provides a modern infinite scroll experience where cards stack up, replacing the original pagination via the "More" button.
-- **Sticky Footer**: Responsive footer layouts tailored to each brand's design language.
+## コア・アイデンティティ
 
-## Tech Stack
-- **Frontend**: HTML5, Vanilla JavaScript (ES6+).
-- **Styling**: Dynamic CSS Injection via JavaScript.
-- **API**: Hacker News Firebase API.
-- **No Build Step**: No dependencies; runs directly in the browser.
+- **Brand Identity Swap**: インプットに応じて、そのブランドを象徴する視覚的言語をHacker Newsに適用。
+- **Modern Web Aesthetics**: グラスモーフィズム、高度なアニメーション、タイポグラフィの最適化。
 
-## Key Files
-- **`index.html`**: The application skeleton. Provides the floating UI for theme control and the data display area for HN stories.
-- **`gardener.js`**: 
-    - Holds CSS presets for each brand (STYLE_PRESETS).
-    - Handles data fetching and formatting from the HN API (HNData).
-    - Manages DOM operations and events (App).
+## デザインプリセット
 
-## Available Themes (Keywords)
-Enter the following keywords into the prompt input field at the bottom right to apply themes:
-- `Apple`: Sophisticated transparency and SF Pro typography.
-- `Google`: Clean UI featuring Material Design and Product Sans vibes.
-- `Samsung`: Large rounded cards inspired by One UI.
-- `Cyberpunk 2077`: Striking yellow and glitch-inspired black design.
-- `Nintendo`: Red-and-white playful aesthetic with bold UI.
-- `SONY`: PS5-inspired minimalist dark mode with blue glows.
-- `OpenAI`: Modern monospace and dark-themed AI aesthetics.
-- `Anthropic`: Serif typography on beige (Claude-style) for readability.
-- `Anker`: Tech-blue accents and structured product-style layout.
+- `Minimalist`: 洗練された透明感とサンセリフ体による究極のミニマリズム。
+- `Search`: 機能美を追求し、ホワイトスペースを贅沢に使った検索エンジン風。
+- `Universal`: 親しみやすい大きな角丸と、大胆なカードUI。
+- `Glitch`: ネオンカラーと点滅する警告、グリッチエフェクトによる未来派。
+- `Playful`: 赤と白のポップな配色と、太い枠線によるゲーム機風UI。
+- `Glow`: 深いダーク背景に、輝くブルーのアクセントが際立つ次世代機風。
+- `Academic`: 学術的で落ち着いた印象を与える、セリフ体とベージュ基調のデザイン。
 
-## Development Status
-- **Current State**: Stable prototype. Real-time data integration and core brand implementations are complete.
-- **Future Plans**: Implementation of story details (comments) and additional brands (e.g., Nintendo, Sony).
+## 開発ガイドライン
+
+- **Trademark Neutrality**: ブランド名そのものではなく、その「色」「形」「動き」を再現すること。商標を含む直接的な表現は行わない。
+- **Surgical Styling**: `gardener.js`の`STYLE_PRESETS`に新しいエッセンスを追加。
+- **Performance**: 可能な限りCSS変数とTransitionsを使用し、スムーズな体験を提供。
+
+## 今後の計画
+
+- 記事詳細（コメント）のブランドごとの最適化
+- さらなる「デザインエッセンス」の追加（例：Industrial, Cyberpunk, Bio-Organic）
