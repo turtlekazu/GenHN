@@ -884,14 +884,50 @@ const STYLE_PRESETS = {
             min-height: 100vh;
         }
         .hn-header {
-            padding: 80px 60px 40px;
+            padding: 20px 60px;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
         }
-        .hn-site-title { font-size: 60px; font-weight: 700; letter-spacing: -2px; }
-        .hn-nav-links { display: flex; gap: 40px; }
+        .hn-nav {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hn-logo {
+            font-size: 40px;
+            font-weight: 700;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: -2px;
+        }
+        .hn-site-title { display: none; }
+        .hn-nav-links { 
+            display: flex; 
+            gap: 40px; 
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
         .hn-nav-links a { color: #000; font-weight: 600; text-decoration: none; font-size: 18px; }
+        .hn-auth a {
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            border: 2px solid #000;
+            padding: 8px 24px;
+            border-radius: 100px;
+            transition: 0.2s;
+        }
+        .hn-auth a:hover { background: #000; color: #fff; }
         
         .hn-main { padding: 40px 60px; flex: 1; }
         .hn-story-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px; }
@@ -927,15 +963,6 @@ const STYLE_PRESETS = {
         }
         .hn-footer-links a:hover {
             opacity: 0.7;
-        }
-        .hn-footer::after {
-            content: "CONNECTED UNIVERSE TECH";
-            display: block;
-            font-size: 80px;
-            font-weight: 800;
-            opacity: 0.1;
-            letter-spacing: -2px;
-            margin-top: 40px;
         }
     `
 };
