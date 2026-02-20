@@ -29,6 +29,11 @@ Enter the following keywords into the prompt input field at the bottom right to 
 - `Google`: Clean UI featuring Material Design and Product Sans vibes.
 - `Samsung`: Large rounded cards inspired by One UI.
 - `Cyberpunk 2077`: Striking yellow and glitch-inspired black design.
+- `Nintendo`: Red-and-white playful aesthetic with bold UI.
+- `SONY`: PS5-inspired minimalist dark mode with blue glows.
+- `OpenAI`: Modern monospace and dark-themed AI aesthetics.
+- `Anthropic`: Serif typography on beige (Claude-style) for readability.
+- `Anker`: Tech-blue accents and structured product-style layout.
 
 ## Development Status
 - **Current State**: Stable prototype. Real-time data integration and core brand implementations are complete.

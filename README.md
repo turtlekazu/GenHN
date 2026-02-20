@@ -26,6 +26,11 @@ An experimental web interface that dynamically transforms the Hacker News experi
 - **Google**: Material Design logic with a focus on whitespace and Roboto.
 - **Samsung**: One UI-inspired rounded corners and bold, accessible cards.
 - **Cyberpunk 2077**: High-contrast yellow and black with a glitch-aesthetic edge.
+- **Nintendo**: Playful red-and-white design with Switch-inspired bold elements.
+- **SONY**: Sleek PlayStation-inspired minimalism with glowing blue accents.
+- **OpenAI**: Dark, modern "ChatGPT" aesthetic with monospace fonts.
+- **Anthropic**: Focus on readability with beige backgrounds and serif typography.
+- **Anker**: Reliable, product-focused layout with tech-blue accents.
 
 ## 📂 Project Structure
 - `index.html`: The semantic structure of the HN interface.
