@@ -3,162 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Gen Garden | Acephale OS</title>
-    
-    <!-- Modern Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800;900&family=VT323&family=Shippori+Mincho:wght@400;700&family=Syncopate:wght@400;700&family=Orbitron:wght@400;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
-
-    <!-- Dynamic style tag for AI-generated CSS -->
+    <title>Generative Hacker News</title>
     <style id="generated-style"></style>
-
-    <style>
-        :root {
-            --os-bg: rgba(20, 20, 25, 0.85);
-            --os-text: #ffffff;
-            --os-accent: #0071e3;
-            --os-accent-hover: #0077ed;
-        }
-
-        /* OS UI Controls (Fixed) */
-        .os-controls {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 48px);
-            max-width: 800px;
-            height: 72px;
-            background: var(--os-bg);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            color: var(--os-text);
-            padding: 0 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            z-index: 9999;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-            box-sizing: border-box;
-        }
-
-        .os-input {
-            flex: 1;
-            padding: 0.8rem 1.2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-        }
-
-        .os-input:focus {
-            border-color: var(--os-accent);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-        }
-
-        .os-btn {
-            padding: 0.8rem 1.75rem;
-            background: var(--os-accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .os-btn:hover {
-            background: var(--os-accent-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
-        }
-
-        .os-btn:active {
-            transform: translateY(1px);
-        }
-        
-        body { 
-            margin: 0;
-            padding: 0;
-            margin-bottom: 120px; 
-            min-height: 100vh;
-        }
-
-        #app-root {
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-    </style>
-</head>
+    </head>
 <body>
+    <div id="theme-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; border: 1px solid #ddd;">
+        <input type="text" id="prompt-input" placeholder="テーマを入力 (Apple, Google...)" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; width: 200px;">
+        <button id="generate-btn" style="padding: 8px 16px; background: #007aff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">適用</button>
+    </div>
 
-    <!-- Application Content Area -->
-    <div id="app-root">
-        <header class="app-header">
-            <h1 class="app-title">Acephale Task</h1>
-            <div class="user-status">Online</div>
-        </header>
-
-        <main class="board">
-            <ul class="task-list">
-                <!-- Priority: High -->
-                <li class="task-item" data-priority="high" data-status="pending">
-                    <div class="task-content">
-                        <span class="task-tag">Urgent</span>
-                        <h2 class="task-title">投資家向けデモ作成</h2>
-                        <p class="task-desc">HTMLとCSSの完全分離を証明する。</p>
-                        <time>Due: Tomorrow</time>
-                    </div>
-                    <div class="task-actions">
-                        <button class="btn-complete">Done</button>
-                    </div>
-                </li>
-
-                <!-- Priority: Normal -->
-                <li class="task-item" data-priority="normal" data-status="pending">
-                    <div class="task-content">
-                        <span class="task-tag">Dev</span>
-                        <h2 class="task-title">API接続テスト</h2>
-                        <p class="task-desc">OpenAIへのリクエスト処理の実装。</p>
-                        <time>Due: Next Week</time>
-                    </div>
-                    <div class="task-actions">
-                        <button class="btn-complete">Done</button>
-                    </div>
-                </li>
-
-                <!-- Priority: Low -->
-                <li class="task-item" data-priority="low" data-status="completed">
-                    <div class="task-content">
-                        <span class="task-tag">Life</span>
-                        <h2 class="task-title">コーヒー豆を買う</h2>
-                        <time>Done: Today</time>
-                    </div>
-                    <div class="task-actions">
-                        <button class="btn-delete">Delete</button>
-                    </div>
-                </li>
+    <header class="hn-header">
+        <nav class="hn-nav">
+            <a href="#" class="hn-logo" aria-label="Hacker News Home">Y</a>
+            <span class="hn-site-title">Hacker News</span>
+            <ul class="hn-nav-links">
+                <li><a href="#">new</a></li>
+                <li><a href="#">past</a></li>
+                <li><a href="#">comments</a></li>
+                <li><a href="#">ask</a></li>
+                <li><a href="#">show</a></li>
+                <li><a href="#">jobs</a></li>
+                <li><a href="#">submit</a></li>
             </ul>
-        </main>
-    </div>
+        </nav>
+        <div class="hn-auth">
+            <a href="#">login</a>
+        </div>
+    </header>
 
-    <!-- OS Interface Overlay -->
-    <div class="os-controls">
-        <input type="text" class="os-input" id="prompt-input" 
-               placeholder="指示を入力 (例: モダン, サイバー, 禅, レトロ)">
-        <button class="os-btn" id="generate-btn">Generate UI</button>
-    </div>
+    <main class="hn-main">
+        <ol class="hn-story-list">
+            
+            <li class="hn-story-item">
+                <div class="hn-story-rank">1.</div>
+                <button class="hn-upvote" aria-label="upvote">▲</button>
+                <div class="hn-story-content">
+                    <div class="hn-story-title-row">
+                        <a href="#" class="hn-story-title">Show HN: Generative UIを用いた全く新しいHacker News体験</a>
+                        <a href="#" class="hn-story-domain">(github.com)</a>
+                    </div>
+                    <div class="hn-story-meta">
+                        <span class="hn-story-points">150 points</span> by
+                        <a href="#" class="hn-story-author">generative_hacker</a>
+                        <span class="hn-story-time">2 hours ago</span> |
+                        <a href="#" class="hn-story-comments">42 comments</a>
+                    </div>
+                </div>
+            </li>
 
-    <!-- Application Logic -->
+            <li class="hn-story-item">
+                <div class="hn-story-rank">2.</div>
+                <button class="hn-upvote" aria-label="upvote">▲</button>
+                <div class="hn-story-content">
+                    <div class="hn-story-title-row">
+                        <a href="#" class="hn-story-title">Anthropicが新しいClaudeモデルを発表</a>
+                        <a href="#" class="hn-story-domain">(anthropic.com)</a>
+                    </div>
+                    <div class="hn-story-meta">
+                        <span class="hn-story-points">300 points</span> by
+                        <a href="#" class="hn-story-author">ai_fan</a>
+                        <span class="hn-story-time">4 hours ago</span> |
+                        <a href="#" class="hn-story-comments">120 comments</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="hn-story-item">
+                <div class="hn-story-rank">3.</div>
+                <button class="hn-upvote" aria-label="upvote">▲</button>
+                <div class="hn-story-content">
+                    <div class="hn-story-title-row">
+                        <a href="#" class="hn-story-title">Appleの新しいデザインシステムガイドラインを読む</a>
+                        <a href="#" class="hn-story-domain">(apple.com)</a>
+                    </div>
+                    <div class="hn-story-meta">
+                        <span class="hn-story-points">215 points</span> by
+                        <a href="#" class="hn-story-author">design_geek</a>
+                        <span class="hn-story-time">5 hours ago</span> |
+                        <a href="#" class="hn-story-comments">89 comments</a>
+                    </div>
+                </div>
+            </li>
+
+        </ol>
+        
+        <button class="hn-load-more">More</button>
+    </main>
+
+    <footer class="hn-footer">
+        <ul class="hn-footer-links">
+            <li><a href="#">Guidelines</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Lists</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Legal</a></li>
+            <li><a href="#">Apply to YC</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </footer>
     <script src="gardener.js"></script>
 </body>
 </html>
