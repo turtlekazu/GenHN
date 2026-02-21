@@ -1340,7 +1340,7 @@ const COMMON_STYLE = `
             height: 100vh;
             background: rgba(20, 20, 20, 0.85); /* Dark semi-transparent fallback */
             background: var(--bg, rgba(255, 255, 255, 0.95)); /* Use theme bg if available, else light */
-            padding: 100px 20px 40px;
+            padding: 140px 20px 60px !important;
             z-index: 1000;
             text-align: center;
             backdrop-filter: saturate(180%) blur(20px);
