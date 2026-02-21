@@ -1230,7 +1230,7 @@ const HNData = {
             this.allStoryIds = await response.json();
             return this.allStoryIds;
         } catch (error) {
-            console.error("IDリストの取得に失敗しました:", error);
+            console.error("Failed to fetch ID list:", error);
             return [];
         }
     },
@@ -1420,8 +1420,8 @@ const App = {
     },
 
     showError() {
-        const available = Object.keys(STYLE_PRESETS).join('」「');
-        alert(`対応しているテーマを入力してください：\n「${available}」`);
+        const available = Object.keys(STYLE_PRESETS).join('", "');
+        alert(`Please enter a supported theme:\n"${available}"`);
     }
 };
 
