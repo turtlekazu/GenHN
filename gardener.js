@@ -1210,6 +1210,81 @@ const COMMON_STYLE = `
     .hn-story-list { view-transition-name: story-list; }
     #theme-controls { view-transition-name: theme-ui; }
 
+    /* Responsive & Mobile Menu */
+    .hn-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        z-index: 1001;
+        width: 44px;
+        height: 44px;
+        position: relative;
+        color: inherit;
+    }
+    .hn-menu-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: currentColor;
+        margin: 5px auto;
+        transition: 0.3s;
+    }
+
+    @media (max-width: 768px) {
+        .hn-menu-toggle { display: block; }
+        .hn-nav-links {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: inherit;
+            padding: 100px 20px 40px;
+            z-index: 1000;
+            text-align: center;
+            backdrop-filter: blur(25px);
+            overflow-y: auto;
+        }
+        .hn-nav-links.is-open { display: flex; }
+        .hn-nav-links li { margin-bottom: 25px; }
+        .hn-nav-links a { font-size: 28px !important; font-weight: 300 !important; }
+        .hn-auth { display: none; }
+
+        .hn-header { padding: 0 15px !important; height: 60px !important; }
+        .hn-main { padding: 30px 15px !important; }
+        .hn-story-item { 
+            padding: 20px !important; 
+            gap: 15px !important; 
+            border-radius: 16px !important;
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        .hn-story-rank { display: none; }
+        .hn-story-title { font-size: 18px !important; }
+        .hn-upvote { width: 100% !important; margin-top: 10px; }
+        
+        #theme-controls {
+            bottom: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
+            border-radius: 24px 24px 0 0 !important;
+            padding: 20px 20px 40px !important;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;
+        }
+        #preset-buttons { margin-bottom: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; width: 100%; }
+        #preset-buttons::-webkit-scrollbar { display: none; }
+
+        /* Menu Icon Open State */
+        .is-open-active .hn-menu-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .is-open-active .hn-menu-toggle span:nth-child(2) { opacity: 0; }
+        .is-open-active .hn-menu-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    }
+
     /* Differentiable Transition Smoothing */
     body {
         transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
@@ -1276,7 +1351,10 @@ const App = {
         generateBtn: document.getElementById('generate-btn'),
         presetButtons: document.getElementById('preset-buttons'),
         listElement: document.querySelector('.hn-story-list'),
-        loadMoreBtn: document.querySelector('.hn-load-more')
+        loadMoreBtn: document.querySelector('.hn-load-more'),
+        menuToggle: document.querySelector('.hn-menu-toggle'),
+        navLinks: document.querySelector('.hn-nav-links'),
+        header: document.querySelector('.hn-header')
     },
 
     async init() {
@@ -1297,18 +1375,19 @@ const App = {
             const btn = document.createElement('button');
             btn.textContent = themeName;
             btn.style.cssText = `
-                padding: 4px 10px;
-                background: #f0f0f0;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                font-size: 11px;
+                padding: 6px 12px;
+                background: rgba(0,0,0,0.05);
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 6px;
+                font-size: 12px;
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s;
                 color: #555;
+                flex-shrink: 0;
             `;
-            btn.onmouseover = () => { btn.style.background = '#e0e0e0'; btn.style.borderColor = '#ccc'; };
-            btn.onmouseout = () => { btn.style.background = '#f0f0f0'; btn.style.borderColor = '#ddd'; };
+            btn.onmouseover = () => { btn.style.background = 'rgba(0,0,0,0.1)'; };
+            btn.onmouseout = () => { btn.style.background = 'rgba(0,0,0,0.05)'; };
             btn.onclick = () => {
                 this.elements.promptInput.value = themeName;
                 this.applyStyle(STYLE_PRESETS[themeName], themeName);
@@ -1323,6 +1402,20 @@ const App = {
             if (e.key === 'Enter') this.handleGenerate();
         });
         this.elements.loadMoreBtn.addEventListener('click', () => this.loadMore());
+        this.elements.menuToggle.addEventListener('click', () => this.toggleMenu());
+        
+        // Close menu when a link is clicked
+        this.elements.navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') this.toggleMenu(false);
+        });
+    },
+
+    toggleMenu(force) {
+        if (!this.elements.menuToggle) return;
+        const shouldOpen = force !== undefined ? force : !this.elements.navLinks.classList.contains('is-open');
+        this.elements.navLinks.classList.toggle('is-open', shouldOpen);
+        this.elements.header.classList.toggle('is-open-active', shouldOpen);
+        document.body.style.overflow = shouldOpen ? 'hidden' : '';
     },
 
     async loadInitial() {
@@ -1406,6 +1499,7 @@ const App = {
 
     applyStyle(css, themeName) {
         console.log(`Applying theme: ${themeName}`);
+        this.toggleMenu(false); // Close menu on theme change
 
         // Fallback for browsers that don't support View Transition API
         if (!document.startViewTransition) {
