@@ -423,6 +423,14 @@ const STYLE_PRESETS = {
             --mobile-upvote-color: #fff;
             --mobile-upvote-border: 3px solid #000;
             --mobile-upvote-radius: 12px;
+            
+            --mobile-rank-opacity: 1;
+            --mobile-rank-color: #fff;
+            --mobile-rank-bg: var(--blue);
+            --mobile-rank-border: 3px solid #000;
+            --mobile-rank-radius: 12px;
+            --mobile-rank-padding: 2px 8px;
+            --mobile-rank-font-weight: 900;
         }
         body {
             background-color: #eee;
@@ -1459,7 +1467,30 @@ const COMMON_STYLE = `
             flex-direction: row !important;
             align-items: flex-start !important;
         }
-        .hn-story-rank { display: none; }
+        .hn-story-rank { 
+            display: block !important;
+            font-size: 14px !important;
+            width: auto !important;
+            min-width: 18px !important;
+            margin-right: 8px !important;
+            order: -2 !important;
+            font-weight: var(--mobile-rank-font-weight, 400) !important;
+            align-self: flex-start !important;
+            margin-top: 2px !important;
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            text-align: center !important;
+            
+            position: static !important;
+            background: var(--mobile-rank-bg, transparent) !important;
+            border: var(--mobile-rank-border, none) !important;
+            padding: var(--mobile-rank-padding, 0) !important;
+            border-radius: var(--mobile-rank-radius, 0) !important;
+            box-shadow: none !important;
+            
+            opacity: var(--mobile-rank-opacity, 0.5) !important;
+            color: var(--mobile-rank-color, inherit) !important;
+        }
         .hn-story-title { font-size: 17px !important; line-height: 1.3 !important; }
         .hn-upvote { 
             order: -1;
