@@ -1274,11 +1274,13 @@ const App = {
         styleTag: document.getElementById('generated-style'),
         promptInput: document.getElementById('prompt-input'),
         generateBtn: document.getElementById('generate-btn'),
+        presetButtons: document.getElementById('preset-buttons'),
         listElement: document.querySelector('.hn-story-list'),
         loadMoreBtn: document.querySelector('.hn-load-more')
     },
 
     async init() {
+        this.renderPresetButtons();
         this.bindEvents();
         console.log("Generative UI - Differentiable Transitions Enabled.");
         
@@ -1287,6 +1289,32 @@ const App = {
 
         // Initial load
         await this.loadInitial();
+    },
+
+    renderPresetButtons() {
+        this.elements.presetButtons.innerHTML = '';
+        Object.keys(STYLE_PRESETS).forEach(themeName => {
+            const btn = document.createElement('button');
+            btn.textContent = themeName;
+            btn.style.cssText = `
+                padding: 4px 10px;
+                background: #f0f0f0;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+                color: #555;
+            `;
+            btn.onmouseover = () => { btn.style.background = '#e0e0e0'; btn.style.borderColor = '#ccc'; };
+            btn.onmouseout = () => { btn.style.background = '#f0f0f0'; btn.style.borderColor = '#ddd'; };
+            btn.onclick = () => {
+                this.elements.promptInput.value = themeName;
+                this.applyStyle(STYLE_PRESETS[themeName], themeName);
+            };
+            this.elements.presetButtons.appendChild(btn);
+        });
     },
 
     bindEvents() {
