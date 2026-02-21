@@ -941,6 +941,9 @@ const STYLE_PRESETS = {
         }
 
         .hn-main { max-width: 800px; margin: 30px 160px; flex: 1; }
+        @media (max-width: 768px) {
+            .hn-main { margin: 20px 10px; }
+        }
         .hn-story-item {
             padding: 16px 0;
             margin-bottom: 12px;
