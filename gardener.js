@@ -1195,6 +1195,26 @@ const COMMON_STYLE = `
     ul, ol { list-style: none; padding: 0; margin: 0; }
     button { font-family: inherit; }
     * { box-sizing: border-box; }
+
+    /* View Transition Configuration */
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 0.8s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hn-header { view-transition-name: main-header; }
+    .hn-logo { view-transition-name: main-logo; }
+    .hn-main { view-transition-name: main-content; }
+    .hn-footer { view-transition-name: main-footer; }
+    .hn-story-list { view-transition-name: story-list; }
+    #theme-controls { view-transition-name: theme-ui; }
+
+    /* Differentiable Transition Smoothing */
+    body {
+        transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                    color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 `;
 
 /**
@@ -1260,7 +1280,7 @@ const App = {
 
     async init() {
         this.bindEvents();
-        console.log("Generative UI - Enhanced Brand Mode Initialized.");
+        console.log("Generative UI - Differentiable Transitions Enabled.");
         
         // Initial style
         this.applyStyle(STYLE_PRESETS["Minimalist"], "Minimalist (Initial)");
@@ -1358,13 +1378,17 @@ const App = {
 
     applyStyle(css, themeName) {
         console.log(`Applying theme: ${themeName}`);
-        document.body.style.transition = 'opacity 0.2s ease';
-        document.body.style.opacity = '0';
-        
-        setTimeout(() => {
+
+        // Fallback for browsers that don't support View Transition API
+        if (!document.startViewTransition) {
             this.elements.styleTag.textContent = COMMON_STYLE + css;
-            document.body.style.opacity = '1';
-        }, 200);
+            return;
+        }
+
+        // Smooth transition using View Transition API
+        document.startViewTransition(() => {
+            this.elements.styleTag.textContent = COMMON_STYLE + css;
+        });
     },
 
     showError() {
