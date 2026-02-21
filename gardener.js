@@ -35,6 +35,10 @@ const SYSTEM_STYLE = `
         --mobile-upvote-radius: 8px;
         --mobile-rank-opacity: 0.5;
         --mobile-rank-color: inherit;
+
+        /* More Button Defaults */
+        --more-btn-bg: var(--text);
+        --more-btn-color: var(--bg);
     }
 
     /* --- Base Layout --- */
@@ -165,8 +169,8 @@ const SYSTEM_STYLE = `
         display: block;
         margin: 60px auto;
         padding: 12px 40px;
-        background: var(--text);
-        color: var(--bg);
+        background: var(--more-btn-bg);
+        color: var(--more-btn-color);
         border: none;
         border-radius: 100px;
         font-weight: 600;
@@ -359,9 +363,14 @@ const STYLE_PRESETS = {
             /* Mobile */
             --mobile-upvote-bg: #e8e8ed;
             --mobile-upvote-radius: 50%;
+
+            /* More Button */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
         }
         .hn-upvote { background: #e8e8ed; border: none; color: var(--text); }
         .hn-story-item:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.08); transform: scale(1.01); }
+        #theme-controls #generate-btn { background: var(--accent) !important; }
     `,
 
     "Glitch": `
@@ -378,6 +387,10 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: var(--accent);
             --mobile-upvote-color: #fff;
             --mobile-upvote-radius: 0;
+
+            /* More Button */
+            --more-btn-bg: var(--text);
+            --more-btn-color: #000;
         }
         
         body { text-transform: uppercase; }
@@ -427,6 +440,12 @@ const STYLE_PRESETS = {
             --mobile-rank-radius: 12px;
             --mobile-rank-padding: 2px 8px;
             --mobile-rank-font-weight: 900;
+            
+            --button-bg: var(--red);
+
+            /* More Button */
+            --more-btn-bg: var(--red);
+            --more-btn-color: #fff;
         }
         .hn-header { border-bottom: 12px solid #000; justify-content: center; }
         .hn-logo { background: #fff; color: var(--red); padding: 5px 20px; border-radius: 100px; border: 4px solid #000; box-shadow: 4px 4px 0 #000; }
@@ -464,6 +483,10 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: transparent;
             --mobile-upvote-color: var(--subtext);
             --mobile-upvote-border: 1px solid rgba(255,255,255,0.2);
+
+            /* More Button */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
         }
         body {
             background-image: radial-gradient(circle at 0% 0%, rgba(0, 55, 193, 0.15) 0%, transparent 50%),
@@ -472,6 +495,7 @@ const STYLE_PRESETS = {
         .hn-story-item { background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); border: none; border-left: 2px solid transparent; border-radius: 0; }
         .hn-story-item:hover { background: linear-gradient(90deg, rgba(0, 55, 193, 0.2), transparent); transform: translateX(20px); border-left: 2px solid var(--accent); }
         .hn-upvote { border-color: rgba(255,255,255,0.2); }
+        #theme-controls #generate-btn { background: var(--ps-blue) !important; color: #fff !important; }
     `,
 
     "Academic": `
@@ -493,11 +517,16 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: transparent;
             --mobile-upvote-color: #999;
             --mobile-upvote-border: 1.5px solid #ccc;
+
+            /* More Button */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
         }
         .hn-story-item { border-bottom: 1px solid rgba(0,0,0,0.08); }
         .hn-story-title { font-size: 28px; font-weight: 500; }
         .hn-story-rank { font-size: 24px; font-weight: bold; width: 40px; }
         .hn-upvote { border: 1.5px solid #ccc; width: 36px; height: 36px; }
+        #theme-controls #generate-btn { background: var(--a-accent) !important; color: #fff !important; }
     `,
 
     "Search": `
@@ -519,10 +548,15 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: transparent;
             --mobile-upvote-color: #70757a;
             --mobile-upvote-border: 1px solid #dadce0;
+
+            /* More Button */
+            --more-btn-bg: #f8f9fa;
+            --more-btn-color: #3c4043;
         }
         .hn-story-title { color: #1a0dab; font-weight: 400; text-decoration: none; }
         .hn-story-title:hover { text-decoration: underline; }
         .hn-upvote { border-radius: 4px; width: auto; height: auto; padding: 2px 6px; border: 1px solid #dadce0; font-size: 11px; }
+        #theme-controls #generate-btn { background: var(--g-blue) !important; color: #fff !important; }
     `,
 
     "Universal": `
@@ -538,12 +572,17 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: var(--accent);
             --mobile-upvote-color: #fff;
             --mobile-upvote-radius: 50%;
+
+            /* More Button */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
         }
         .hn-story-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px; }
         .hn-story-item { padding: 30px; border-radius: 40px; }
         .hn-story-item:hover { background: #e8e8e8; transform: scale(1.02); }
         .hn-story-title { font-size: 28px; font-weight: 700; margin-bottom: 0; }
         .hn-upvote { background: var(--accent); color: #fff; border: none; width: 40px; height: 40px; font-weight: 700; opacity: 1; }
+        #theme-controls #generate-btn { background: var(--s-blue) !important; color: #fff !important; }
     `,
 
     "Intelligence": `
@@ -561,9 +600,14 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: transparent;
             --mobile-upvote-color: var(--subtext);
             --mobile-upvote-border: 1px solid rgba(255,255,255,0.1);
+
+            /* More Button */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
         }
         .hn-story-item:hover { border-color: var(--accent); }
         .hn-upvote { border-color: rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 6px; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `
 };
 
