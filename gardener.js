@@ -1394,10 +1394,12 @@ const COMMON_STYLE = `
             width: 100% !important;
             max-width: none !important;
             border-radius: 24px 24px 0 0 !important;
-            padding: 20px 20px 40px !important;
+            padding: 15px 20px 30px !important;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;
         }
-        #preset-buttons { margin-bottom: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; width: 100%; }
+        #presets-toggle { margin-bottom: 2px !important; }
+        #preset-buttons { margin-bottom: 8px !important; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; width: 100%; }
+        #prompt-input { padding: 6px 12px !important; }
         #preset-buttons::-webkit-scrollbar { display: none; }
 
         /* Menu Icon Open State */
@@ -1410,6 +1412,28 @@ const COMMON_STYLE = `
     body {
         transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
                     color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Collapsible Presets */
+    #preset-buttons {
+        max-height: 300px;
+        opacity: 1;
+        transition: max-height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                    opacity 0.4s ease,
+                    margin 0.4s ease;
+    }
+    #preset-buttons.is-collapsed {
+        max-height: 0 !important;
+        opacity: 0 !important;
+        margin-bottom: 0 !important;
+        pointer-events: none;
+    }
+    #presets-icon {
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+    .is-collapsed-icon #presets-icon {
+        transform: rotate(-90deg);
     }
 `;
 
@@ -1471,6 +1495,8 @@ const App = {
         promptInput: document.getElementById('prompt-input'),
         generateBtn: document.getElementById('generate-btn'),
         presetButtons: document.getElementById('preset-buttons'),
+        presetsToggle: document.getElementById('presets-toggle'),
+        presetsIcon: document.getElementById('presets-icon'),
         listElement: document.querySelector('.hn-story-list'),
         loadMoreBtn: document.querySelector('.hn-load-more'),
         menuToggle: document.querySelector('.hn-menu-toggle'),
@@ -1525,10 +1551,19 @@ const App = {
         this.elements.loadMoreBtn.addEventListener('click', () => this.loadMore());
         this.elements.menuToggle.addEventListener('click', () => this.toggleMenu());
         
+        if (this.elements.presetsToggle) {
+            this.elements.presetsToggle.addEventListener('click', () => this.togglePresets());
+        }
+        
         // Close menu when a link is clicked
         this.elements.navLinks.addEventListener('click', (e) => {
             if (e.target.tagName === 'A') this.toggleMenu(false);
         });
+    },
+
+    togglePresets() {
+        this.elements.presetButtons.classList.toggle('is-collapsed');
+        this.elements.presetsToggle.classList.toggle('is-collapsed-icon');
     },
 
     toggleMenu(force) {
