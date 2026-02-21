@@ -104,6 +104,7 @@ const STYLE_PRESETS = {
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
         .hn-story-rank { 
+            order: -2;
             font-size: 40px; 
             font-weight: 700; 
             color: var(--subtext); 
@@ -124,6 +125,7 @@ const STYLE_PRESETS = {
         .hn-story-title:hover { color: var(--accent); }
         .hn-story-meta { color: var(--subtext); font-size: 14px; font-weight: 400; }
         .hn-upvote {
+            order: -1;
             background: #e8e8ed;
             color: var(--text);
             border: none;
@@ -401,6 +403,11 @@ const STYLE_PRESETS = {
             --text: #333;
             --subtext: var(--gray);
             --accent: var(--blue);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: var(--red);
+            --mobile-upvote-color: #fff;
+            --mobile-upvote-border: 3px solid #000;
         }
         body {
             background-color: #eee;
@@ -492,7 +499,9 @@ const STYLE_PRESETS = {
             border-radius: 40px;
             padding: 30px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
             position: relative;
             box-shadow: 12px 12px 0 #ccc;
             transition: 0.1s;
@@ -513,18 +522,25 @@ const STYLE_PRESETS = {
             border-radius: 20px;
             border: 5px solid #000;
             font-weight: 900;
+            z-index: 10;
         }
-        .hn-story-title { font-size: 20px; font-weight: 900; line-height: 1.2; color: #000; text-decoration: none; margin: 10px 0; }
+        .hn-story-title { font-size: 20px; font-weight: 900; line-height: 1.2; color: #000; text-decoration: none; margin: 10px 0; display: block; }
         .hn-upvote {
+            order: -1;
             background: var(--red);
             color: #fff;
-            border: 5px solid #000;
-            border-radius: 15px;
-            width: 100%;
-            padding: 15px;
+            border: 4px solid #000;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            padding: 0;
             font-weight: 900;
             cursor: pointer;
-            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
         }
         .hn-load-more {
             background: #fff;
@@ -1383,9 +1399,9 @@ const COMMON_STYLE = `
             align-items: center !important;
             justify-content: center !important;
             flex-shrink: 0;
-            background: rgba(0,0,0,0.05) !important;
-            border: none !important;
-            color: inherit !important;
+            background: var(--mobile-upvote-bg, rgba(0,0,0,0.05)) !important;
+            border: var(--mobile-upvote-border, none) !important;
+            color: var(--mobile-upvote-color, inherit) !important;
             opacity: 0.8;
             font-size: 10px !important;
         }
