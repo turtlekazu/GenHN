@@ -317,6 +317,9 @@ const STYLE_PRESETS = {
             position: relative;
             clip-path: polygon(0 0, 95% 0, 100% 20%, 100% 100%, 5% 100%, 0 80%);
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
         .hn-story-item:hover {
             background: rgba(0, 240, 255, 0.1);
@@ -331,7 +334,7 @@ const STYLE_PRESETS = {
         }
         .hn-story-title { color: var(--yellow); font-size: 24px; font-weight: 800; text-decoration: none; text-shadow: 2px 2px 0 #000; }
         .hn-story-meta { color: var(--blue); margin-top: 15px; font-size: 12px; letter-spacing: 2px; }
-        .hn-upvote { background: var(--pink); color: #fff; border: none; padding: 10px 20px; font-weight: 900; cursor: pointer; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+        .hn-upvote { order: -1; background: var(--pink); color: #fff; border: none; padding: 5px 15px; font-weight: 900; cursor: pointer; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); flex-shrink: 0; }
         .hn-load-more {
             background: var(--yellow);
             color: #000;
@@ -693,9 +696,22 @@ const STYLE_PRESETS = {
             transform: translateX(20px);
             border-left: 2px solid var(--ps-blue);
         }
-        .hn-story-rank { font-size: 14px; color: rgba(255,255,255,0.2); width: 60px; font-weight: 300; }
+        .hn-story-rank { order: -2; font-size: 14px; color: rgba(255,255,255,0.2); width: 60px; font-weight: 300; }
         .hn-story-title { font-size: 26px; font-weight: 200; color: #fff; text-decoration: none; letter-spacing: 1px; }
         .hn-story-meta { color: rgba(255,255,255,0.3); font-size: 13px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .hn-upvote { 
+            order: -1; 
+            background: transparent; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            color: var(--subtext); 
+            padding: 5px 10px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin-right: 15px; 
+            flex-shrink: 0; 
+            transition: 0.3s;
+        }
+        .hn-upvote:hover { border-color: var(--ps-blue); color: var(--ps-blue); }
         
         .hn-load-more {
             background: transparent;
@@ -835,15 +851,20 @@ const STYLE_PRESETS = {
         .hn-story-domain { color: var(--a-accent); font-weight: 600; font-size: 15px; margin-left: 10px; }
         .hn-story-meta { color: var(--a-sub); font-size: 15px; margin-top: 20px; font-style: italic; }
         .hn-upvote {
+            order: -1;
             background: none;
             border: 1.5px solid #ccc;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            width: 32px;
+            height: 32px;
             color: #999;
             cursor: pointer;
             flex-shrink: 0;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
         }
         .hn-upvote:hover { border-color: var(--a-accent); color: var(--a-accent); }
         
@@ -976,7 +997,12 @@ const STYLE_PRESETS = {
         .hn-story-item {
             padding: 16px 0;
             margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
+        .hn-story-rank { order: -2; color: #70757a; font-size: 14px; margin-top: 4px; }
+        .hn-upvote { order: -1; margin-top: 4px; cursor: pointer; background: transparent; border: 1px solid #dadce0; color: #70757a; border-radius: 4px; padding: 2px 6px; font-size: 11px; }
         .hn-story-title { font-size: 20px; color: #1a0dab; text-decoration: none; line-height: 1.58; }
         .hn-story-title:hover { text-decoration: underline; }
         .hn-story-domain { color: #5f6368; font-size: 14px; }
@@ -1084,14 +1110,16 @@ const STYLE_PRESETS = {
         .hn-story-item {
             background: var(--s-gray);
             border-radius: 40px;
-            padding: 50px;
+            padding: 30px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
             transition: 0.4s;
         }
         .hn-story-item:hover { background: #e8e8e8; transform: scale(1.02); }
-        .hn-story-title { font-size: 28px; font-weight: 700; text-decoration: none; color: #000; margin-bottom: 20px; }
-        .hn-upvote { background: var(--s-blue); color: #fff; border: none; padding: 15px 30px; border-radius: 100px; font-weight: 700; width: fit-content; cursor: pointer; }
+        .hn-story-title { font-size: 28px; font-weight: 700; text-decoration: none; color: #000; margin-bottom: 0; }
+        .hn-upvote { order: -1; background: var(--s-blue); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; }
         .hn-footer {
             background: #000;
             color: #fff;
@@ -1221,17 +1249,24 @@ const STYLE_PRESETS = {
             transition: border-color 0.2s;
         }
         .hn-story-item:hover { border-color: var(--accent); }
-        .hn-story-rank { font-size: 14px; color: var(--subtext); width: 20px; }
+        .hn-story-rank { order: -2; font-size: 14px; color: var(--subtext); width: 20px; }
         .hn-story-title { font-size: 16px; font-weight: 500; color: var(--text); text-decoration: none; line-height: 1.5; }
         .hn-story-meta { color: var(--subtext); font-size: 13px; margin-top: 8px; }
         .hn-upvote {
+            order: -1;
             background: none;
             border: 1px solid rgba(255,255,255,0.1);
             color: var(--subtext);
-            padding: 4px 8px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 10px;
+            flex-shrink: 0;
         }
         .hn-upvote:hover { border-color: var(--accent); color: var(--accent); }
 
