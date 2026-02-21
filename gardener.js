@@ -1233,29 +1233,40 @@ const COMMON_STYLE = `
     }
 
     @media (max-width: 768px) {
-        .hn-menu-toggle { display: block; }
+        .hn-menu-toggle { display: block; order: 999; } /* Push to right */
+        
         .hn-nav-links {
-            display: none;
+            display: none !important; /* Specificity Fix */
             flex-direction: column;
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: inherit;
+            background: rgba(20, 20, 20, 0.85); /* Dark semi-transparent fallback */
+            background: var(--bg, rgba(255, 255, 255, 0.95)); /* Use theme bg if available, else light */
             padding: 100px 20px 40px;
             z-index: 1000;
             text-align: center;
-            backdrop-filter: blur(25px);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             overflow-y: auto;
+            transition: opacity 0.3s, transform 0.3s;
         }
-        .hn-nav-links.is-open { display: flex; }
+        /* Ensure text contrast on overlay */
+        @media (prefers-color-scheme: dark) {
+             .hn-nav-links { background: var(--bg, rgba(20, 20, 20, 0.9)); }
+        }
+        .hn-nav-links.is-open { display: flex !important; }
+        
         .hn-nav-links li { margin-bottom: 25px; }
         .hn-nav-links a { font-size: 28px !important; font-weight: 300 !important; }
+        
         .hn-auth { display: none; }
 
         .hn-header { padding: 0 15px !important; height: 60px !important; }
         .hn-main { padding: 30px 15px !important; }
+        
         .hn-story-item { 
             padding: 20px !important; 
             gap: 15px !important; 
@@ -1266,6 +1277,12 @@ const COMMON_STYLE = `
         .hn-story-rank { display: none; }
         .hn-story-title { font-size: 18px !important; }
         .hn-upvote { width: 100% !important; margin-top: 10px; }
+        
+        /* Vertical Footer */
+        .hn-footer-links {
+            flex-direction: column !important;
+            gap: 15px !important;
+        }
         
         #theme-controls {
             bottom: 0 !important;
