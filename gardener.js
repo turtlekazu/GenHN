@@ -249,6 +249,10 @@ const STYLE_PRESETS = {
             top: 0;
             z-index: 100;
         }
+        /* Fix mobile menu clipping/context issues */
+        @media (max-width: 768px) {
+            .hn-header { clip-path: none !important; animation: none !important; border-bottom: 2px solid var(--blue); }
+        }
         .hn-header:hover { animation-play-state: running; }
         .hn-nav {
             width: 100%;
