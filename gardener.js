@@ -608,6 +608,52 @@ const STYLE_PRESETS = {
         .hn-story-item:hover { border-color: var(--accent); }
         .hn-upvote { border-color: rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 6px; }
         #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+    `,
+
+    "Ghibli": `
+        :root {
+            --bg: #fdfaf0; /* 柔らかな生成り色（紙の質感） */
+            --card-bg: #ffffff;
+            --text: #433422; /* 焦茶色の文字 */
+            --subtext: #8c7355; /* 土のような茶色 */
+            --accent: #5d8a66; /* 深い森の緑 */
+            --header-bg: rgba(253, 250, 240, 0.85);
+            --header-border: 1px solid rgba(140, 115, 85, 0.2);
+            --font-main: "Hiragino Mincho ProN", "MS PMincho", serif; /* 叙情的な明朝体 */
+
+            /* Component Overrides */
+            --item-radius: 20px;
+            --item-border: 1px solid rgba(93, 138, 102, 0.1);
+            --item-shadow: 0 4px 15px rgba(67, 52, 34, 0.05);
+
+            /* More & Upvote Colors */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #fff;
+            --mobile-upvote-bg: var(--accent);
+            --mobile-upvote-color: #fff;
+            --mobile-rank-color: var(--subtext);
+            --mobile-rank-opacity: 1;
+        }
+        .hn-story-item {
+            background-image: linear-gradient(135deg, #fff 0%, #f9f7f0 100%);
+            border-bottom: 2px solid rgba(140, 115, 85, 0.1);
+        }
+        .hn-story-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(93, 138, 102, 0.15);
+            border-color: var(--accent);
+        }
+        .hn-logo {
+            font-style: italic;
+            color: var(--accent);
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.1));
+        }
+        .hn-upvote {
+            background: rgba(93, 138, 102, 0.05);
+            border-color: rgba(93, 138, 102, 0.3);
+            color: var(--accent);
+        }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `
 };
 
