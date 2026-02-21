@@ -1208,7 +1208,44 @@ const COMMON_STYLE = `
     .hn-main { view-transition-name: main-content; }
     .hn-footer { view-transition-name: main-footer; }
     .hn-story-list { view-transition-name: story-list; }
-    #theme-controls { view-transition-name: theme-ui; }
+    #theme-controls { 
+        view-transition-name: theme-ui;
+        position: fixed; 
+        bottom: 20px; 
+        right: 20px; 
+        z-index: 10000; 
+        padding: 15px; 
+        border-radius: 12px; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 12px; 
+        align-items: flex-start; 
+        border: 1px solid;
+        max-width: 350px;
+
+        /* Dynamic Theme Colors */
+        background: var(--card, rgba(255,255,255,0.9));
+        color: var(--text, #333);
+        border-color: var(--subtext, #ddd);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    #theme-controls input {
+        background: var(--bg, #fff);
+        color: var(--text, #000);
+        border: 1px solid var(--subtext, #ccc);
+    }
+    #theme-controls button {
+        background: var(--bg, #f0f0f0);
+        color: var(--text, #555);
+        border-color: var(--subtext, #ddd);
+    }
+    #theme-controls #generate-btn {
+        background: var(--accent, #007aff);
+        color: #fff;
+        border: none;
+    }
 
     /* Responsive & Mobile Menu */
     .hn-menu-toggle {
