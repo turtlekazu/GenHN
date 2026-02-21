@@ -654,6 +654,56 @@ const STYLE_PRESETS = {
             color: var(--accent);
         }
         #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+    `,
+
+    "8-Bit": `
+        :root {
+            --bg: #000000; /* 漆黒の背景 */
+            --card-bg: #111111;
+            --text: #00ff00; /* クッパの炎やレトロPCのようなグリーン */
+            --subtext: #008800;
+            --accent: #00ffff; /* シアンのアクセント */
+            --header-bg: #000000;
+            --header-border: 4px solid #00ffff;
+            --font-main: "Courier New", Courier, monospace; /* 等幅フォントでデータ感を演出 */
+
+            /* Component Overrides */
+            --item-radius: 0px; /* 角丸を廃止してブロック感を強調 */
+            --item-border: 4px solid #008800;
+            --item-padding: 20px;
+            --item-shadow: 8px 8px 0px #004400; /* ドット絵のような硬い影 */
+
+            /* More & Upvote Colors */
+            --more-btn-bg: var(--accent);
+            --more-btn-color: #000;
+            --mobile-upvote-bg: var(--accent);
+            --mobile-upvote-color: #000;
+            --mobile-rank-color: var(--text);
+            --mobile-rank-opacity: 1;
+        }
+        body {
+            image-rendering: pixelated;
+        }
+        .hn-story-item:hover {
+            border-color: var(--accent);
+            box-shadow: 4px 4px 0px var(--subtext);
+            transform: translate(4px, 4px); /* 押し込み感 */
+        }
+        .hn-upvote {
+            border-radius: 0;
+            border: 2px solid var(--accent);
+            background: #000;
+            color: var(--accent);
+        }
+        .hn-logo {
+            text-shadow: 3px 3px 0px #ff00ff; /* 懐かしの3D赤青メガネ風 */
+        }
+        .hn-load-more {
+            border-radius: 0;
+            border: 4px solid var(--text);
+            text-transform: uppercase;
+        }
+        #theme-controls #generate-btn { background: #ff00ff !important; color: #fff !important; border-radius: 0 !important; }
     `
 };
 
