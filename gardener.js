@@ -1282,11 +1282,12 @@ const COMMON_STYLE = `
         max-width: 350px;
 
         /* Dynamic Theme Colors */
-        background: var(--card, rgba(255,255,255,0.9));
+        background: color-mix(in srgb, var(--card, #ffffff) 75%, transparent);
         color: var(--text, #333);
         border-color: var(--subtext, #ddd);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     #theme-controls input {
@@ -1389,13 +1390,13 @@ const COMMON_STYLE = `
         }
         
         #theme-controls {
-            bottom: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            max-width: none !important;
-            border-radius: 24px 24px 0 0 !important;
-            padding: 15px 20px 30px !important;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1) !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            width: auto !important;
+            max-width: calc(100vw - 40px) !important;
+            border-radius: 12px !important;
+            padding: 15px !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
         }
         #presets-toggle { margin-bottom: 2px !important; }
         #preset-buttons { margin-bottom: 8px !important; overflow-x: auto; white-space: nowrap; padding-bottom: 5px; width: 100%; }
@@ -1538,6 +1539,7 @@ const App = {
             btn.onclick = () => {
                 this.elements.promptInput.value = themeName;
                 this.applyStyle(STYLE_PRESETS[themeName], themeName);
+                this.togglePresets(true);
             };
             this.elements.presetButtons.appendChild(btn);
         });
@@ -1561,9 +1563,10 @@ const App = {
         });
     },
 
-    togglePresets() {
-        this.elements.presetButtons.classList.toggle('is-collapsed');
-        this.elements.presetsToggle.classList.toggle('is-collapsed-icon');
+    togglePresets(collapse) {
+        const shouldCollapse = collapse !== undefined ? collapse : !this.elements.presetButtons.classList.contains('is-collapsed');
+        this.elements.presetButtons.classList.toggle('is-collapsed', shouldCollapse);
+        this.elements.presetsToggle.classList.toggle('is-collapsed-icon', shouldCollapse);
     },
 
     toggleMenu(force) {
@@ -1640,6 +1643,7 @@ const App = {
         
         if (style) {
             this.applyStyle(style, input);
+            this.togglePresets(true);
         } else {
             this.showError();
         }
