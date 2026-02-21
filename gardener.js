@@ -198,6 +198,7 @@ const STYLE_PRESETS = {
             margin-top: 10px;
             opacity: 0.8;
         }
+        #theme-controls #generate-btn { background: var(--accent) !important; }
     `,
 
     "Glitch": `
@@ -402,6 +403,7 @@ const STYLE_PRESETS = {
             text-shadow: 2px 2px 0 #000;
             animation: glitch 0.5s infinite;
         }
+        #theme-controls #generate-btn { background: var(--pink) !important; color: #fff !important; }
     `,
 
     "Playful": `
@@ -431,6 +433,8 @@ const STYLE_PRESETS = {
             --mobile-rank-radius: 12px;
             --mobile-rank-padding: 2px 8px;
             --mobile-rank-font-weight: 900;
+            
+            --button-bg: var(--red);
         }
         body {
             background-color: #eee;
@@ -614,6 +618,8 @@ const STYLE_PRESETS = {
             margin-top: 60px;
             text-shadow: 4px 4px 0 var(--red), 8px 8px 0 var(--blue);
         }
+        /* Force Apply Button Red */
+        #theme-controls #generate-btn { background: var(--red) !important; }
     `,
 
     "Glow": `
@@ -786,6 +792,7 @@ const STYLE_PRESETS = {
             letter-spacing: 20px;
             margin-top: 50px;
         }
+        #theme-controls #generate-btn { background: var(--ps-blue) !important; color: #fff !important; }
     `,
 
     "Academic": `
@@ -941,6 +948,7 @@ const STYLE_PRESETS = {
             margin-top: 50px;
             font-weight: 500;
         }
+        #theme-controls #generate-btn { background: var(--a-accent) !important; color: #fff !important; }
     `,
 
     "Search": `
@@ -1071,6 +1079,7 @@ const STYLE_PRESETS = {
         .hn-footer-links a:hover {
             text-decoration: underline;
         }
+        #theme-controls #generate-btn { background: var(--g-blue) !important; color: #fff !important; }
     `,
 
     "Universal": `
@@ -1198,6 +1207,7 @@ const STYLE_PRESETS = {
         }
         .hn-load-more:hover { transform: scale(1.05); }
         .hn-load-more:active { transform: scale(0.95); }
+        #theme-controls #generate-btn { background: var(--s-blue) !important; color: #fff !important; }
     `,
 
     "Intelligence": `
@@ -1337,6 +1347,7 @@ const STYLE_PRESETS = {
         }
         .hn-footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; list-style: none; }
         .hn-footer-links a { color: var(--subtext); text-decoration: none; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
         .hn-footer::after {
             content: "Shaping the future of Intelligence.";
             display: block;
@@ -1379,12 +1390,13 @@ const COMMON_STYLE = `
         max-width: 350px;
 
         /* Dynamic Theme Colors */
-        background: color-mix(in srgb, var(--card, #ffffff) 75%, transparent);
+        background: color-mix(in srgb, var(--card, #ffffff) 65%, transparent);
         color: var(--text, #333);
-        border-color: var(--subtext, #ddd);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-color: color-mix(in srgb, var(--text, #fff) 10%, transparent);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15), inset 0 0 0 0.5px rgba(255,255,255,0.1);
+        backdrop-filter: saturate(180%) blur(30px);
+        -webkit-backdrop-filter: saturate(180%) blur(30px);
         transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     #theme-controls input {
@@ -1398,7 +1410,7 @@ const COMMON_STYLE = `
         border-color: var(--subtext, #ddd);
     }
     #theme-controls #generate-btn {
-        background: var(--accent, #007aff);
+        background: var(--button-bg, var(--accent, #007aff));
         color: #fff;
         border: none;
     }
