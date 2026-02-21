@@ -13,6 +13,12 @@ const STYLE_PRESETS = {
             --accent: #0066cc;
             --text: #1d1d1f;
             --subtext: #86868b;
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: #e8e8ed;
+            --mobile-upvote-color: var(--text);
+            --mobile-upvote-border: none;
+            --mobile-upvote-radius: 50%;
         }
         body {
             background: var(--bg);
@@ -219,6 +225,11 @@ const STYLE_PRESETS = {
             --text: var(--yellow);
             --subtext: var(--blue);
             --accent: var(--pink);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: var(--pink);
+            --mobile-upvote-color: #fff;
+            --mobile-upvote-border: none;
         }
         body {
             background: var(--black);
@@ -411,6 +422,7 @@ const STYLE_PRESETS = {
             --mobile-upvote-bg: var(--red);
             --mobile-upvote-color: #fff;
             --mobile-upvote-border: 3px solid #000;
+            --mobile-upvote-radius: 12px;
         }
         body {
             background-color: #eee;
@@ -609,6 +621,11 @@ const STYLE_PRESETS = {
             --text: var(--ps-white);
             --subtext: rgba(255, 255, 255, 0.6);
             --accent: var(--ps-blue);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: transparent;
+            --mobile-upvote-color: var(--subtext);
+            --mobile-upvote-border: 1px solid rgba(255,255,255,0.2);
         }
         body {
             background-color: var(--ps-bg);
@@ -776,6 +793,11 @@ const STYLE_PRESETS = {
             --text: var(--a-text);
             --subtext: var(--a-sub);
             --accent: var(--a-accent);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: transparent;
+            --mobile-upvote-color: #999;
+            --mobile-upvote-border: 1.5px solid #ccc;
         }
         body {
             background-color: var(--a-bg);
@@ -924,6 +946,11 @@ const STYLE_PRESETS = {
             --text: #202124;
             --subtext: #5f6368;
             --accent: var(--g-blue);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: transparent;
+            --mobile-upvote-color: #70757a;
+            --mobile-upvote-border: 1px solid #dadce0;
         }
         body {
             background: #fff;
@@ -1049,6 +1076,12 @@ const STYLE_PRESETS = {
             --text: #000;
             --subtext: #666;
             --accent: var(--s-blue);
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: var(--s-blue);
+            --mobile-upvote-color: #fff;
+            --mobile-upvote-border: none;
+            --mobile-upvote-radius: 50%;
         }
         body {
             background: #fff;
@@ -1166,6 +1199,11 @@ const STYLE_PRESETS = {
             --accent: #10a37f;
             --text: #ececec;
             --subtext: #b4b4b4;
+
+            /* Mobile Overrides */
+            --mobile-upvote-bg: transparent;
+            --mobile-upvote-color: var(--subtext);
+            --mobile-upvote-border: 1px solid rgba(255,255,255,0.1);
         }
         body {
             background: var(--bg);
@@ -1429,7 +1467,7 @@ const COMMON_STYLE = `
             height: 32px !important; 
             margin-top: 2px !important; 
             align-self: flex-start !important;
-            border-radius: 8px !important;
+            border-radius: var(--mobile-upvote-radius, 8px) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
