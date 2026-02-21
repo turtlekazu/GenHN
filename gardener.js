@@ -1475,7 +1475,6 @@ const COMMON_STYLE = `
             background: var(--mobile-upvote-bg, rgba(0,0,0,0.05)) !important;
             border: var(--mobile-upvote-border, none) !important;
             color: var(--mobile-upvote-color, inherit) !important;
-            opacity: 0.8;
             font-size: 10px !important;
         }
         
