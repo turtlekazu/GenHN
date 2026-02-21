@@ -1364,23 +1364,30 @@ const COMMON_STYLE = `
         .hn-main { padding: 30px 15px !important; }
         
         .hn-story-item { 
-            padding: 20px !important; 
-            gap: 15px !important; 
+            padding: 15px !important; 
+            gap: 12px !important; 
             border-radius: 16px !important;
-            flex-direction: column;
+            flex-direction: row !important;
             align-items: flex-start !important;
         }
         .hn-story-rank { display: none; }
-        .hn-story-title { font-size: 18px !important; }
+        .hn-story-title { font-size: 17px !important; line-height: 1.3 !important; }
         .hn-upvote { 
-            width: 44px !important; 
-            height: 44px !important; 
-            margin-top: 10px; 
-            align-self: flex-start;
-            border-radius: 50% !important; /* Force circle if needed */
+            order: -1;
+            width: 32px !important; 
+            height: 32px !important; 
+            margin-top: 2px !important; 
+            align-self: flex-start !important;
+            border-radius: 8px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.05) !important;
+            border: none !important;
+            color: inherit !important;
+            opacity: 0.8;
+            font-size: 10px !important;
         }
         
         /* Vertical Footer */
