@@ -210,6 +210,13 @@ const STYLE_PRESETS = {
             --blue: #00f0ff;
             --pink: #ff003c;
             --black: #050a0e;
+
+            /* Mapping */
+            --bg: var(--black);
+            --card: rgba(5, 10, 14, 0.9);
+            --text: var(--yellow);
+            --subtext: var(--blue);
+            --accent: var(--pink);
         }
         body {
             background: var(--black);
@@ -374,6 +381,13 @@ const STYLE_PRESETS = {
             --blue: #00a0e9;
             --white: #ffffff;
             --gray: #8c8c8c;
+
+            /* Mapping */
+            --bg: #eee;
+            --card: #fff;
+            --text: #333;
+            --subtext: var(--gray);
+            --accent: var(--blue);
         }
         body {
             background-color: #eee;
@@ -556,6 +570,13 @@ const STYLE_PRESETS = {
             --ps-dark: #000000;
             --ps-white: #ffffff;
             --ps-bg: #0a0d14;
+            
+            /* Mapping for Theme Controls */
+            --bg: var(--ps-bg);
+            --card: rgba(20, 25, 35, 0.8);
+            --text: var(--ps-white);
+            --subtext: rgba(255, 255, 255, 0.6);
+            --accent: var(--ps-blue);
         }
         body {
             background-color: var(--ps-bg);
@@ -703,6 +724,13 @@ const STYLE_PRESETS = {
             --a-text: #1b1b1b;
             --a-accent: #d97757;
             --a-sub: #666;
+
+            /* Mapping */
+            --bg: var(--a-bg);
+            --card: #fff;
+            --text: var(--a-text);
+            --subtext: var(--a-sub);
+            --accent: var(--a-accent);
         }
         body {
             background-color: var(--a-bg);
@@ -839,6 +867,13 @@ const STYLE_PRESETS = {
         :root {
             --g-blue: #1a73e8;
             --g-bg: #f8f9fa;
+
+            /* Mapping */
+            --bg: #fff;
+            --card: #fff;
+            --text: #202124;
+            --subtext: #5f6368;
+            --accent: var(--g-blue);
         }
         body {
             background: #fff;
@@ -949,6 +984,13 @@ const STYLE_PRESETS = {
         :root {
             --s-blue: #034EA2;
             --s-gray: #f4f4f4;
+
+            /* Mapping */
+            --bg: #fff;
+            --card: var(--s-gray);
+            --text: #000;
+            --subtext: #666;
+            --accent: var(--s-blue);
         }
         body {
             background: #fff;
