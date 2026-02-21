@@ -252,6 +252,11 @@ const STYLE_PRESETS = {
         /* Fix mobile menu clipping/context issues */
         @media (max-width: 768px) {
             .hn-header { clip-path: none !important; animation: none !important; border-bottom: 2px solid var(--blue); }
+            /* Mobile menu link visibility */
+            .hn-nav-links.is-open a {
+                color: var(--yellow) !important;
+                text-shadow: 2px 2px 0px var(--blue);
+            }
         }
         .hn-header:hover { animation-play-state: running; }
         .hn-nav {
