@@ -1276,7 +1276,16 @@ const COMMON_STYLE = `
         }
         .hn-story-rank { display: none; }
         .hn-story-title { font-size: 18px !important; }
-        .hn-upvote { width: 100% !important; margin-top: 10px; }
+        .hn-upvote { 
+            width: 44px !important; 
+            height: 44px !important; 
+            margin-top: 10px; 
+            align-self: flex-start;
+            border-radius: 50% !important; /* Force circle if needed */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
         
         /* Vertical Footer */
         .hn-footer-links {
