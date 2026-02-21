@@ -257,6 +257,10 @@ const STYLE_PRESETS = {
                 color: var(--yellow) !important;
                 text-shadow: 2px 2px 0px var(--blue);
             }
+            .hn-menu-toggle {
+                color: var(--yellow) !important;
+                filter: drop-shadow(2px 2px 0px var(--blue));
+            }
         }
         .hn-header:hover { animation-play-state: running; }
         .hn-nav {
