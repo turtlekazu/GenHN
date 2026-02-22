@@ -906,6 +906,7 @@ const App = {
 
     async init() {
         this.renderPresetButtons();
+        this.renderSavedThemeButtons();
         this.renderApiKeySection();
         this.bindEvents();
 
@@ -916,6 +917,8 @@ const App = {
         if (savedCustom) {
             this.applyStyle(savedCustom, null, savedPrompt || 'Custom AI Theme');
             if (savedPrompt) this.elements.promptInput.value = savedPrompt;
+            const alreadySaved = this.getSavedThemes().some(t => t.css === savedCustom);
+            this.renderSaveButton(!alreadySaved);
         } else {
             const themeToApply = (savedPreset && STYLE_PRESETS[savedPreset]) ? savedPreset : 'Minimalist';
             this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
@@ -1280,6 +1283,95 @@ const App = {
         if (input) setTimeout(() => input.focus(), 300);
     },
 
+    summarizePrompt(prompt) {
+        const stopWords = new Set(['a', 'an', 'the', 'with', 'for', 'in', 'of', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'be', 'been', 'that', 'this', 'these', 'those', 'on', 'at', 'to', 'from', 'by', 'as', 'it', 'its', 'very', 'style', 'theme', 'design', 'like', 'inspired', 'feel', 'look', 'make', 'create', 'generate']);
+        const words = prompt.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+        const word = words.find(w => w.length > 1 && !stopWords.has(w)) || words[0] || 'Custom';
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    },
+
+    getSavedThemes() {
+        try { return JSON.parse(localStorage.getItem('acephale-saved-themes') || '[]'); }
+        catch (_) { return []; }
+    },
+
+    saveCurrentTheme() {
+        const css = localStorage.getItem('acephale-custom-css');
+        const prompt = localStorage.getItem('acephale-custom-prompt') || 'Custom';
+        if (!css) return;
+
+        const baseName = this.summarizePrompt(prompt);
+        const saved = this.getSavedThemes();
+        if (saved.some(t => t.css === css)) return;
+
+        let name = baseName;
+        const existingNames = new Set(saved.map(t => t.name));
+        let i = 2;
+        while (existingNames.has(name)) { name = `${baseName}${i++}`; }
+
+        saved.push({ id: Date.now().toString(), name, css, prompt });
+        localStorage.setItem('acephale-saved-themes', JSON.stringify(saved));
+        this.renderSavedThemeButtons();
+        this.renderSaveButton(false);
+    },
+
+    deleteSavedTheme(id) {
+        const saved = this.getSavedThemes().filter(t => t.id !== id);
+        localStorage.setItem('acephale-saved-themes', JSON.stringify(saved));
+        this.renderSavedThemeButtons();
+    },
+
+    renderSavedThemeButtons() {
+        document.querySelectorAll('.saved-theme-btn-wrapper').forEach(el => el.remove());
+
+        this.getSavedThemes().forEach(theme => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'saved-theme-btn-wrapper';
+            wrapper.style.cssText = 'position:relative; display:inline-flex; flex-shrink:0;';
+
+            const btn = document.createElement('button');
+            btn.textContent = theme.name;
+            btn.style.cssText = 'padding:6px 12px; background:rgba(0,0,0,0.05); border:2px solid rgba(0,0,0,0.25); border-radius:6px; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; color:var(--text); flex-shrink:0;';
+            btn.addEventListener('mouseover', () => { btn.style.background = 'rgba(0,0,0,0.1)'; });
+            btn.addEventListener('mouseout', () => { btn.style.background = 'rgba(0,0,0,0.05)'; });
+            btn.addEventListener('click', () => {
+                this.elements.promptInput.value = theme.prompt;
+                this.applyStyle(theme.css, null, theme.prompt);
+                this.renderSaveButton(false);
+                this.togglePresets(true);
+            });
+
+            const delBtn = document.createElement('button');
+            delBtn.textContent = '×';
+            delBtn.style.cssText = 'position:absolute; top:-5px; right:-5px; width:15px; height:15px; border-radius:50%; background:rgba(0,0,0,0.35); color:#fff; border:none; font-size:9px; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; opacity:0.3; transition:opacity 0.2s;';
+            delBtn.addEventListener('click', e => { e.stopPropagation(); this.deleteSavedTheme(theme.id); });
+            wrapper.addEventListener('mouseenter', () => { delBtn.style.opacity = '1'; });
+            wrapper.addEventListener('mouseleave', () => { delBtn.style.opacity = '0.3'; });
+
+            wrapper.appendChild(btn);
+            wrapper.appendChild(delBtn);
+            this.elements.presetButtons.appendChild(wrapper);
+        });
+    },
+
+    renderSaveButton(show) {
+        const existing = document.getElementById('save-theme-row');
+        if (existing) existing.remove();
+        if (!show) return;
+
+        const row = document.createElement('div');
+        row.id = 'save-theme-row';
+        row.style.cssText = 'width:100%; display:flex; justify-content:flex-end;';
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Save as Preset';
+        btn.style.cssText = 'font-size:11px;';
+        btn.addEventListener('click', () => this.saveCurrentTheme());
+
+        row.appendChild(btn);
+        this.elements.generateBtn.parentElement.insertAdjacentElement('afterend', row);
+    },
+
     async handleGenerate() {
         const input = this.elements.promptInput.value.trim();
         if (!input) return;
@@ -1307,6 +1399,7 @@ const App = {
             const css = await this.generateTheme(input);
             this.applyStyle(css, null, input);
             this.togglePresets(true);
+            this.renderSaveButton(true);
         } catch (err) {
             this.showGenerateError(err);
         } finally {
@@ -1331,6 +1424,7 @@ const App = {
             localStorage.setItem('acephale-theme', themeName);
             localStorage.removeItem('acephale-custom-css');
             localStorage.removeItem('acephale-custom-prompt');
+            this.renderSaveButton(false);
         } else if (customPrompt) {
             localStorage.setItem('acephale-custom-css', css);
             localStorage.setItem('acephale-custom-prompt', customPrompt);
