@@ -41,6 +41,11 @@ const SYSTEM_STYLE = `
         --more-btn-color: var(--bg);
     }
 
+    /* --- Transition Animation --- */
+    ::view-transition-group(*) {
+        animation-duration: 1.2s;
+    }
+
     /* --- Base Layout --- */
     body {
         background: var(--bg);
