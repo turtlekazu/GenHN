@@ -26,10 +26,22 @@ Vary these dimensions to match the mood:
   --item-radius: 0px = raw/brutalist | 6-10px = modern | 20-40px = playful/bubbly
   --item-border / --item-shadow: use thick borders for brutalist, glows for neon, none for minimal
 
-After :root, add component overrides — this is REQUIRED, not optional.
-Use .hn-story-item, .hn-logo, .hn-header, .hn-upvote, body to add hover effects,
-clip-paths, gradients, box-shadows, text-shadows, or keyframe animations that
-make the aesthetic unmistakable. A theme with only :root variables is incomplete.
+=== HEADER (required override) ===
+The header MUST be visually transformed to match the theme. Always override .hn-header directly.
+The base style has backdrop-filter blur — override it explicitly when you want a solid look.
+Choose one of these patterns (or invent a stronger one):
+  Solid dark/color : background:<color>; backdrop-filter:none; border-bottom:<border>;
+  Floating pill    : margin:12px 20px; border-radius:100px; top:12px; backdrop-filter:blur(20px);
+  Bold stripe      : background:var(--accent); backdrop-filter:none; height:50px; border-bottom:4px solid var(--text);
+  Transparent      : background:transparent; backdrop-filter:none; border-bottom:none;
+  Brutalist bar    : background:var(--text); border-bottom:6px solid var(--accent); border-radius:0;
+Also restyle .hn-logo aggressively: letter-spacing, text-shadow, border, background-color, font-size, etc.
+--header-border can be set as a variable (e.g. --header-border: 3px solid var(--accent);).
+
+=== COMPONENTS (required) ===
+After :root, add overrides for .hn-story-item, .hn-header, .hn-logo, .hn-upvote, body.
+Use hover effects, clip-paths, gradients, box-shadows, text-shadows, or animations
+that make the aesthetic unmistakable. A theme with only :root variables is incomplete.
 
 === VARIABLES ===
 :root {
@@ -39,6 +51,7 @@ make the aesthetic unmistakable. A theme with only :root variables is incomplete
     --subtext:
     --accent:
     --header-bg:
+    --header-border:
     --font-main:
     --item-radius:
     --item-border:
