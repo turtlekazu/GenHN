@@ -263,6 +263,31 @@ const SYSTEM_STYLE = `
     #presets-icon { display: inline-block; transition: transform 0.3s ease; }
     .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
 
+    /* --- Desktop Panel Toggle --- */
+    #panel-toggle { display: none; }
+    @media (min-width: 769px) {
+        #panel-toggle {
+            display: block; position: absolute; top: 15px; left: 10px;
+            width: 24px; height: 24px; padding: 0;
+            background: transparent; border: none; color: inherit;
+            cursor: pointer; opacity: 0.5; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px;
+        }
+        #panel-toggle:hover { opacity: 1; background: rgba(0,0,0,0.05); border-radius: 4px; }
+        
+        #theme-controls { 
+            padding-left: 40px; 
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #theme-controls.is-minimized {
+            transform: translateX(calc(100% - 44px));
+        }
+        #theme-controls.is-minimized > *:not(#panel-toggle) {
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+    }
+
     /* --- Mobile Overrides (Unified) --- */
     .hn-menu-toggle { display: none; background: none; border: none; padding: 10px; width: 44px; height: 44px; color: inherit; z-index: 1001; position: relative; }
     .hn-menu-toggle span { display: block; width: 24px; height: 2px; background: currentColor; margin: 5px auto; transition: 0.3s; }
@@ -836,7 +861,9 @@ const App = {
         loadMoreBtn: document.querySelector('.hn-load-more'),
         menuToggle: document.querySelector('.hn-menu-toggle'),
         navLinks: document.querySelector('.hn-nav-links'),
-        header: document.querySelector('.hn-header')
+        header: document.querySelector('.hn-header'),
+        themeControls: document.getElementById('theme-controls'),
+        panelToggle: document.getElementById('panel-toggle')
     },
 
     async init() {
@@ -892,6 +919,13 @@ const App = {
         
         if (this.elements.presetsToggle) {
             this.elements.presetsToggle.addEventListener('click', () => this.togglePresets());
+        }
+
+        if (this.elements.panelToggle) {
+            this.elements.panelToggle.addEventListener('click', () => {
+                const isMin = this.elements.themeControls.classList.toggle('is-minimized');
+                this.elements.panelToggle.textContent = isMin ? '◀' : '▶';
+            });
         }
         
         // Close menu when a link is clicked
