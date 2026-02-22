@@ -779,8 +779,11 @@ const App = {
         this.bindEvents();
         console.log("Generative UI - Architecture Refactored.");
         
-        // Initial style
-        this.applyStyle(STYLE_PRESETS["Minimalist"], "Minimalist (Initial)");
+        // Restore saved theme or fallback to Minimalist
+        const savedTheme = localStorage.getItem('acephale-theme');
+        const themeToApply = (savedTheme && STYLE_PRESETS[savedTheme]) ? savedTheme : "Minimalist";
+        
+        this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
 
         // Initial load
         await this.loadInitial();
@@ -929,6 +932,11 @@ const App = {
     applyStyle(css, themeName) {
         console.log(`Applying theme: ${themeName}`);
         this.toggleMenu(false); // Close menu on theme change
+        
+        // Save to local storage for persistence
+        if (STYLE_PRESETS[themeName]) {
+            localStorage.setItem('acephale-theme', themeName);
+        }
 
         // Fallback for browsers that don't support View Transition API
         if (!document.startViewTransition) {
