@@ -421,6 +421,7 @@ const STYLE_PRESETS = {
         }
         .hn-header { clip-path: polygon(0 0, 100% 0, 100% 70%, 95% 100%, 0 100%); border-bottom: 5px solid var(--subtext); color: #000; }
         .hn-header.is-open-active { clip-path: none; }
+        .hn-header.is-open-active .hn-menu-toggle { color: var(--text); }
         .hn-logo { border: 4px solid #000; padding: 0 10px; }
         .hn-story-item { 
             border: 2px solid var(--subtext);
