@@ -5,6 +5,31 @@
 
 const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
+const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
+Output ONLY raw CSS. No explanations. No markdown. No code fences. No comments.
+
+Define all of these CSS custom properties on :root, then optionally add component overrides:
+
+:root {
+    --bg:                  /* page background */;
+    --card-bg:             /* story card background */;
+    --text:                /* primary text */;
+    --subtext:             /* secondary/meta text */;
+    --accent:              /* links and accent */;
+    --header-bg:           /* header background (rgba allowed) */;
+    --font-main:           /* font stack */;
+    --item-radius:         /* card border-radius */;
+    --item-border:         /* border shorthand or none */;
+    --item-shadow:         /* box-shadow or none */;
+    --more-btn-bg:         /* More button background */;
+    --more-btn-color:      /* More button text color */;
+    --mobile-upvote-bg:    /* upvote bg on mobile */;
+    --mobile-upvote-color: /* upvote text on mobile */;
+}
+
+Optional selectors to override: .hn-header, .hn-story-item, .hn-story-title, .hn-upvote, .hn-logo, body.
+Output nothing except the CSS.`;
+
 /**
  * System Core Styles (Layout, Typography Base, Responsive Logic)
  * Themes should override variables in :root or specific classes if needed.
@@ -881,16 +906,21 @@ const App = {
 
     async init() {
         this.renderPresetButtons();
+        this.renderApiKeySection();
         this.bindEvents();
-        console.log("Generative UI - Architecture Refactored.");
-        
-        // Restore saved theme or fallback to Minimalist
-        const savedTheme = localStorage.getItem('acephale-theme');
-        const themeToApply = (savedTheme && STYLE_PRESETS[savedTheme]) ? savedTheme : "Minimalist";
-        
-        this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
 
-        // Initial load
+        const savedPreset = localStorage.getItem('acephale-theme');
+        const savedCustom = localStorage.getItem('acephale-custom-css');
+        const savedPrompt = localStorage.getItem('acephale-custom-prompt');
+
+        if (savedCustom) {
+            this.applyStyle(savedCustom, null, savedPrompt || 'Custom AI Theme');
+            if (savedPrompt) this.elements.promptInput.value = savedPrompt;
+        } else {
+            const themeToApply = (savedPreset && STYLE_PRESETS[savedPreset]) ? savedPreset : 'Minimalist';
+            this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
+        }
+
         await this.loadInitial();
     },
 
@@ -1115,52 +1145,204 @@ const App = {
             .replace(/'/g, "&#039;");
     },
 
-    handleGenerate() {
+    getApiKey() {
+        return localStorage.getItem('acephale-gemini-key');
+    },
+
+    saveApiKey(key) {
+        localStorage.setItem('acephale-gemini-key', key.trim());
+    },
+
+    clearApiKey() {
+        localStorage.removeItem('acephale-gemini-key');
+        this.renderApiKeySection();
+    },
+
+    extractCss(text) {
+        let cleaned = text.replace(/^```(?:css)?\s*/i, '');
+        cleaned = cleaned.replace(/\s*```\s*$/, '');
+        return cleaned.trim();
+    },
+
+    async generateTheme(prompt) {
+        const key = this.getApiKey();
+        if (!key) throw new Error('NO_API_KEY');
+
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+        const body = {
+            system_instruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },
+            contents: [{ role: 'user', parts: [{ text: `Generate a CSS theme for: ${prompt}` }] }],
+            generationConfig: { temperature: 0.9, maxOutputTokens: 1200 }
+        };
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            const status = response.status;
+            let apiMessage = '';
+            try {
+                const errData = await response.json();
+                apiMessage = errData?.error?.message || '';
+                console.error('Gemini API error:', status, errData);
+            } catch (_) {}
+            if (status === 400 || status === 403) throw new Error('INVALID_KEY');
+            if (status === 429) {
+                const e = new Error('RATE_LIMIT');
+                e.detail = apiMessage;
+                throw e;
+            }
+            throw new Error(`API_ERROR:${status}`);
+        }
+
+        const data = await response.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) throw new Error('EMPTY_RESPONSE');
+        return this.extractCss(rawText);
+    },
+
+    renderApiKeySection() {
+        const existing = document.getElementById('api-key-section');
+        if (existing) existing.remove();
+
+        const section = document.createElement('div');
+        section.id = 'api-key-section';
+        section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
+
+        if (this.getApiKey()) {
+            section.innerHTML = `
+                <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
+                    <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
+                </div>`;
+            section.querySelector('#api-key-clear-btn').addEventListener('click', () => this.clearApiKey());
+        } else {
+            section.innerHTML = `
+                <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                    <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini API Key</span>
+                    <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+                </div>
+                <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
+                    <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
+                    <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
+                </div>`;
+            section.querySelector('#api-key-toggle').addEventListener('click', () => {
+                const form = section.querySelector('#api-key-form');
+                const icon = section.querySelector('#api-key-icon');
+                const isOpen = form.style.display !== 'none';
+                form.style.display = isOpen ? 'none' : 'flex';
+                icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+            });
+            section.querySelector('#api-key-save-btn').addEventListener('click', () => {
+                const val = section.querySelector('#api-key-input').value.trim();
+                if (!val) return;
+                this.saveApiKey(val);
+                this.renderApiKeySection();
+            });
+        }
+
+        this.elements.themeControls.appendChild(section);
+    },
+
+    showGenerateError(err) {
+        let message;
+        switch (err.message) {
+            case 'NO_API_KEY':    message = 'Please add your Gemini API key.'; this.expandApiKeySection(); break;
+            case 'INVALID_KEY':   message = 'Invalid API key. Please check and re-enter.'; this.expandApiKeySection(); break;
+            case 'RATE_LIMIT':    message = err.detail ? `API error: ${err.detail}` : 'Rate limit hit. Please try again in a moment.'; break;
+            case 'EMPTY_RESPONSE':message = 'Gemini returned an empty response. Try rephrasing.'; break;
+            default:              message = `Generation failed: ${err.message}`;
+        }
+        let errEl = document.getElementById('generate-error');
+        if (!errEl) {
+            errEl = document.createElement('div');
+            errEl.id = 'generate-error';
+            errEl.style.cssText = 'font-size:11px; color:#ff3b30; margin-top:-4px; width:100%;';
+            this.elements.generateBtn.parentElement.insertAdjacentElement('afterend', errEl);
+        }
+        errEl.textContent = message;
+        clearTimeout(this._errorTimeout);
+        this._errorTimeout = setTimeout(() => { errEl.textContent = ''; }, 5000);
+    },
+
+    expandApiKeySection() {
+        const form = document.getElementById('api-key-form');
+        const icon = document.getElementById('api-key-icon');
+        if (form && form.style.display === 'none') {
+            form.style.display = 'flex';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+        this.elements.themeControls.classList.remove('is-minimized');
+        const input = document.getElementById('api-key-input');
+        if (input) setTimeout(() => input.focus(), 300);
+    },
+
+    async handleGenerate() {
         const input = this.elements.promptInput.value.trim();
         if (!input) return;
+        if (this._isGenerating) return;
 
-        const style = this.matchStyle(input);
-        
-        if (style) {
-            this.applyStyle(style, input);
+        const presetKey = this.matchStyle(input);
+        if (presetKey) {
+            this.applyStyle(STYLE_PRESETS[presetKey], presetKey);
             this.togglePresets(true);
-        } else {
-            this.showError();
+            return;
+        }
+
+        if (!this.getApiKey()) {
+            this.expandApiKeySection();
+            return;
+        }
+
+        this._isGenerating = true;
+        const btn = this.elements.generateBtn;
+        const originalText = btn.textContent;
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+
+        try {
+            const css = await this.generateTheme(input);
+            this.applyStyle(css, null, input);
+            this.togglePresets(true);
+        } catch (err) {
+            this.showGenerateError(err);
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+            this._isGenerating = false;
         }
     },
 
     matchStyle(input) {
         const normalizedInput = input.toLowerCase();
         for (const key in STYLE_PRESETS) {
-            if (normalizedInput.includes(key.toLowerCase())) return STYLE_PRESETS[key];
+            if (normalizedInput.includes(key.toLowerCase())) return key;
         }
         return null;
     },
 
-    applyStyle(css, themeName) {
-        console.log(`Applying theme: ${themeName}`);
-        this.toggleMenu(false); // Close menu on theme change
-        
-        // Save to local storage for persistence
-        if (STYLE_PRESETS[themeName]) {
+    applyStyle(css, themeName, customPrompt = null) {
+        this.toggleMenu(false);
+
+        if (themeName && STYLE_PRESETS[themeName]) {
             localStorage.setItem('acephale-theme', themeName);
+            localStorage.removeItem('acephale-custom-css');
+            localStorage.removeItem('acephale-custom-prompt');
+        } else if (customPrompt) {
+            localStorage.setItem('acephale-custom-css', css);
+            localStorage.setItem('acephale-custom-prompt', customPrompt);
+            localStorage.removeItem('acephale-theme');
         }
 
-        // Fallback for browsers that don't support View Transition API
-        if (!document.startViewTransition) {
+        const applyFn = () => {
             this.elements.styleTag.textContent = SYSTEM_STYLE + css;
-            return;
-        }
+        };
 
-        // Smooth transition using View Transition API
-        document.startViewTransition(() => {
-            this.elements.styleTag.textContent = SYSTEM_STYLE + css;
-        });
-    },
-
-    showError() {
-        const available = Object.keys(STYLE_PRESETS).join('", "');
-        alert(`Please enter a supported theme:\n"${available}"`);
+        if (!document.startViewTransition) { applyFn(); return; }
+        document.startViewTransition(applyFn);
     }
 };
 
