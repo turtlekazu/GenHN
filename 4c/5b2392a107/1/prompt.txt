@@ -1,0 +1,397 @@
+Implement the following plan:
+
+# AI Theme Generation — Implementation Plan
+
+## Context
+
+現在の `handleGenerate()` はプリセット名の部分一致のみで、AI生成は未実装。
+自由記述のプロンプト（例: "brutalist newspaper with orange ink"）をGemini APIに送り、
+CSSを動的生成してページに反映させる機能を追加する。
+
+**選択API:** Google Gemini 2.0 Flash（無料枠: 1,500 req/日, 15 req/分）
+**アーキテクチャ:** ブラウザ完結。サーバー追加なし。APIキーはlocalStorage保存。
+**index.html 変更なし。gardener.js のみ修正。**
+
+---
+
+## 変更ファイル
+
+- `/Users/turtlekazu/ReactProjects/acephale/gardener.js` — 唯一の変更対象
+
+---
+
+## localStorage キー一覧
+
+| キー | 用途 |
+|------|------|
+| `acephale-theme` | 既存: プリセット名 |
+| `acephale-custom-css` | 新規: AI生成CSSの全文 |
+| `acephale-custom-prompt` | 新規: AI生成時のプロンプト文字列 |
+| `acephale-gemini-key` | 新規: ユーザーのGemini APIキー |
+
+---
+
+## 実装手順（この順で実装すること）
+
+### Step 1: モジュールレベルの定数を追加
+
+`BASE_URL` の直後に追加:
+
+```javascript
+const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
+Output ONLY raw CSS. No explanations. No markdown. No code fences. No comments.
+
+Define all of these CSS custom properties on :root, then optionally add component overrides:
+
+:root {
+    --bg:                  /* page background */;
+    --card-bg:             /* story card background */;
+    --text:                /* primary text */;
+    --subtext:             /* secondary/meta text */;
+    --accent:              /* links and accent */;
+    --header-bg:           /* header background (rgba allowed) */;
+    --font-main:           /* font stack */;
+    --item-radius:         /* card border-radius */;
+    --item-border:         /* border shorthand or none */;
+    --item-shadow:         /* box-shadow or none */;
+    --more-btn-bg:         /* More button background */;
+    --more-btn-color:      /* More button text color */;
+    --mobile-upvote-bg:    /* upvote bg on mobile */;
+    --mobile-upvote-color: /* upvote text on mobile */;
+}
+
+Optional selectors to override: .hn-header, .hn-story-item, .hn-story-title, .hn-upvote, .hn-logo, body.
+Output nothing except the CSS.`;
+```
+
+---
+
+### Step 2: App オブジェクトに新メソッドを追加
+
+#### APIキー管理（3メソッド）
+
+```javascript
+getApiKey() {
+    return localStorage.getItem('acephale-gemini-key');
+},
+saveApiKey(key) {
+    localStorage.setItem('acephale-gemini-key', key.trim());
+},
+clearApiKey() {
+    localStorage.removeItem('acephale-gemini-key');
+    this.renderApiKeySection();
+},
+```
+
+#### CSS抽出（Geminiがmarkdown fence で返した場合に除去）
+
+```javascript
+extractCss(text) {
+    let cleaned = text.replace(/^```(?:css)?\s*/i, '');
+    cleaned = cleaned.replace(/\s*```\s*$/, '');
+    return cleaned.trim();
+},
+```
+
+#### Gemini API呼び出し
+
+```javascript
+async generateTheme(prompt) {
+    const key = this.getApiKey();
+    if (!key) throw new Error('NO_API_KEY');
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+    const body = {
+        system_instruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },
+        contents: [{ role: 'user', parts: [{ text: `Generate a CSS theme for: ${prompt}` }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 1200 }
+    };
+
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        const status = response.status;
+        if (status === 400 || status === 403) throw new Error('INVALID_KEY');
+        if (status === 429) throw new Error('RATE_LIMIT');
+        throw new Error(`API_ERROR:${status}`);
+    }
+
+    const data = await response.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) throw new Error('EMPTY_RESPONSE');
+    return this.extractCss(rawText);
+},
+```
+
+#### APIキー設定UI のレンダリング
+
+`init()` から呼ばれる。`clearApiKey()` 後の再描画にも使う。
+`#theme-controls` の末尾に `#api-key-section` として追加する。
+キーが保存済みかどうかで2状態を描画する:
+
+- **State A（キーなし）**: "GEMINI API KEY ▼" トグル + password input + Save ボタン（デフォルト折りたたみ）
+- **State B（キーあり）**: "GEMINI AI: ENABLED" + "clear" ボタン
+
+完全な実装:
+
+```javascript
+renderApiKeySection() {
+    const existing = document.getElementById('api-key-section');
+    if (existing) existing.remove();
+
+    const section = document.createElement('div');
+    section.id = 'api-key-section';
+    section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
+
+    if (this.getApiKey()) {
+        // State B
+        section.innerHTML = `
+            <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
+                <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
+            </div>`;
+        section.querySelector('#api-key-clear-btn').addEventListener('click', () => this.clearApiKey());
+    } else {
+        // State A
+        section.innerHTML = `
+            <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini API Key</span>
+                <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+            </div>
+            <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
+                <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
+                <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
+            </div>`;
+        section.querySelector('#api-key-toggle').addEventListener('click', () => {
+            const form = section.querySelector('#api-key-form');
+            const icon = section.querySelector('#api-key-icon');
+            const isOpen = form.style.display !== 'none';
+            form.style.display = isOpen ? 'none' : 'flex';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        });
+        section.querySelector('#api-key-save-btn').addEventListener('click', () => {
+            const val = section.querySelector('#api-key-input').value.trim();
+            if (!val) return;
+            this.saveApiKey(val);
+            this.renderApiKeySection();
+        });
+    }
+
+    this.elements.themeControls.appendChild(section);
+},
+```
+
+#### エラー表示（alert廃止 → インライン表示）
+
+```javascript
+showGenerateError(err) {
+    let message;
+    switch (err.message) {
+        case 'NO_API_KEY':    message = 'Please add your Gemini API key.'; this.expandApiKeySection(); break;
+        case 'INVALID_KEY':   message = 'Invalid API key. Please check and re-enter.'; this.expandApiKeySection(); break;
+        case 'RATE_LIMIT':    message = 'Rate limit hit. Please try again in a moment.'; break;
+        case 'EMPTY_RESPONSE':message = 'Gemini returned an empty response. Try rephrasing.'; break;
+        default:              message = `Generation failed: ${err.message}`;
+    }
+    let errEl = document.getElementById('generate-error');
+    if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = 'generate-error';
+        errEl.style.cssText = 'font-size:11px; color:#ff3b30; margin-top:-4px; width:100%;';
+        this.elements.generateBtn.parentElement.insertAdjacentElement('afterend', errEl);
+    }
+    errEl.textContent = message;
+    clearTimeout(this._errorTimeout);
+    this._errorTimeout = setTimeout(() => { errEl.textContent = ''; }, 5000);
+},
+```
+
+#### APIキーセクションを展開するヘルパー
+
+```javascript
+expandApiKeySection() {
+    const form = document.getElementById('api-key-form');
+    const icon = document.getElementById('api-key-icon');
+    if (form && form.style.display === 'none') {
+        form.style.display = 'flex';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+    this.elements.themeControls.classList.remove('is-minimized');
+    const input = document.getElementById('api-key-input');
+    if (input) setTimeout(() => input.focus(), 300);
+},
+```
+
+---
+
+### Step 3: `handleGenerate()` を async に更新
+
+既存の同期版と置き換える。同時リクエスト防止のガードも追加:
+
+```javascript
+async handleGenerate() {
+    const input = this.elements.promptInput.value.trim();
+    if (!input) return;
+    if (this._isGenerating) return;  // 連打防止
+
+    // プリセット一致チェック（既存動作を維持）
+    const presetCss = this.matchStyle(input);
+    if (presetCss) {
+        this.applyStyle(presetCss, input);
+        this.togglePresets(true);
+        return;
+    }
+
+    // キーなし → 入力欄を展開
+    if (!this.getApiKey()) {
+        this.expandApiKeySection();
+        return;
+    }
+
+    // AI生成
+    this._isGenerating = true;
+    const btn = this.elements.generateBtn;
+    const originalText = btn.textContent;
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+
+    try {
+        const css = await this.generateTheme(input);
+        this.applyStyle(css, null, input);
+        this.togglePresets(true);
+    } catch (err) {
+        this.showGenerateError(err);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        this._isGenerating = false;
+    }
+},
+```
+
+---
+
+### Step 4: `applyStyle()` のシグネチャと永続化ロジックを更新
+
+`applyStyle(css, themeName, customPrompt = null)` に変更:
+
+```javascript
+applyStyle(css, themeName, customPrompt = null) {
+    this.toggleMenu(false);
+
+    if (themeName && STYLE_PRESETS[themeName]) {
+        // プリセット
+        localStorage.setItem('acephale-theme', themeName);
+        localStorage.removeItem('acephale-custom-css');
+        localStorage.removeItem('acephale-custom-prompt');
+    } else if (customPrompt) {
+        // AI生成テーマ
+        localStorage.setItem('acephale-custom-css', css);
+        localStorage.setItem('acephale-custom-prompt', customPrompt);
+        localStorage.removeItem('acephale-theme');
+    }
+
+    const applyFn = () => {
+        this.elements.styleTag.textContent = SYSTEM_STYLE + css;
+    };
+
+    if (!document.startViewTransition) { applyFn(); return; }
+    document.startViewTransition(applyFn);
+},
+```
+
+---
+
+### Step 5: `init()` を更新
+
+`renderApiKeySection()` 呼び出しの追加と、AI生成テーマの復元ロジックを追加:
+
+```javascript
+async init() {
+    this.renderPresetButtons();
+    this.renderApiKeySection();   // 追加
+    this.bindEvents();
+
+    const savedPreset  = localStorage.getItem('acephale-theme');
+    const savedCustom  = localStorage.getItem('acephale-custom-css');
+    const savedPrompt  = localStorage.getItem('acephale-custom-prompt');
+
+    if (savedCustom) {
+        this.applyStyle(savedCustom, null, savedPrompt || 'Custom AI Theme');
+        if (savedPrompt) this.elements.promptInput.value = savedPrompt;
+    } else {
+        const themeToApply = (savedPreset && STYLE_PRESETS[savedPreset]) ? savedPreset : 'Minimalist';
+        this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
+    }
+
+    await this.loadInitial();
+},
+```
+
+---
+
+## UIレイアウト（#theme-controls 最終形）
+
+```
+┌─────────────────────────────────────────┐
+│  [drag handle]                          │
+│  PRESETS ▼                              │
+│  [Mini] [Glitch] [Playful] ...          │
+│  [Enter theme.................] [Apply] │
+│  (error message if any)                 │
+│  GEMINI API KEY ▼  ← 折りたたみ済み     │
+│  (or: GEMINI AI: ENABLED        clear)  │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 動作フロー
+
+```
+ユーザーが "brutalist newspaper" と入力 → Apply
+├─ matchStyle() → 一致なし
+├─ getApiKey() → キーなし → expandApiKeySection() → STOP
+│
+└─ getApiKey() → キーあり
+    ├─ ボタン "Generating..." + disabled
+    ├─ Gemini API へ fetch()
+    │   ├─ 200 OK → extractCss() → applyStyle(css, null, prompt)
+    │   │           → View Transition → CSS適用 + localStorage保存
+    │   ├─ 400/403 → showGenerateError("Invalid API key") + 入力欄展開
+    │   ├─ 429    → showGenerateError("Rate limit hit")
+    │   └─ その他 → showGenerateError("Generation failed: ...")
+    └─ finally: ボタン復元
+```
+
+---
+
+## 検証方法
+
+1. ブラウザで `index.html` を開く
+2. "minimalist" と入力 → Apply → プリセット適用される（既存動作の確認）
+3. "brutalist newspaper" と入力 → Apply → API Key セクションが展開される
+4. APIキーを入力して Save → "GEMINI AI: ENABLED" に切り替わる
+5. "brutalist newspaper" と入力 → Apply → "Generating..." 表示後にテーマ適用
+6. ページをリロード → AI生成テーマが復元される
+7. プリセットボタンをクリック → プリセットに切り替わり、custom CSS がクリアされる
+8. clear ボタン → "GEMINI API KEY ▼" に戻る
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/turtlekazu/.REDACTED.jsonl
+
+---
+
+GEMINI API KEYを入れても、Rate limit hitというエラーが出てしまいました。
+
+---
+
+https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flashに変更したらうまくいきました。現在の実装でコミットして
+
+---
+
+生成したテーマを、ローカル上で保存して、Presetsとして選べるようにしたいです。その際、Presetsのボタンとしては1単語にプロンプトを要約し、ボタンの枠線を太くしてください。
