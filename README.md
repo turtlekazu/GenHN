@@ -1,4 +1,4 @@
-# Acephale - Brand Identity Hacker News
+# Acephale — GenHN
 
 An experimental project that dynamically reconstructs the Hacker News interface using the "essences" of world-renowned product design systems.
 
@@ -6,26 +6,48 @@ An experimental project that dynamically reconstructs the Hacker News interface 
 
 ## Features
 
-- **Brand Swap Engine**: Instantly switch between design systems based on your input.
-- **Generative Styling**: Dynamically applies CSS that reflects design philosophies rather than specific brand names.
-- **Modern Web Tech**: Built with Vanilla JS, CSS Glassmorphism, and the Hacker News API.
+- **10 Design Presets**: Instantly switch between design systems inspired by iconic brand aesthetics.
+- **Preset Panel**: One-click buttons for each built-in theme, plus a free-text input for applying any theme by name.
+- **Feed Navigation**: Switch between Hacker News feeds — Top, New, Ask, Show, and Jobs.
+- **Live HN Data**: Fetches real stories from the Hacker News Firebase API (30 stories per page, with infinite scroll via "More").
+- **No Build Step**: Pure vanilla JS + CSS. Open `index.html` directly in a browser.
+- **View Transitions**: Smooth page transitions using the View Transition API (with graceful fallback).
 
 ## Usage
 
 1. Open `index.html` in your browser.
-2. Enter a theme name in the input field at the bottom right and click "Apply".
-   - Examples: `Minimalist`, `Intelligence`, `Search`, `Universal`, `Glitch`, `Playful`, `Glow`, `Academic`
+2. Click a preset button in the bottom-right panel, or type a theme name in the input field and click **Apply**.
+3. Use the header navigation links to switch between HN feeds (Top / New / Ask / Show / Jobs).
 
 ## Available Design Essences
 
-- **Minimalist**: Sophisticated transparency and clean typography on a white base.
-- **Intelligence**: A modern, dark AI-inspired interface with deep black backgrounds and neon green accents.
-- **Search**: A classic search engine style focused on whitespace and functional beauty.
-- **Universal**: Friendly rounded corners and bold, highly legible card UI.
-- **Glitch**: High-contrast yellow and black with cyber-edge noise.
-- **Playful**: A pop and friendly UI inspired by game consoles, featuring red and white colors.
-- **Glow**: A next-gen console style with deep navy and radiant blue accents.
-- **Academic**: A thoughtful and calm reading experience using serif fonts and warm backgrounds.
+| Theme | Description |
+|-------|-------------|
+| **Minimalist** | Soft white base with glassmorphism header, clean typography, and subtle card shadows. |
+| **Intelligence** | Near-black background with emerald green accents, monospace logo, and a blinking cursor — AI chat interface inspired. |
+| **Search** | Pure white, functional layout, and blue hyperlink-style titles evoking classic search engine aesthetics. |
+| **Universal** | Bold card grid with rounded corners and strong blue accents — friendly and highly legible. |
+| **Glitch** | Black background with electric yellow text, cyan subtext, CRT scanline overlay, and polygon-clipped cards. |
+| **Playful** | Light gray background with a red header, thick black borders, and a card grid reminiscent of game console UI. |
+| **Glow** | Deep navy with a radial blue gradient, glowing neon logo, and translucent cards — next-gen console aesthetic. |
+| **Academic** | Warm cream background, serif typography, and a terracotta accent for a calm, thoughtful reading experience. |
+| **Ghibli** | Soft paper-like cream tones, deep forest green, and Japanese serif fonts — a hand-crafted, watercolor-inspired feel. |
+| **8-Bit** | Pure black, phosphor-green terminal text, cyan accents, monospace font, and pixelated rendering — retro PC / game aesthetic. |
+
+## Architecture
+
+The entire application lives in two files:
+
+- **`index.html`** — Static DOM structure (header, story list, control panel).
+- **`gardener.js`** (~1,200 lines) — All application logic:
+  - `SYSTEM_STYLE` — Base CSS (layout, glassmorphism, responsive design).
+  - `STYLE_PRESETS` — Theme definitions via CSS custom properties.
+  - `HNData` — Hacker News API integration (feed fetching, pagination).
+  - `App` — Main controller (theming, rendering, event handling, localStorage persistence).
+
+## Adding a New Theme
+
+Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern. Each theme overrides CSS custom properties (and optionally adds component-specific rules).
 
 ## Disclaimer
 
