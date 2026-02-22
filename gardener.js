@@ -7,62 +7,64 @@ const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
 const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
 Output ONLY raw CSS. No explanations, markdown, code fences, or comments.
+Copy the template below and fill in every value. Do not omit any block.
 
-=== READABILITY (mandatory) ===
-First decide: is the theme DARK or LIGHT based on --bg luminance?
-  DARK  bg → --text must be #ddd or lighter  | --subtext must be #999 or lighter
-  LIGHT bg → --text must be #333 or darker   | --subtext must be #666 or darker
-  --card-bg must be a noticeably different shade/hue from --bg (never identical).
-  --more-btn-color must clearly contrast --more-btn-bg (light-on-dark or dark-on-light).
-  --mobile-upvote-color must clearly contrast --mobile-upvote-bg.
+/* ── CONTRAST RULES (violations = broken theme) ──────────────────────────
+   Decide DARK or LIGHT based on --bg perceived brightness, then apply:
+     DARK  bg  →  --text: #e0e0e0 or lighter  |  --subtext: #aaa or lighter
+     LIGHT bg  →  --text: #1a1a1a or darker   |  --subtext: #666 or darker
+   --card-bg must differ visibly from --bg (different hue or ≥10% brightness gap).
+   FORBIDDEN – same perceived lightness (unreadable):
+     --bg:#1a1a3e  --text:#2a2a7e   (both dark blue)
+     --bg:#faf0e6  --text:#d4b896   (both warm cream)
+   CORRECT:
+     --bg:#1a1a3e  --text:#eeeeff   (dark bg → near-white text)
+     --bg:#faf0e6  --text:#1a0f00   (warm light bg → very dark text)
+   --more-btn-color must contrast --more-btn-bg (light-on-dark or dark-on-light).
+   ──────────────────────────────────────────────────────────────────────── */
 
-=== VARIETY (mandatory) ===
-Commit fully to the prompt's aesthetic. Generic white or light-gray --bg is forbidden.
-Pick a bold, on-theme background (deep navy, warm parchment, neon black, terracotta, etc.).
-
-Vary these dimensions to match the mood:
-  --font-main:   'Georgia,serif' for editorial | 'Courier New,monospace' for terminal/hacker |
-                 Impact,'Arial Narrow',sans-serif for bold/poster | system-ui for clean
-  --item-radius: 0px = raw/brutalist | 6-10px = modern | 20-40px = playful/bubbly
-  --item-border / --item-shadow: use thick borders for brutalist, glows for neon, none for minimal
-
-=== HEADER (required override) ===
-The header MUST be visually transformed to match the theme. Always override .hn-header directly.
-The base style has backdrop-filter blur — override it explicitly when you want a solid look.
-Choose one of these patterns (or invent a stronger one):
-  Solid dark/color : background:<color>; backdrop-filter:none; border-bottom:<border>;
-  Floating pill    : margin:12px 20px; border-radius:100px; top:12px; backdrop-filter:blur(20px);
-  Bold stripe      : background:var(--accent); backdrop-filter:none; height:50px; border-bottom:4px solid var(--text);
-  Transparent      : background:transparent; backdrop-filter:none; border-bottom:none;
-  Brutalist bar    : background:var(--text); border-bottom:6px solid var(--accent); border-radius:0;
-Also restyle .hn-logo aggressively: letter-spacing, text-shadow, border, background-color, font-size, etc.
---header-border can be set as a variable (e.g. --header-border: 3px solid var(--accent);).
-
-=== COMPONENTS (required) ===
-After :root, add overrides for .hn-story-item, .hn-header, .hn-logo, .hn-upvote, body.
-Use hover effects, clip-paths, gradients, box-shadows, text-shadows, or animations
-that make the aesthetic unmistakable. A theme with only :root variables is incomplete.
-
-=== VARIABLES ===
 :root {
-    --bg:
-    --card-bg:
-    --text:
-    --subtext:
+    --bg:                 /* bold on-theme color — white/light-gray is forbidden */
+    --card-bg:            /* visibly different from --bg */
+    --text:               /* enforce contrast rule above */
+    --subtext:            /* enforce contrast rule above */
     --accent:
     --header-bg:
-    --header-border:
-    --font-main:
-    --item-radius:
+    --header-border:      /* e.g. none | 2px solid #000 | 4px solid var(--accent) */
+    --font-main:          /* serif=editorial · monospace=hacker · Impact=bold · system-ui=clean */
+    --item-radius:        /* 0px=brutalist · 6-10px=modern · 20-40px=playful */
     --item-border:
     --item-shadow:
     --more-btn-bg:
-    --more-btn-color:
+    --more-btn-color:     /* must contrast --more-btn-bg */
     --mobile-upvote-bg:
-    --mobile-upvote-color:
+    --mobile-upvote-color: /* must contrast --mobile-upvote-bg */
 }
 
-Output nothing except the CSS.`;
+/* HEADER – fill every property, choose a shape variant:
+   Solid:    background:<color>; backdrop-filter:none; border-bottom:<border>;
+   Pill:     background:<color>; backdrop-filter:blur(16px); border-radius:100px; margin:12px 20px; top:12px;
+   Stripe:   background:var(--accent); backdrop-filter:none; height:52px; border-bottom:4px solid var(--text);
+   Brutalist: background:var(--text); border-radius:0; border-bottom:6px solid var(--accent); backdrop-filter:none;
+   Transparent: background:transparent; backdrop-filter:none; border-bottom:none; */
+.hn-header {
+    background:      /* REQUIRED: specific color, gradient, or transparent */
+    backdrop-filter: /* REQUIRED: none OR blur(Npx) */
+    border-bottom:   /* REQUIRED */
+    /* + at least one shape property: border-radius | box-shadow | height | clip-path | margin */
+}
+
+/* LOGO – change at least 3 of: color · font-size · letter-spacing · text-shadow ·
+          border · background · padding · text-transform · font-style · font-weight */
+.hn-logo {
+}
+
+/* STORY ITEMS + body – add hover effects, gradients, shadows, animations */
+.hn-story-item {
+}
+
+/* Add any further overrides (.hn-upvote, .hn-nav-links a, body, @keyframes …) */
+`;
 
 /**
  * System Core Styles (Layout, Typography Base, Responsive Logic)
@@ -1209,7 +1211,7 @@ const App = {
         const body = {
             system_instruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },
             contents: [{ role: 'user', parts: [{ text: `Generate a CSS theme for: ${prompt}` }] }],
-            generationConfig: { temperature: 0.9, maxOutputTokens: 1200 }
+            generationConfig: { temperature: 0.9, maxOutputTokens: 1800 }
         };
 
         const response = await fetch(endpoint, {
@@ -1238,7 +1240,9 @@ const App = {
         const data = await response.json();
         const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!rawText) throw new Error('EMPTY_RESPONSE');
-        return this.extractCss(rawText);
+        const css = this.extractCss(rawText);
+        console.log('Generated CSS:\n', css);
+        return css;
     },
 
     renderApiKeySection() {
