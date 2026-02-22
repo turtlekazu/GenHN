@@ -3,7 +3,7 @@
   "checkpoint_id": "eb2875f9a788",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "gardener.js"
   ],
@@ -14,13 +14,20 @@
       "context": "/eb/2875f9a788/0/context.md",
       "content_hash": "/eb/2875f9a788/0/content_hash.txt",
       "prompt": "/eb/2875f9a788/0/prompt.txt"
+    },
+    {
+      "metadata": "/eb/2875f9a788/1/metadata.json",
+      "transcript": "/eb/2875f9a788/1/full.jsonl",
+      "context": "/eb/2875f9a788/1/context.md",
+      "content_hash": "/eb/2875f9a788/1/content_hash.txt",
+      "prompt": "/eb/2875f9a788/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 32,
-    "cache_creation_tokens": 82489,
-    "cache_read_tokens": 901621,
-    "output_tokens": 15298,
-    "api_call_count": 24
+    "input_tokens": 110,
+    "cache_creation_tokens": 236536,
+    "cache_read_tokens": 5608563,
+    "output_tokens": 23678,
+    "api_call_count": 86
   }
 }
