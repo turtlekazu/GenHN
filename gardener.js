@@ -962,7 +962,7 @@ const App = {
 
                 this.elements.themeControls.style.transform = '';
 
-                if (Math.abs(deltaX) < 5) {
+                if (Math.abs(deltaX) < 10) {
                     this.elements.themeControls.classList.toggle('is-minimized');
                 } else {
                     if (!isMin && deltaX > threshold) {
