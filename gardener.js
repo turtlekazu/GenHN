@@ -807,11 +807,19 @@ const STYLE_PRESETS = {
  */
 const HNData = {
     allStoryIds: [],
+    currentType: 'top',
+
+    setType(type) {
+        if (this.currentType === type) return;
+        this.currentType = type;
+        this.allStoryIds = []; // Clear cache
+    },
 
     async fetchAllIds() {
         if (this.allStoryIds.length > 0) return this.allStoryIds;
         try {
-            const response = await fetch(`${BASE_URL}/topstories.json`);
+            const endpoint = this.currentType === 'jobs' ? 'jobstories' : `${this.currentType}stories`;
+            const response = await fetch(`${BASE_URL}/${endpoint}.json`);
             this.allStoryIds = await response.json();
             return this.allStoryIds;
         } catch (error) {
@@ -984,9 +992,22 @@ const App = {
             document.addEventListener('touchend', endDrag);
         }
         
-        // Close menu when a link is clicked
+        // Handle navigation
         this.elements.navLinks.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') this.toggleMenu(false);
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                const type = e.target.textContent.trim().toLowerCase();
+                
+                if (['new', 'ask', 'show', 'jobs'].includes(type)) {
+                    this.switchFeed(type);
+                } else if (type === 'submit') {
+                    this.toggleMenu(false);
+                    window.open('https://news.ycombinator.com/submit', '_blank');
+                } else {
+                    this.toggleMenu(false);
+                    alert('This feature is currently unavailable in the Generative UI.');
+                }
+            }
         });
     },
 
@@ -1002,6 +1023,25 @@ const App = {
         this.elements.navLinks.classList.toggle('is-open', shouldOpen);
         this.elements.header.classList.toggle('is-open-active', shouldOpen);
         document.body.style.overflow = shouldOpen ? 'hidden' : '';
+    },
+
+    async switchFeed(type) {
+        if (this.isLoading) return;
+        this.isLoading = true;
+        
+        // Update HNData
+        HNData.setType(type);
+        
+        // Reset state
+        this.currentOffset = 0;
+        this.elements.listElement.innerHTML = '<div style="padding: 20px; text-align: center;">Loading...</div>';
+        
+        // Close menu (if open)
+        this.toggleMenu(false);
+        
+        // Load
+        await this.loadAndRender();
+        this.isLoading = false;
     },
 
     async loadInitial() {
