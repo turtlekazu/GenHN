@@ -276,10 +276,10 @@ const SYSTEM_STYLE = `
         /* Visual cue */
         #panel-handle::before {
             content: ""; position: absolute; top: 50%; left: 8px; width: 4px; height: 30px;
-            background: rgba(0,0,0,0.1); border-radius: 2px; transform: translateY(-50%);
+            background: currentColor; opacity: 0.15; border-radius: 2px; transform: translateY(-50%);
             transition: 0.2s;
         }
-        #panel-handle:hover::before { background: rgba(0,0,0,0.3); }
+        #panel-handle:hover::before { opacity: 0.4; }
         
         #theme-controls { 
             padding-left: 20px; 
