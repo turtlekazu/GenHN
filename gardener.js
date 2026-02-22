@@ -336,7 +336,7 @@ const SYSTEM_STYLE = `
             padding: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-        .hn-footer { padding-bottom: 160px; }
+        .hn-footer { padding: 40px 20px 160px; }
         .hn-footer-links { flex-direction: column; gap: 10px; }
         #preset-buttons { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         #presets-toggle { margin-bottom: 2px; }
