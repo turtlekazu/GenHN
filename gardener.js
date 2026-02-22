@@ -369,6 +369,23 @@ const STYLE_PRESETS = {
             --more-btn-color: #fff;
         }
         .hn-upvote { background: #e8e8ed; border: none; color: var(--text); }
+        .hn-header { 
+            background: rgba(255, 255, 255, 0.7); 
+            border: 0.5px solid rgba(0,0,0,0.05);
+            backdrop-filter: saturate(180%) blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            margin: 12px 20px;
+            border-radius: 100px;
+            height: 50px;
+            top: 12px;
+        }
+        .hn-logo { 
+            text-transform: uppercase; 
+            letter-spacing: 0.2em; 
+            font-size: 14px; 
+            font-weight: 300;
+            color: #000;
+        }
         .hn-story-item:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.08); transform: scale(1.01); }
         #theme-controls #generate-btn { background: var(--accent) !important; }
     `,
@@ -494,6 +511,20 @@ const STYLE_PRESETS = {
         }
         .hn-story-item { background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); border: none; border-left: 2px solid transparent; border-radius: 0; }
         .hn-story-item:hover { background: linear-gradient(90deg, rgba(0, 55, 193, 0.2), transparent); transform: translateX(20px); border-left: 2px solid var(--accent); }
+        .hn-header { 
+            border: 1px solid rgba(0, 55, 193, 0.3); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 55, 193, 0.2);
+            margin: 15px 20px;
+            border-radius: 12px;
+            background: rgba(10, 13, 20, 0.8);
+            top: 15px;
+        }
+        .hn-logo { 
+            text-transform: uppercase; 
+            letter-spacing: 4px; 
+            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent); 
+            font-size: 18px;
+        }
         .hn-upvote { border-color: rgba(255,255,255,0.2); }
         #theme-controls #generate-btn { background: var(--ps-blue) !important; color: #fff !important; }
     `,
@@ -606,6 +637,28 @@ const STYLE_PRESETS = {
             --more-btn-color: #fff;
         }
         .hn-story-item:hover { border-color: var(--accent); }
+        .hn-header { 
+            border: 1px solid rgba(16, 163, 127, 0.3); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+            background: rgba(13, 13, 13, 0.9);
+            margin: 10px 15px;
+            border-radius: 4px;
+            top: 10px;
+        }
+        .hn-logo { 
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; 
+            font-size: 16px; 
+            color: var(--accent); 
+            display: flex; 
+            align-items: center; 
+        }
+        .hn-logo::after { 
+            content: '_'; 
+            margin-left: 4px; 
+            animation: blink 1s step-end infinite; 
+            color: var(--accent);
+        }
+        @keyframes blink { 50% { opacity: 0; } }
         .hn-upvote { border-color: rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 6px; }
         #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `,
