@@ -263,27 +263,32 @@ const SYSTEM_STYLE = `
     #presets-icon { display: inline-block; transition: transform 0.3s ease; }
     .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
 
-    /* --- Desktop Panel Toggle --- */
-    #panel-toggle { display: none; }
+    /* --- Desktop Panel Toggle (Drag Handle) --- */
+    #panel-handle { display: none; }
     @media (min-width: 769px) {
-        #panel-toggle {
-            display: block; position: absolute; top: 15px; left: 10px;
-            width: 24px; height: 24px; padding: 0;
-            background: transparent; border: none; color: inherit;
-            cursor: pointer; opacity: 0.5; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px;
+        #panel-handle {
+            display: block; position: absolute; top: 0; left: 0;
+            width: 20px; height: 100%;
+            background: transparent;
+            cursor: ew-resize;
+            z-index: 20;
         }
-        #panel-toggle:hover { opacity: 1; background: rgba(0,0,0,0.05); border-radius: 4px; }
+        /* Visual cue */
+        #panel-handle::before {
+            content: ""; position: absolute; top: 50%; left: 8px; width: 4px; height: 30px;
+            background: rgba(0,0,0,0.1); border-radius: 2px; transform: translateY(-50%);
+            transition: 0.2s;
+        }
+        #panel-handle:hover::before { background: rgba(0,0,0,0.3); }
         
         #theme-controls { 
-            padding-left: 40px; 
+            padding-left: 20px; 
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         #theme-controls.is-minimized {
-            transform: translateX(calc(100% - 44px));
+            transform: translateX(calc(100% - 20px));
         }
-        #theme-controls.is-minimized > *:not(#panel-toggle) {
+        #theme-controls.is-minimized > *:not(#panel-handle) {
             opacity: 0; pointer-events: none; transition: opacity 0.2s;
         }
     }
@@ -863,7 +868,7 @@ const App = {
         navLinks: document.querySelector('.hn-nav-links'),
         header: document.querySelector('.hn-header'),
         themeControls: document.getElementById('theme-controls'),
-        panelToggle: document.getElementById('panel-toggle')
+        panelHandle: document.getElementById('panel-handle')
     },
 
     async init() {
@@ -921,11 +926,62 @@ const App = {
             this.elements.presetsToggle.addEventListener('click', () => this.togglePresets());
         }
 
-        if (this.elements.panelToggle) {
-            this.elements.panelToggle.addEventListener('click', () => {
-                const isMin = this.elements.themeControls.classList.toggle('is-minimized');
-                this.elements.panelToggle.textContent = isMin ? '◀' : '▶';
-            });
+        if (this.elements.panelHandle) {
+            let isDragging = false;
+            let startX = 0;
+            const threshold = 50;
+
+            const startDrag = (e) => {
+                if (window.innerWidth < 769) return;
+                isDragging = true;
+                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                this.elements.themeControls.style.transition = 'none';
+            };
+
+            const doDrag = (e) => {
+                if (!isDragging) return;
+                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                const deltaX = clientX - startX;
+                const isMin = this.elements.themeControls.classList.contains('is-minimized');
+
+                if (!isMin && deltaX > 0) {
+                    this.elements.themeControls.style.transform = `translateX(${deltaX}px)`;
+                } else if (isMin && deltaX < 0) {
+                    this.elements.themeControls.style.transform = `translateX(calc(100% - 20px + ${deltaX}px))`;
+                }
+            };
+
+            const endDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                this.elements.themeControls.style.transition = '';
+                
+                let clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+                const deltaX = clientX - startX;
+                const isMin = this.elements.themeControls.classList.contains('is-minimized');
+
+                this.elements.themeControls.style.transform = '';
+
+                if (Math.abs(deltaX) < 5) {
+                    this.elements.themeControls.classList.toggle('is-minimized');
+                } else {
+                    if (!isMin && deltaX > threshold) {
+                        this.elements.themeControls.classList.add('is-minimized');
+                    } else if (isMin && deltaX < -threshold) {
+                        this.elements.themeControls.classList.remove('is-minimized');
+                    }
+                }
+            };
+
+            const handle = this.elements.panelHandle;
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag, {passive: true});
+            
+            document.addEventListener('mousemove', doDrag);
+            document.addEventListener('touchmove', doDrag, {passive: true});
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
         }
         
         // Close menu when a link is clicked
