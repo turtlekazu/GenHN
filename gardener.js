@@ -379,6 +379,7 @@ const STYLE_PRESETS = {
             height: 50px;
             top: 12px;
         }
+        .hn-header.is-open-active { margin: 0; top: 0; width: 100%; border-radius: 0; }
         .hn-logo { 
             text-transform: uppercase; 
             letter-spacing: 0.2em; 
@@ -520,6 +521,7 @@ const STYLE_PRESETS = {
             background: rgba(10, 13, 20, 0.8);
             top: 15px;
         }
+        .hn-header.is-open-active { margin: 0; top: 0; width: 100%; border-radius: 0; }
         .hn-logo { 
             text-transform: uppercase; 
             letter-spacing: 4px; 
@@ -646,6 +648,7 @@ const STYLE_PRESETS = {
             border-radius: 4px;
             top: 10px;
         }
+        .hn-header.is-open-active { margin: 0; top: 0; width: 100%; border-radius: 0; }
         .hn-logo { 
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; 
             font-size: 16px; 
