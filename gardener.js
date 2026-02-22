@@ -944,6 +944,10 @@ const App = {
             const domain = story.url ? new URL(story.url).hostname : '';
             const domainHtml = domain ? `<span class="hn-story-domain">(${domain})</span>` : '';
             const timeAgo = HNData.formatTime(story.time);
+            
+            // Escape HTML in user content
+            const title = this.escapeHtml(story.title || '');
+            const author = this.escapeHtml(story.by || '');
 
             const listItem = document.createElement('li');
             listItem.className = 'hn-story-item';
@@ -951,12 +955,12 @@ const App = {
                 <div class="hn-story-rank">${rank}</div>
                 <div class="hn-story-content">
                     <div class="hn-story-title-row">
-                        <a href="${story.url || '#'}" class="hn-story-title" target="_blank">${story.title}</a>
+                        <a href="${story.url || '#'}" class="hn-story-title" target="_blank">${title}</a>
                         ${domainHtml}
                     </div>
                     <div class="hn-story-meta">
                         <span class="hn-story-points">${story.score} pts</span> • 
-                        <span class="hn-story-author">${story.by}</span> • 
+                        <span class="hn-story-author">${author}</span> • 
                         <span class="hn-story-time">${timeAgo}</span>
                     </div>
                 </div>
@@ -964,6 +968,15 @@ const App = {
             `;
             this.elements.listElement.appendChild(listItem);
         });
+    },
+
+    escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     },
 
     handleGenerate() {
