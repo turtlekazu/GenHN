@@ -567,7 +567,7 @@ const STYLE_PRESETS = {
             font-size: 18px;
         }
         .hn-upvote { border-color: rgba(255,255,255,0.2); }
-        #theme-controls #generate-btn { background: var(--ps-blue) !important; color: #fff !important; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Academic": `
@@ -598,7 +598,7 @@ const STYLE_PRESETS = {
         .hn-story-title { font-size: 28px; font-weight: 500; }
         .hn-story-rank { font-size: 24px; font-weight: bold; width: 40px; }
         .hn-upvote { border: 1.5px solid #ccc; width: 36px; height: 36px; }
-        #theme-controls #generate-btn { background: var(--a-accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Search": `
@@ -628,7 +628,7 @@ const STYLE_PRESETS = {
         .hn-story-title { color: #1a0dab; font-weight: 400; text-decoration: none; }
         .hn-story-title:hover { text-decoration: underline; }
         .hn-upvote { border-radius: 4px; width: auto; height: auto; padding: 2px 6px; border: 1px solid #dadce0; font-size: 11px; }
-        #theme-controls #generate-btn { background: var(--g-blue) !important; color: #fff !important; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Universal": `
@@ -654,7 +654,7 @@ const STYLE_PRESETS = {
         .hn-story-item:hover { background: #e8e8e8; transform: scale(1.02); }
         .hn-story-title { font-size: 28px; font-weight: 700; margin-bottom: 0; }
         .hn-upvote { background: var(--accent); color: #fff; border: none; width: 40px; height: 40px; font-weight: 700; opacity: 1; }
-        #theme-controls #generate-btn { background: var(--s-blue) !important; color: #fff !important; }
+        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Intelligence": `
