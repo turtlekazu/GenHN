@@ -6,28 +6,49 @@
 const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
 const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
-Output ONLY raw CSS. No explanations. No markdown. No code fences. No comments.
+Output ONLY raw CSS. No explanations, markdown, code fences, or comments.
 
-Define all of these CSS custom properties on :root, then optionally add component overrides:
+=== READABILITY (mandatory) ===
+First decide: is the theme DARK or LIGHT based on --bg luminance?
+  DARK  bg → --text must be #ddd or lighter  | --subtext must be #999 or lighter
+  LIGHT bg → --text must be #333 or darker   | --subtext must be #666 or darker
+  --card-bg must be a noticeably different shade/hue from --bg (never identical).
+  --more-btn-color must clearly contrast --more-btn-bg (light-on-dark or dark-on-light).
+  --mobile-upvote-color must clearly contrast --mobile-upvote-bg.
 
+=== VARIETY (mandatory) ===
+Commit fully to the prompt's aesthetic. Generic white or light-gray --bg is forbidden.
+Pick a bold, on-theme background (deep navy, warm parchment, neon black, terracotta, etc.).
+
+Vary these dimensions to match the mood:
+  --font-main:   'Georgia,serif' for editorial | 'Courier New,monospace' for terminal/hacker |
+                 Impact,'Arial Narrow',sans-serif for bold/poster | system-ui for clean
+  --item-radius: 0px = raw/brutalist | 6-10px = modern | 20-40px = playful/bubbly
+  --item-border / --item-shadow: use thick borders for brutalist, glows for neon, none for minimal
+
+After :root, add component overrides — this is REQUIRED, not optional.
+Use .hn-story-item, .hn-logo, .hn-header, .hn-upvote, body to add hover effects,
+clip-paths, gradients, box-shadows, text-shadows, or keyframe animations that
+make the aesthetic unmistakable. A theme with only :root variables is incomplete.
+
+=== VARIABLES ===
 :root {
-    --bg:                  /* page background */;
-    --card-bg:             /* story card background */;
-    --text:                /* primary text */;
-    --subtext:             /* secondary/meta text */;
-    --accent:              /* links and accent */;
-    --header-bg:           /* header background (rgba allowed) */;
-    --font-main:           /* font stack */;
-    --item-radius:         /* card border-radius */;
-    --item-border:         /* border shorthand or none */;
-    --item-shadow:         /* box-shadow or none */;
-    --more-btn-bg:         /* More button background */;
-    --more-btn-color:      /* More button text color */;
-    --mobile-upvote-bg:    /* upvote bg on mobile */;
-    --mobile-upvote-color: /* upvote text on mobile */;
+    --bg:
+    --card-bg:
+    --text:
+    --subtext:
+    --accent:
+    --header-bg:
+    --font-main:
+    --item-radius:
+    --item-border:
+    --item-shadow:
+    --more-btn-bg:
+    --more-btn-color:
+    --mobile-upvote-bg:
+    --mobile-upvote-color:
 }
 
-Optional selectors to override: .hn-header, .hn-story-item, .hn-story-title, .hn-upvote, .hn-logo, body.
 Output nothing except the CSS.`;
 
 /**
