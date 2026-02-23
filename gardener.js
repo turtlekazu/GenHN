@@ -505,7 +505,7 @@ const SYSTEM_STYLE = `
             transform: translateX(calc(100% - 20px));
         }
         #theme-controls.is-minimized > *:not(#panel-handle) {
-            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+            opacity: 0 !important; pointer-events: none; transition: opacity 0.2s;
         }
     }
 
@@ -663,7 +663,7 @@ const PANEL_STYLE = `
         #panel-handle:hover::before { opacity: 0.4; }
         #theme-controls { padding-left: 20px; transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); }
         #theme-controls.is-minimized { transform: translateX(calc(100% - 20px)); }
-        #theme-controls.is-minimized > *:not(#panel-handle) { opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        #theme-controls.is-minimized > *:not(#panel-handle) { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
     }
     @media (max-width: 768px) {
         #theme-controls {
