@@ -8,6 +8,7 @@ An experimental project that dynamically reconstructs the Hacker News interface 
 
 - **10 Design Presets**: Instantly switch between design systems inspired by iconic brand aesthetics.
 - **Preset Panel**: One-click buttons for each built-in theme, plus a free-text input for applying any theme by name.
+- **AI Theme Generation**: Enter a Gemini API key to generate entirely new design themes from any free-text prompt.
 - **Feed Navigation**: Switch between Hacker News feeds — Top, New, Ask, Show, and Jobs.
 - **Live HN Data**: Fetches real stories from the Hacker News Firebase API (30 stories per page, with infinite scroll via "More").
 - **No Build Step**: Pure vanilla JS + CSS. Open `index.html` directly in a browser.
@@ -45,7 +46,18 @@ The entire application lives in two files:
   - `HNData` — Hacker News API integration (feed fetching, pagination).
   - `App` — Main controller (theming, rendering, event handling, localStorage persistence).
 
-## Adding a New Theme
+## AI Theme Generation
+
+GenHN can generate new themes on-the-fly using the [Gemini API](https://aistudio.google.com/apikey).
+
+1. Obtain a free API key from [Google AI Studio](https://aistudio.google.com/apikey).
+2. Open the control panel (bottom-right) and expand the **Gemini API Key** section.
+3. Paste your key and click **Save** — it is stored only in your browser's localStorage and never sent anywhere other than the Gemini API.
+4. Type any design description in the theme input field (e.g. `"brutalist newspaper"`, `"cozy dark cafe"`) and click **Apply**.
+
+The app calls `gemini-2.5-flash` to produce a complete CSS theme from your prompt, which is then applied immediately without a page reload.
+
+## Adding a New Theme Manually
 
 Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern. Each theme overrides CSS custom properties (and optionally adds component-specific rules).
 
