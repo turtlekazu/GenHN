@@ -162,6 +162,57 @@ TEMPLATE (fill every value; all blocks are required)
 /* Optional: .hn-story-title, .hn-nav-links a, .hn-story-item:first-child, body */
 `;
 
+const EXTERNAL_AI_PROMPT_TEMPLATE = `You are a CSS world-builder for a Hacker News reader app called GenHN.
+Output ONLY raw CSS. No explanations, markdown, code fences, or comments.
+
+Theme request: [DESCRIBE YOUR THEME HERE — e.g. "brutalist newspaper" or "cozy dark cafe"]
+
+━━━ RULES ━━━
+Every theme must have ALL FOUR dimensions:
+  LAYOUT      — change the story list structure (grid? columns? dense? airy?)
+  INTERACTION — hover effects using transform, animation, or filter (not just color)
+  ATMOSPHERE  — ambient effect via body::before, @keyframes, or background
+  IDENTITY    — a header + logo that could only belong to this world
+
+CONTRAST LAW (mandatory):
+  DARK bg  → --text: light (#e0e0e0+)  --subtext: mid (#aaa+)  --card-bg: noticeably lighter
+  LIGHT bg → --text: dark (#1a1a1a)    --subtext: mid (#666)   --card-bg: noticeably darker
+
+━━━ CSS VARIABLES (:root) ━━━
+--bg              page background
+--card-bg         story card background
+--text            main text color
+--subtext         metadata / secondary text
+--accent          links & interactive elements
+--header-bg       nav header background
+--header-border   header bottom border (e.g. "1px solid #ccc")
+--header-height   nav height in px (50–80px)
+--font-main       main typeface
+--item-radius     card corner radius
+--item-border     card border (e.g. "1px solid rgba(0,0,0,0.08)")
+--item-shadow     card box-shadow
+--item-transition full transition value (use cubic-bezier for spring physics)
+--story-gap       gap between cards (0–40px)
+--title-size      story title font-size (15–32px)
+--upvote-size     upvote button size (24–52px)
+--load-more-radius "More" button border-radius (0=square, 100px=pill)
+--more-btn-bg     "More" button background
+--more-btn-color  "More" button text color
+--mobile-upvote-bg     mobile upvote background
+--mobile-upvote-color  mobile upvote text color
+
+━━━ KEY CLASSES ━━━
+.hn-header            sticky top nav bar
+.hn-logo              the "Y" site logo
+.hn-story-list        <ol> containing all cards
+.hn-story-item        individual story card
+.hn-story-item:hover  card hover state
+.hn-story-rank        rank number (1. 2. 3.)
+.hn-story-title       headline link
+.hn-story-meta        points / author / time row
+.hn-upvote            upvote triangle button
+body::before          use for overlays / atmospheric effects`;
+
 /**
  * System Core Styles (Layout, Typography Base, Responsive Logic)
  * Themes should override variables in :root or specific classes if needed.
@@ -1379,6 +1430,8 @@ const App = {
         this.renderPresetButtons();
         this.renderSavedThemeButtons();
         this.renderApiKeySection();
+        this.renderPasteCssSection();
+        this.renderPromptTemplateSection();
         this.bindEvents();
 
         const savedPreset = localStorage.getItem('genhn-theme');
@@ -1719,6 +1772,101 @@ const App = {
                 this.renderApiKeySection();
             });
         }
+
+        this.elements.themeControls.appendChild(section);
+    },
+
+    renderPasteCssSection() {
+        const existing = document.getElementById('paste-css-section');
+        if (existing) existing.remove();
+
+        const section = document.createElement('div');
+        section.id = 'paste-css-section';
+        section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
+
+        section.innerHTML = `
+            <div id="paste-css-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Paste CSS</span>
+                <span id="paste-css-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+            </div>
+            <div id="paste-css-form" style="display:none; flex-direction:column; gap:6px;">
+                <textarea id="paste-css-input" placeholder=":root {
+  --bg: #f5f5f7;        /* page background   */
+  --card-bg: #ffffff;   /* story card        */
+  --text: #1d1d1f;      /* main text         */
+  --subtext: #86868b;   /* metadata / nav    */
+  --accent: #0066cc;    /* links & buttons   */
+  --header-bg: rgba(255,255,255,0.8);
+  --font-main: sans-serif;
+}
+
+/* optional: component overrides */
+.hn-story-item { border-radius: 16px; }
+.hn-header { backdrop-filter: blur(20px); }" style="font-size:11px; min-width:0; width:100%; height:160px; resize:vertical; font-family:monospace; box-sizing:border-box;"></textarea>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <input type="text" id="paste-css-name" placeholder="Theme name (optional)" style="font-size:11px; min-width:0; flex:1;">
+                    <button id="paste-css-apply-btn" style="font-size:11px; white-space:nowrap;">Apply</button>
+                </div>
+            </div>`;
+
+        section.querySelector('#paste-css-toggle').addEventListener('click', () => {
+            const form = section.querySelector('#paste-css-form');
+            const icon = section.querySelector('#paste-css-icon');
+            const isOpen = form.style.display !== 'none';
+            form.style.display = isOpen ? 'none' : 'flex';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        });
+
+        section.querySelector('#paste-css-apply-btn').addEventListener('click', () => {
+            const css = section.querySelector('#paste-css-input').value.trim();
+            if (!css) return;
+            const name = section.querySelector('#paste-css-name').value.trim() || 'Custom CSS';
+            this.applyStyle(css, null, name);
+            this.togglePresets(true);
+            this.renderSaveButton(true);
+        });
+
+        this.elements.themeControls.appendChild(section);
+    },
+
+    renderPromptTemplateSection() {
+        const existing = document.getElementById('prompt-template-section');
+        if (existing) existing.remove();
+
+        const section = document.createElement('div');
+        section.id = 'prompt-template-section';
+        section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
+
+        section.innerHTML = `
+            <div id="prompt-template-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">AI Prompt Template</span>
+                <span id="prompt-template-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+            </div>
+            <div id="prompt-template-form" style="display:none; flex-direction:column; gap:6px;">
+                <p style="font-size:10px; opacity:0.55; margin:0; line-height:1.5;">Copy this prompt, paste it into ChatGPT / Claude / Gemini, and replace the bracketed line with your theme idea. Then paste the resulting CSS into the <strong>Paste CSS</strong> section above.</p>
+                <textarea id="prompt-template-text" readonly style="font-size:10px; min-width:0; width:100%; height:180px; resize:vertical; font-family:monospace; box-sizing:border-box; opacity:0.75;"></textarea>
+                <button id="prompt-template-copy-btn" style="font-size:11px; align-self:flex-end;">Copy Prompt</button>
+            </div>`;
+
+        section.querySelector('#prompt-template-toggle').addEventListener('click', () => {
+            const form = section.querySelector('#prompt-template-form');
+            const icon = section.querySelector('#prompt-template-icon');
+            const isOpen = form.style.display !== 'none';
+            form.style.display = isOpen ? 'none' : 'flex';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        });
+
+        const textarea = section.querySelector('#prompt-template-text');
+        textarea.value = EXTERNAL_AI_PROMPT_TEMPLATE;
+
+        const copyBtn = section.querySelector('#prompt-template-copy-btn');
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(EXTERNAL_AI_PROMPT_TEMPLATE).then(() => {
+                const original = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => { copyBtn.textContent = original; }, 2000);
+            });
+        });
 
         this.elements.themeControls.appendChild(section);
     },
