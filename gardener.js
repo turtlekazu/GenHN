@@ -1473,7 +1473,6 @@ const App = {
             btn.onclick = () => {
                 this.elements.promptInput.value = themeName;
                 this.applyStyle(STYLE_PRESETS[themeName], themeName);
-                this.togglePresets(true);
             };
             this.elements.presetButtons.appendChild(btn);
         });
