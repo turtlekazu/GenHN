@@ -1941,7 +1941,7 @@ const App = {
                 <div style="display:flex; flex-direction:column; gap:6px; ${!hasKey ? 'opacity:0.35; pointer-events:none;' : ''}">
                     <div style="font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Prompt</div>
                     <div style="display:flex; gap:10px; align-items:center; width:100%;">
-                        <input type="text" id="prompt-input" placeholder="Enter theme..." style="min-width:0;" ${!hasKey ? 'disabled' : ''}>
+                        <input type="text" id="prompt-input" placeholder="Enter theme..." style="min-width:0; font-size:11px;" ${!hasKey ? 'disabled' : ''}>
                         <button id="generate-btn" style="white-space:nowrap; font-weight:600;" ${!hasKey ? 'disabled' : ''}>Apply</button>
                     </div>
                 </div>
@@ -2020,7 +2020,7 @@ const App = {
 .hn-story-item { border-radius: 16px; }
 .hn-header { backdrop-filter: blur(20px); }" style="font-size:11px; min-width:0; width:100%; height:160px; resize:vertical; font-family:monospace; box-sizing:border-box;"></textarea>
                 <div style="display:flex; gap:6px; align-items:center;">
-                    <input type="text" id="paste-css-name" placeholder="Theme name (optional)" style="font-size:11px; min-width:0; flex:1;">
+                    <input type="text" id="paste-css-name" placeholder="Theme name" style="font-size:11px; min-width:0; flex:1;">
                     <button id="paste-css-apply-btn" style="white-space:nowrap; font-weight:600;">Apply</button>
                 </div>
                 <div id="paste-css-save-row" style="display:none; justify-content:flex-end;">
@@ -2047,8 +2047,8 @@ const App = {
 
         section.querySelector('#paste-css-apply-btn').addEventListener('click', () => {
             const css = textarea.value.trim();
-            if (!css) return;
-            const name = section.querySelector('#paste-css-name').value.trim() || 'Custom CSS';
+            const name = section.querySelector('#paste-css-name').value.trim();
+            if (!css || !name) return;
             this.applyStyle(css, null, name);
             saveRow.style.display = 'flex';
             saveBtn.textContent = 'Save as Preset';
@@ -2056,7 +2056,8 @@ const App = {
 
         saveBtn.addEventListener('click', () => {
             const css = textarea.value.trim();
-            const name = section.querySelector('#paste-css-name').value.trim() || 'Custom CSS';
+            const name = section.querySelector('#paste-css-name').value.trim();
+            if (!name) return;
             const saved = this.saveThemeAs(css, name);
             saveBtn.textContent = saved ? 'Saved!' : 'Already saved';
             setTimeout(() => { saveBtn.textContent = 'Save as Preset'; }, 2000);
