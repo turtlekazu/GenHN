@@ -1,34 +1,16 @@
 # GenHN
 
-Hacker Newsのインターフェースを、世界的に有名なプロダクトやデザインシステムの「本質（エッセンス）」を用いて動的に再構築する実験的プロジェクトです。
+An experimental project that dynamically reconstructs the Hacker News interface using the visual "essence" of world-renowned products and design systems.
 
-## コア・アイデンティティ
+## Core Identity
 
-- **Brand Identity Swap**: インプットに応じて、そのブランドを象徴する視覚的言語をHacker Newsに適用。
-- **Modern Web Aesthetics**: グラスモーフィズム、高度なアニメーション、タイポグラフィの最適化。
+- **Design Essence Swap**: Translate a given design language into the Hacker News UI — reproducing its color, shape, motion, and atmosphere.
+- **Modern Web Aesthetics**: Leverage glassmorphism, advanced animations, and typographic refinement as a baseline.
 
-## デザインプリセット
+## Development Guidelines
 
-- `Minimalist`: 洗練された透明感とサンセリフ体による究極のミニマリズム。
-- `Intelligence`: 深い黒とグリーンのアクセントによる、モダンで知的なAIインターフェース。
-- `Search`: 機能美を追求し、ホワイトスペースを贅沢に使った検索エンジン風。
-- `Universal`: 親しみやすい大きな角丸と、大胆なカードUI。
-- `Glitch`: ネオンカラーと点滅する警告、グリッチエフェクトによる未来派。
-- `Playful`: 赤と白のポップな配色と、太い枠線によるゲーム機風UI。
-- `Glow`: 深いダーク背景に、輝くブルーのアクセントが際立つ次世代機風。
-- `Academic`: 学術的で落ち着いた印象を与える、セリフ体とベージュ基調のデザイン。
-- `Washi`: 和紙の生成り色と明朝体、深緑のアクセントによる和の美意識。
-- `8-Bit`: 漆黒の背景にリン光グリーン、ピクセル感を強調したレトロPC風。
-- `Circuit`: プリント基板のグリッドと赤いLED点滅、電子工作の世界観。
-- `Aubergine`: 茄子紫とオレンジのコントラストによる、Unityデスクトップ風。
-
-## 開発ガイドライン
-
-- **Trademark Neutrality**: ブランド名そのものではなく、その「色」「形」「動き」を再現すること。商標を含む直接的な表現は行わない。
-- **Surgical Styling**: `presets.js`の`STYLE_PRESETS`に新しいエッセンスを追加。
-- **Performance**: 可能な限りCSS変数とTransitionsを使用し、スムーズな体験を提供。
-
-## 今後の計画
-
-- 記事詳細（コメント）のブランドごとの最適化
-- さらなる「デザインエッセンス」の追加（例：Industrial, Cyberpunk, Bio-Organic）
+- **Trademark Neutrality**: Reproduce the "color", "shape", and "motion" of a brand — never its name or trademarked elements directly.
+- **Surgical Styling**: Add new themes to `STYLE_PRESETS` in `presets.js`. Each entry is a self-contained CSS string using custom properties.
+- **Performance**: Prefer CSS variables and transitions over JavaScript-driven style changes for smooth, low-overhead theming.
+- **Contrast Law**: Always ensure readable contrast — dark backgrounds require light text (`#e0e0e0+`), light backgrounds require dark text (`#1a1a1a`). Never pair similar-value colors.
+- **Theme Completeness**: A theme must define all four dimensions — Layout, Interaction, Atmosphere, and Identity. Color-only changes are insufficient.
