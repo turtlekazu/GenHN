@@ -553,6 +553,8 @@ const SYSTEM_STYLE = `
  * Define variables and minimal specific overrides.
  */
 const STYLE_PRESETS = {
+    "None": "",
+
     "Minimalist": `
         :root {
             --bg: #f5f5f7;
@@ -1826,7 +1828,7 @@ const App = {
         }
 
         const applyFn = () => {
-            this.elements.styleTag.textContent = SYSTEM_STYLE + css;
+            this.elements.styleTag.textContent = css === "" ? "" : SYSTEM_STYLE + css;
         };
 
         if (!document.startViewTransition) { applyFn(); return; }
