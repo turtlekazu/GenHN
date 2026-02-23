@@ -1412,8 +1412,8 @@ const App = {
 
     elements: {
         styleTag: document.getElementById('generated-style'),
-        promptInput: document.getElementById('prompt-input'),
-        generateBtn: document.getElementById('generate-btn'),
+        promptInput: null,
+        generateBtn: null,
         presetButtons: document.getElementById('preset-buttons'),
         presetsToggle: document.getElementById('presets-toggle'),
         presetsIcon: document.getElementById('presets-icon'),
@@ -1429,7 +1429,7 @@ const App = {
     async init() {
         this.renderPresetButtons();
         this.renderSavedThemeButtons();
-        this.renderApiKeySection();
+        this.renderGeminiSection();
         this.renderPasteCssSection();
         this.renderPromptTemplateSection();
         this.bindEvents();
@@ -1471,7 +1471,6 @@ const App = {
             btn.onmouseover = () => { btn.style.background = 'rgba(0,0,0,0.1)'; };
             btn.onmouseout = () => { btn.style.background = 'rgba(0,0,0,0.05)'; };
             btn.onclick = () => {
-                this.elements.promptInput.value = themeName;
                 this.applyStyle(STYLE_PRESETS[themeName], themeName);
             };
             this.elements.presetButtons.appendChild(btn);
@@ -1479,10 +1478,6 @@ const App = {
     },
 
     bindEvents() {
-        this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
-        this.elements.promptInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.handleGenerate();
-        });
         this.elements.loadMoreBtn.addEventListener('click', () => this.loadMore());
         this.elements.menuToggle.addEventListener('click', () => this.toggleMenu());
         
@@ -1681,7 +1676,7 @@ const App = {
 
     clearApiKey() {
         localStorage.removeItem('genhn-gemini-key');
-        this.renderApiKeySection();
+        this.renderGeminiSection();
     },
 
     extractCss(text) {
@@ -1732,31 +1727,60 @@ const App = {
         return css;
     },
 
-    renderApiKeySection() {
-        const existing = document.getElementById('api-key-section');
+    renderGeminiSection() {
+        const existing = document.getElementById('gemini-section');
         if (existing) existing.remove();
 
         const section = document.createElement('div');
-        section.id = 'api-key-section';
+        section.id = 'gemini-section';
         section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
 
-        if (this.getApiKey()) {
-            section.innerHTML = `
-                <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
-                    <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
-                </div>`;
+        const hasKey = !!this.getApiKey();
+        section.innerHTML = `
+            <div id="gemini-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI</span>
+                <span id="gemini-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+            </div>
+            <div id="gemini-form" style="display:none; flex-direction:column; gap:6px;">
+                <div id="api-key-section" style="display:flex; flex-direction:column; gap:6px;">
+                    ${hasKey ? `
+                    <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
+                        <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
+                    </div>` : `
+                    <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                        <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">API Key</span>
+                        <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+                    </div>
+                    <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
+                        <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
+                        <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
+                    </div>`}
+                </div>
+                <div style="display:flex; gap:10px; align-items:center; width:100%;">
+                    <input type="text" id="prompt-input" placeholder="Enter theme..." style="min-width:0;" ${!hasKey ? 'disabled' : ''}>
+                    <button id="generate-btn" style="white-space:nowrap; font-weight:600;">Apply</button>
+                </div>
+            </div>`;
+
+        section.querySelector('#gemini-toggle').addEventListener('click', () => {
+            const form = section.querySelector('#gemini-form');
+            const icon = section.querySelector('#gemini-icon');
+            const isOpen = form.style.display !== 'none';
+            form.style.display = isOpen ? 'none' : 'flex';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        });
+
+        this.elements.promptInput = section.querySelector('#prompt-input');
+        this.elements.generateBtn = section.querySelector('#generate-btn');
+        this.elements.generateBtn.addEventListener('click', () => this.handleGenerate());
+        this.elements.promptInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.handleGenerate();
+        });
+
+        if (hasKey) {
             section.querySelector('#api-key-clear-btn').addEventListener('click', () => this.clearApiKey());
         } else {
-            section.innerHTML = `
-                <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
-                    <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini API Key</span>
-                    <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
-                </div>
-                <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
-                    <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
-                    <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
-                </div>`;
             section.querySelector('#api-key-toggle').addEventListener('click', () => {
                 const form = section.querySelector('#api-key-form');
                 const icon = section.querySelector('#api-key-icon');
@@ -1768,11 +1792,16 @@ const App = {
                 const val = section.querySelector('#api-key-input').value.trim();
                 if (!val) return;
                 this.saveApiKey(val);
-                this.renderApiKeySection();
+                this.renderGeminiSection();
             });
         }
 
-        this.elements.themeControls.appendChild(section);
+        const pasteCss = document.getElementById('paste-css-section');
+        if (pasteCss) {
+            this.elements.themeControls.insertBefore(section, pasteCss);
+        } else {
+            this.elements.themeControls.appendChild(section);
+        }
     },
 
     renderPasteCssSection() {
@@ -1912,6 +1941,12 @@ const App = {
     },
 
     expandApiKeySection() {
+        const geminiForm = document.getElementById('gemini-form');
+        const geminiIcon = document.getElementById('gemini-icon');
+        if (geminiForm && geminiForm.style.display === 'none') {
+            geminiForm.style.display = 'flex';
+            if (geminiIcon) geminiIcon.style.transform = 'rotate(0deg)';
+        }
         const form = document.getElementById('api-key-form');
         const icon = document.getElementById('api-key-icon');
         if (form && form.style.display === 'none') {
@@ -1990,7 +2025,6 @@ const App = {
             btn.addEventListener('mouseover', () => { btn.style.background = 'rgba(0,0,0,0.1)'; });
             btn.addEventListener('mouseout', () => { btn.style.background = 'rgba(0,0,0,0.05)'; });
             btn.addEventListener('click', () => {
-                this.elements.promptInput.value = theme.prompt;
                 this.applyStyle(theme.css, null, theme.prompt);
                 this.renderSaveButton(false);
                 this.togglePresets(true);
