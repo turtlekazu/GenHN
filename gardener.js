@@ -481,6 +481,7 @@ const SYSTEM_STYLE = `
 
     /* --- Desktop Panel Toggle (Drag Handle) --- */
     #panel-handle { display: none; }
+    #mobile-drag-pill { display: none; }
     @media (min-width: 769px) {
         #panel-handle {
             display: block; position: absolute; top: 0; left: 0;
@@ -584,8 +585,24 @@ const SYSTEM_STYLE = `
         #theme-controls {
             bottom: 20px; right: 20px; width: auto;
             max-width: calc(100vw - 40px);
-            padding: 15px;
+            padding: 15px; padding-top: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #theme-controls.is-hidden-mobile {
+            transform: translateY(calc(100% - 24px));
+        }
+        #theme-controls.is-hidden-mobile > *:not(#mobile-drag-pill) {
+            opacity: 0 !important; pointer-events: none; transition: opacity 0.2s;
+        }
+        #mobile-drag-pill {
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 8px; cursor: grab; flex-shrink: 0;
+            touch-action: none; margin-bottom: 2px;
+        }
+        #mobile-drag-pill::before {
+            content: ""; width: 36px; height: 4px;
+            background: currentColor; opacity: 0.2; border-radius: 2px;
         }
         .hn-footer { padding: 40px 20px 160px; }
         .hn-footer-links { flex-direction: column; gap: 10px; }
@@ -651,6 +668,7 @@ const PANEL_STYLE = `
     #presets-icon { display: inline-block; transition: transform 0.3s ease; }
     .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
     #panel-handle { display: none; }
+    #mobile-drag-pill { display: none; }
     @media (min-width: 769px) {
         #panel-handle {
             display: block; position: absolute; top: 0; left: 0;
@@ -668,8 +686,24 @@ const PANEL_STYLE = `
     @media (max-width: 768px) {
         #theme-controls {
             bottom: 20px; right: 20px; width: auto;
-            max-width: calc(100vw - 40px); padding: 15px;
+            max-width: calc(100vw - 40px); padding: 15px; padding-top: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #theme-controls.is-hidden-mobile {
+            transform: translateY(calc(100% - 24px));
+        }
+        #theme-controls.is-hidden-mobile > *:not(#mobile-drag-pill) {
+            opacity: 0 !important; pointer-events: none; transition: opacity 0.2s;
+        }
+        #mobile-drag-pill {
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 8px; cursor: grab; flex-shrink: 0;
+            touch-action: none; margin-bottom: 2px;
+        }
+        #mobile-drag-pill::before {
+            content: ""; width: 36px; height: 4px;
+            background: currentColor; opacity: 0.2; border-radius: 2px;
         }
         #preset-buttons { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         #presets-toggle { margin-bottom: 2px; }
@@ -1617,62 +1651,88 @@ const App = {
 
         if (this.elements.panelHandle) {
             let isDragging = false;
-            let startX = 0;
+            let startX = 0, startY = 0;
             const threshold = 50;
 
             const startDrag = (e) => {
-                if (window.innerWidth < 769) return;
                 isDragging = true;
-                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                if (window.innerWidth < 769) {
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                }
                 this.elements.themeControls.style.transition = 'none';
             };
 
             const doDrag = (e) => {
                 if (!isDragging) return;
-                const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                const deltaX = clientX - startX;
-                const isMin = this.elements.themeControls.classList.contains('is-minimized');
-
-                if (!isMin && deltaX > 0) {
-                    this.elements.themeControls.style.transform = `translateX(${deltaX}px)`;
-                } else if (isMin && deltaX < 0) {
-                    this.elements.themeControls.style.transform = `translateX(calc(100% - 20px + ${deltaX}px))`;
+                const tc = this.elements.themeControls;
+                if (window.innerWidth < 769) {
+                    const deltaY = e.touches[0].clientY - startY;
+                    const isHidden = tc.classList.contains('is-hidden-mobile');
+                    if (!isHidden && deltaY > 0) {
+                        tc.style.transform = `translateY(${deltaY}px)`;
+                    } else if (isHidden && deltaY < 0) {
+                        tc.style.transform = `translateY(calc(100% - 24px + ${deltaY}px))`;
+                    }
+                } else {
+                    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                    const deltaX = clientX - startX;
+                    const isMin = tc.classList.contains('is-minimized');
+                    if (!isMin && deltaX > 0) {
+                        tc.style.transform = `translateX(${deltaX}px)`;
+                    } else if (isMin && deltaX < 0) {
+                        tc.style.transform = `translateX(calc(100% - 20px + ${deltaX}px))`;
+                    }
                 }
             };
 
             const endDrag = (e) => {
                 if (!isDragging) return;
                 isDragging = false;
-                this.elements.themeControls.style.transition = '';
-                
-                let clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
-                const deltaX = clientX - startX;
-                const isMin = this.elements.themeControls.classList.contains('is-minimized');
-
-                this.elements.themeControls.style.transform = '';
-
-                if (Math.abs(deltaX) < 10) {
-                    this.elements.themeControls.classList.toggle('is-minimized');
+                const tc = this.elements.themeControls;
+                tc.style.transition = '';
+                tc.style.transform = '';
+                if (window.innerWidth < 769) {
+                    const deltaY = e.changedTouches[0].clientY - startY;
+                    const isHidden = tc.classList.contains('is-hidden-mobile');
+                    if (Math.abs(deltaY) < 10) {
+                        tc.classList.toggle('is-hidden-mobile');
+                    } else if (!isHidden && deltaY > threshold) {
+                        tc.classList.add('is-hidden-mobile');
+                    } else if (isHidden && deltaY < -threshold) {
+                        tc.classList.remove('is-hidden-mobile');
+                    }
                 } else {
-                    if (!isMin && deltaX > threshold) {
-                        this.elements.themeControls.classList.add('is-minimized');
+                    const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
+                    const deltaX = clientX - startX;
+                    const isMin = tc.classList.contains('is-minimized');
+                    if (Math.abs(deltaX) < 10) {
+                        tc.classList.toggle('is-minimized');
+                    } else if (!isMin && deltaX > threshold) {
+                        tc.classList.add('is-minimized');
                     } else if (isMin && deltaX < -threshold) {
-                        this.elements.themeControls.classList.remove('is-minimized');
+                        tc.classList.remove('is-minimized');
                     }
                 }
             };
 
+            // Desktop: drag handle (left edge)
             const handle = this.elements.panelHandle;
             handle.addEventListener('mousedown', startDrag);
             handle.addEventListener('touchstart', startDrag, {passive: true});
-            
             document.addEventListener('mousemove', doDrag);
-            document.addEventListener('touchmove', doDrag, {passive: true});
-            
             document.addEventListener('mouseup', endDrag);
-            document.addEventListener('touchend', endDrag);
+
+            // Mobile: drag pill (top of panel); non-passive touchmove to allow preventDefault
+            const mobilePill = document.getElementById('mobile-drag-pill');
+            if (mobilePill) {
+                mobilePill.addEventListener('touchstart', startDrag, {passive: true});
+                mobilePill.addEventListener('touchmove', (e) => { if (isDragging) e.preventDefault(); doDrag(e); }, {passive: false});
+                mobilePill.addEventListener('touchend', endDrag);
+            }
         }
-        
+
         // Handle navigation
         this.elements.navLinks.addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
