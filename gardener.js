@@ -964,6 +964,113 @@ const STYLE_PRESETS = {
             text-transform: uppercase;
         }
         #theme-controls #generate-btn { background: #ff00ff !important; color: #fff !important; border-radius: 0 !important; }
+    `,
+
+    "RaspberryPi": `
+        /* world: TERMINAL — Raspberry Pi official palette: #c51a4a (red) × #2d9e6b (PCB green) */
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: #111318;
+            --text: #e2e8f0;
+            --subtext: #94a3b8;
+            --accent: #c51a4a;
+            --header-bg: #0a0a0a;
+            --header-border: 2px solid #c51a4a;
+            --header-height: 54px;
+            --font-main: 'Courier New', Courier, monospace;
+            --item-radius: 0px;
+            --item-border: 1px solid rgba(197,26,74,0.2);
+            --item-shadow: none;
+            --story-gap: 4px;
+            --title-size: 15px;
+            --upvote-size: 30px;
+            --load-more-radius: 0px;
+            --item-transition: border-color 0.05s steps(1), background 0.1s;
+            --more-btn-bg: #c51a4a;
+            --more-btn-color: #fff;
+            --mobile-upvote-bg: #c51a4a;
+            --mobile-upvote-color: #fff;
+        }
+
+        /* ── Header ── */
+        .hn-header {
+            background: #0a0a0a;
+            backdrop-filter: none;
+            border-bottom: 2px solid #c51a4a;
+            box-shadow: 0 0 20px rgba(197,26,74,0.3);
+        }
+        .hn-logo {
+            color: #c51a4a;
+            font-size: 20px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px #c51a4a, 0 0 24px rgba(197,26,74,0.5);
+        }
+        .hn-logo::after {
+            content: '_';
+            animation: rpi-blink 1s step-end infinite;
+            color: #c51a4a;
+        }
+        @keyframes rpi-blink { 50% { opacity: 0; } }
+
+        .hn-nav-links a { font-size: 12px; letter-spacing: 0.05em; }
+        .hn-nav-links a:hover { color: #2d9e6b; opacity: 1; }
+
+        /* ── Story items ── */
+        .hn-story-item {
+            border-left: 3px solid #c51a4a;
+            border-top: none;
+            border-right: none;
+            border-bottom: 1px solid rgba(197,26,74,0.15);
+            background: #111318;
+        }
+        .hn-story-item:hover {
+            background: #180e14;
+            border-left: 3px solid #ff2060;
+            border-bottom-color: rgba(197,26,74,0.35);
+            box-shadow: -4px 0 16px rgba(197,26,74,0.4), inset 0 0 40px rgba(197,26,74,0.04);
+        }
+        .hn-story-rank { color: rgba(197,26,74,0.7); font-weight: 600; }
+
+        /* ── Upvote: PCB green ── */
+        .hn-upvote {
+            border-radius: 0;
+            border: 1px solid #2d9e6b;
+            color: #2d9e6b;
+            background: rgba(45,158,107,0.08);
+            opacity: 1;
+        }
+        .hn-upvote:hover {
+            background: rgba(45,158,107,0.2);
+            border-color: #3dce8b;
+            color: #3dce8b;
+            opacity: 1;
+        }
+
+        /* ── Atmosphere: scanline + ambient glow ── */
+        body { letter-spacing: 0.02em; }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.06) 0, rgba(0,0,0,0.06) 1px,
+                transparent 1px, transparent 3px
+            );
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(ellipse at 10% 90%, rgba(197,26,74,0.08) 0%, transparent 55%),
+                        radial-gradient(ellipse at 90% 10%, rgba(45,158,107,0.06) 0%, transparent 50%);
+        }
+        #theme-controls #generate-btn { background: #c51a4a !important; color: #fff !important; }
     `
 };
 
