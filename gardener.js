@@ -312,7 +312,7 @@ const SYSTEM_STYLE = `
     .hn-nav-links a { font-size: 14px; font-weight: 500; color: var(--subtext); }
     .hn-nav-links a:hover { color: var(--text); }
     .hn-auth a { font-size: 13px; font-weight: 600; color: var(--accent); }
-    .hn-github-link { border: 1px solid var(--accent); border-radius: 6px; padding: 3px 10px; font-size: 12px; opacity: 0.85; transition: opacity 0.2s; }
+    .hn-github-link { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--accent); border-radius: 6px; padding: 3px 10px; font-size: 12px; opacity: 0.85; transition: opacity 0.2s; }
     .hn-github-link:hover { opacity: 1; }
 
     /* --- Main Content --- */
