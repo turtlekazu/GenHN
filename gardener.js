@@ -596,7 +596,7 @@ const SYSTEM_STYLE = `
             content: ""; width: 36px; height: 4px;
             background: currentColor; opacity: 0.2; border-radius: 2px;
         }
-        .hn-footer { padding: 40px 20px 160px; }
+        .hn-footer { padding: 40px 20px 60px; }
         .hn-footer-links { flex-direction: column; gap: 10px; }
         #preset-buttons { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         #presets-toggle { margin-bottom: 2px; }
