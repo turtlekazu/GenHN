@@ -1019,7 +1019,7 @@ const STYLE_PRESETS = {
         #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
-    "Ghibli": `
+    "Washi": `
         :root {
             --bg: #fdfaf0; /* 柔らかな生成り色（紙の質感） */
             --card-bg: #ffffff;
@@ -1115,7 +1115,7 @@ const STYLE_PRESETS = {
         #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #ff00ff !important; color: #fff !important; border-radius: 0 !important; }
     `,
 
-    "RaspberryPi": `
+    "Circuit": `
         :root {
             --bg: #0d1a12;
             --card-bg: #15291d;
@@ -1352,7 +1352,7 @@ const STYLE_PRESETS = {
         #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #d81159 !important; color: #fff !important; }
     `,
 
-    "Ubuntu": `
+    "Aubergine": `
         /* world: UNITY DESKTOP — Aubergine × Ubuntu Orange (E95420) */
         :root {
             --bg: #2c001e;
