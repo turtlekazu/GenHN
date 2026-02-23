@@ -50,7 +50,25 @@ ARCHETYPE MENU — pick the best fit, then apply every bullet point in its signa
                · uppercase condensed font for nav/logo
                · bold header stripe with accent color · table-row-style card layout
 
-TEMPLATE (fill every line; omitting .hn-header or .hn-logo = incomplete):
+POWERFUL TECHNIQUES — use at least 3 of these to make the theme distinctive:
+  Grid layout:   .hn-story-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:30px; }
+  Float rank:    .hn-story-rank { position:absolute; top:-14px; left:16px; width:auto; padding:2px 12px; border-radius:20px; background:var(--accent); color:#fff; font-weight:900; }
+  Spring hover:  --item-transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.45s;
+                 .hn-story-item:hover { transform:translateY(-12px) rotate(-0.5deg); }
+  Hard shadow:   .hn-story-item { box-shadow:6px 6px 0 var(--text); }
+                 .hn-story-item:hover { box-shadow:10px 10px 0 var(--accent); transform:translate(-4px,-4px); }
+  Glow:          .hn-logo { text-shadow:0 0 12px var(--accent),0 0 30px var(--accent); }
+                 .hn-story-item:hover { box-shadow:0 0 30px color-mix(in srgb,var(--accent) 50%,transparent); }
+  Scanline:      body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
+                   background:repeating-linear-gradient(0deg,rgba(0,0,0,0.07) 0,rgba(0,0,0,0.07) 1px,transparent 1px,transparent 3px); }
+  Float anim:    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+                 .hn-story-item:hover { animation:float 1.8s ease-in-out infinite; }
+  Skew hover:    .hn-story-item:hover { transform:skewX(-3deg) translateY(-4px); }
+  Clip path:     .hn-story-item { clip-path:polygon(0 0,96% 0,100% 14%,100% 100%,4% 100%,0 86%); }
+  First big:     .hn-story-item:first-child { grid-column:1/-1; padding:40px; }
+                 .hn-story-item:first-child .hn-story-title { font-size:2em; }
+
+TEMPLATE (fill every variable; do not omit .hn-header, .hn-logo, .hn-story-item):
 :root {
     --bg:
     --card-bg:
@@ -63,6 +81,10 @@ TEMPLATE (fill every line; omitting .hn-header or .hn-logo = incomplete):
     --item-radius:
     --item-border:
     --item-shadow:
+    --story-gap:       /* 8px=dense · 20px=normal · 40px=airy */
+    --title-size:      /* 15px=compact · 18px=normal · 28px=editorial */
+    --upvote-size:     /* 24px=minimal · 32px=default · 50px=bold */
+    --item-transition: /* e.g. transform 0.45s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.45s */
     --more-btn-bg:
     --more-btn-color:
     --mobile-upvote-bg:
@@ -72,14 +94,16 @@ TEMPLATE (fill every line; omitting .hn-header or .hn-logo = incomplete):
     background:       /* required: specific color or gradient */
     backdrop-filter:  /* required: none | blur(Npx) */
     border-bottom:    /* required */
-    /* + one of: border-radius | box-shadow | height | clip-path | margin+top */
+    /* + one shape prop: border-radius | box-shadow | height | clip-path | margin+top */
 }
 .hn-logo {
-    /* required: change ≥3 of color · font-size · letter-spacing · text-shadow · border · background · padding · text-transform */
+    /* required: ≥3 of color · font-size · letter-spacing · text-shadow · border · background · padding · text-transform */
 }
 .hn-story-item { }
 .hn-story-item:hover { }
-/* continue: .hn-upvote, body, body::before, @keyframes … */
+.hn-story-rank { }
+.hn-upvote { }
+/* continue: .hn-story-title, .hn-nav-links a, body, body::before, @keyframes … */
 `;
 
 /**
@@ -116,6 +140,12 @@ const SYSTEM_STYLE = `
         /* More Button Defaults */
         --more-btn-bg: var(--text);
         --more-btn-color: var(--bg);
+
+        /* Theme-controllable layout */
+        --story-gap: 16px;
+        --title-size: 18px;
+        --upvote-size: 32px;
+        --item-transition: transform 0.2s, box-shadow 0.2s;
     }
 
     /* --- Transition Animation --- */
@@ -184,7 +214,7 @@ const SYSTEM_STYLE = `
     .hn-story-list {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: var(--story-gap);
         view-transition-name: story-list;
     }
 
@@ -199,7 +229,7 @@ const SYSTEM_STYLE = `
         flex-direction: row;
         align-items: center;
         gap: var(--item-gap);
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: var(--item-transition);
         position: relative;
     }
     .hn-story-rank {
@@ -213,7 +243,7 @@ const SYSTEM_STYLE = `
     .hn-story-content { flex: 1; min-width: 0; }
     .hn-story-title {
         display: block;
-        font-size: 18px;
+        font-size: var(--title-size);
         font-weight: 600;
         color: var(--text);
         line-height: 1.3;
@@ -229,8 +259,8 @@ const SYSTEM_STYLE = `
         background: transparent;
         border: 1px solid var(--subtext);
         color: var(--subtext);
-        width: 32px;
-        height: 32px;
+        width: var(--upvote-size);
+        height: var(--upvote-size);
         border-radius: 50%;
         display: flex;
         align-items: center;
