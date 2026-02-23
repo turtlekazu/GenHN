@@ -497,8 +497,8 @@ const SYSTEM_STYLE = `
         }
         #panel-handle:hover::before { opacity: 0.4; }
         
-        #theme-controls { 
-            padding-left: 20px; 
+        #theme-controls {
+            padding-left: 32px;
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         #theme-controls.is-minimized {
@@ -661,7 +661,7 @@ const PANEL_STYLE = `
             background: currentColor; opacity: 0.15; border-radius: 2px; transform: translateY(-50%); transition: 0.2s;
         }
         #panel-handle:hover::before { opacity: 0.4; }
-        #theme-controls { padding-left: 20px; transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); }
+        #theme-controls { padding-left: 32px; transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); }
         #theme-controls.is-minimized { transform: translateX(calc(100% - 20px)); }
         #theme-controls.is-minimized > *:not(#panel-handle) { opacity: 0 !important; pointer-events: none; transition: opacity 0.2s; }
     }
