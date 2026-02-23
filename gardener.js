@@ -1677,6 +1677,7 @@ const App = {
             const endDrag = (e) => {
                 if (!isDragging) return;
                 isDragging = false;
+                if (e.cancelable && e.type === 'touchend') e.preventDefault();
                 const tc = this.elements.themeControls;
                 tc.style.transition = '';
                 tc.style.transform = '';
