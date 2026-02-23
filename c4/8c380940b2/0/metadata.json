@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "c48c380940b2",
+  "session_id": "93f41555-98a8-41ed-8ad7-ce937df9adf9",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-23T10:43:59.454878Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README-ja.md",
+    "README.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "741f7eca8151",
+  "transcript_identifier_at_start": "a6bc3701-3646-4de1-b8f0-3537f38c442a",
+  "checkpoint_transcript_start": 1218,
+  "transcript_lines_at_start": 1218,
+  "token_usage": {
+    "input_tokens": 11,
+    "cache_creation_tokens": 120775,
+    "cache_read_tokens": 825116,
+    "output_tokens": 4123,
+    "api_call_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-23T10:43:55.359753Z",
+    "agent_lines": 36,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 36,
+    "agent_percentage": 100
+  },
+  "transcript_path": ".claude-personal/projects/-Users-turtlekazu-ReactProjects-GenHN/93f41555-98a8-41ed-8ad7-ce937df9adf9.jsonl"
+}
