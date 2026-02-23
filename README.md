@@ -63,12 +63,12 @@ Each preset is a tribute to a real product's design language — see how many yo
 
 ## Architecture
 
-The entire application lives in two files:
+The application is split across three files:
 
 - **`index.html`** — Static DOM structure (header, story list, control panel).
-- **`gardener.js`** (~1,300 lines) — All application logic:
+- **`presets.js`** (~800 lines) — Theme definitions only (`STYLE_PRESETS`). Edit this file to add or modify themes.
+- **`gardener.js`** (~1,500 lines) — All application logic:
   - `SYSTEM_STYLE` — Base CSS (layout, glassmorphism, responsive design).
-  - `STYLE_PRESETS` — Theme definitions via CSS custom properties.
   - `HNData` — Hacker News API integration (feed fetching, pagination).
   - `App` — Main controller (theming, rendering, event handling, localStorage persistence).
 
@@ -97,7 +97,7 @@ No API key? Use any AI tool to generate a theme and paste the CSS directly:
 
 ## Adding Themes (Clone the Repo)
 
-Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern. Each theme overrides CSS custom properties (and optionally adds component-specific rules).
+Add an entry to `STYLE_PRESETS` in `presets.js` following the existing pattern. Each theme overrides CSS custom properties (and optionally adds component-specific rules).
 
 ## Contributing
 
