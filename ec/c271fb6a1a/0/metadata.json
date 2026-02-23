@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "ecc271fb6a1a",
+  "session_id": "88044951-39d5-4c9a-9b9e-36b9d85a0a4b",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-23T14:46:09.733561Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "GEMINI.md",
+    "CLAUDE.md"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "f2edba642fe8",
+  "token_usage": {
+    "input_tokens": 47,
+    "cache_creation_tokens": 48729,
+    "cache_read_tokens": 1897789,
+    "output_tokens": 3763,
+    "api_call_count": 37
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-23T14:46:09.529206Z",
+    "agent_lines": 0,
+    "human_added": 7,
+    "human_modified": 7,
+    "human_removed": 0,
+    "total_committed": 7,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude-personal/projects/-Users-turtlekazu-ReactProjects-GenHN/88044951-39d5-4c9a-9b9e-36b9d85a0a4b.jsonl"
+}
