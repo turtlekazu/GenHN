@@ -1657,7 +1657,7 @@ const App = {
             const startDrag = (e) => {
                 isDragging = true;
                 if (window.innerWidth < 769) {
-                    startY = e.touches[0].clientY;
+                    startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
                 } else {
                     startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
                 }
@@ -1668,7 +1668,8 @@ const App = {
                 if (!isDragging) return;
                 const tc = this.elements.themeControls;
                 if (window.innerWidth < 769) {
-                    const deltaY = e.touches[0].clientY - startY;
+                    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+                    const deltaY = clientY - startY;
                     const isHidden = tc.classList.contains('is-hidden-mobile');
                     if (!isHidden && deltaY > 0) {
                         tc.style.transform = `translateY(${deltaY}px)`;
@@ -1694,7 +1695,8 @@ const App = {
                 tc.style.transition = '';
                 tc.style.transform = '';
                 if (window.innerWidth < 769) {
-                    const deltaY = e.changedTouches[0].clientY - startY;
+                    const clientY = e.type.includes('mouse') ? e.clientY : e.changedTouches[0].clientY;
+                    const deltaY = clientY - startY;
                     const isHidden = tc.classList.contains('is-hidden-mobile');
                     if (Math.abs(deltaY) < 10) {
                         tc.classList.toggle('is-hidden-mobile');
@@ -1722,11 +1724,14 @@ const App = {
             handle.addEventListener('mousedown', startDrag);
             handle.addEventListener('touchstart', startDrag, {passive: true});
             document.addEventListener('mousemove', doDrag);
+            document.addEventListener('touchmove', doDrag, {passive: true});
             document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
 
             // Mobile: drag pill (top of panel); non-passive touchmove to allow preventDefault
             const mobilePill = document.getElementById('mobile-drag-pill');
             if (mobilePill) {
+                mobilePill.addEventListener('mousedown', startDrag);
                 mobilePill.addEventListener('touchstart', startDrag, {passive: true});
                 mobilePill.addEventListener('touchmove', (e) => { if (isDragging) e.preventDefault(); doDrag(e); }, {passive: false});
                 mobilePill.addEventListener('touchend', endDrag);
