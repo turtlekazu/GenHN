@@ -1071,6 +1071,151 @@ const STYLE_PRESETS = {
                         radial-gradient(ellipse at 90% 10%, rgba(45,158,107,0.06) 0%, transparent 50%);
         }
         #theme-controls #generate-btn { background: #c51a4a !important; color: #fff !important; }
+    `,
+
+    "Ubuntu": `
+        /* world: UNITY DESKTOP — Aubergine × Ubuntu Orange (E95420) */
+        :root {
+            --bg: #2c001e;
+            --card-bg: #3b0028;
+            --text: #f7f7f7;
+            --subtext: #aea79f;
+            --accent: #e95420;
+            --header-bg: #300a24;
+            --header-border: 3px solid #e95420;
+            --header-height: 52px;
+            --font-main: system-ui, 'Segoe UI', sans-serif;
+            --item-radius: 18px;
+            --item-border: 1px solid rgba(233,84,32,0.18);
+            --item-shadow: 0 4px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+            --story-gap: 22px;
+            --title-size: 16px;
+            --upvote-size: 38px;
+            --load-more-radius: 100px;
+            --item-transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s;
+            --more-btn-bg: #e95420;
+            --more-btn-color: #fff;
+            --mobile-upvote-bg: #e95420;
+            --mobile-upvote-color: #fff;
+        }
+
+        /* ── Atmosphere: aubergine with orange warmth ── */
+        body {
+            background:
+                radial-gradient(ellipse 55% 35% at 12% 3%, rgba(233,84,32,0.14) 0%, transparent 60%),
+                radial-gradient(ellipse 45% 55% at 88% 97%, rgba(77,0,52,0.7) 0%, transparent 55%),
+                var(--bg);
+        }
+
+        /* ── Header: Unity panel style ── */
+        .hn-header {
+            background: linear-gradient(180deg, #3e1028 0%, #300a24 100%);
+            backdrop-filter: none;
+            border-bottom: 3px solid #e95420;
+            box-shadow: 0 3px 28px rgba(233,84,32,0.28);
+        }
+
+        /* ── Logo: orange circle mark ── */
+        .hn-logo {
+            background: #e95420;
+            color: #fff;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 17px;
+            box-shadow: 0 0 0 2px rgba(233,84,32,0.35), 0 2px 14px rgba(233,84,32,0.5);
+            transition: box-shadow 0.35s cubic-bezier(0.34,1.56,0.64,1), transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .hn-logo:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 0 5px rgba(233,84,32,0.38), 0 0 32px rgba(233,84,32,0.65);
+        }
+
+        .hn-nav-links a:hover, .hn-auth a:hover { color: #e95420; opacity: 1; }
+
+        /* ── Story grid ── */
+        .hn-story-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: var(--story-gap);
+        }
+
+        /* ── Cards: dark notification panels ── */
+        .hn-story-item {
+            background: linear-gradient(145deg, #3e0a2c 0%, #2e001f 100%);
+            border: 1px solid rgba(233,84,32,0.18);
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+            padding: 22px 18px 18px 20px;
+            position: relative;
+            overflow: visible;
+        }
+        /* Top-edge spotlight line */
+        .hn-story-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 14px; right: 14px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e95420, transparent);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .hn-story-item:hover {
+            transform: translateY(-9px) scale(1.015);
+            border-color: rgba(233,84,32,0.55);
+            box-shadow: 0 22px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(233,84,32,0.3), inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+        .hn-story-item:hover::before { opacity: 1; }
+
+        /* ── Rank: floating orange pill ── */
+        .hn-story-rank {
+            position: absolute;
+            top: -13px;
+            left: 14px;
+            background: #e95420;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 3px 11px;
+            border-radius: 100px;
+            box-shadow: 0 3px 12px rgba(233,84,32,0.55);
+            width: auto;
+        }
+
+        /* ── Upvote: orange circle with spring pop ── */
+        .hn-upvote {
+            background: transparent;
+            border: 2px solid rgba(233,84,32,0.45);
+            border-radius: 50%;
+            color: #e95420;
+            width: 38px;
+            height: 38px;
+            opacity: 1;
+            font-size: 14px;
+            transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .hn-upvote:hover {
+            background: #e95420;
+            color: #fff;
+            border-color: #e95420;
+            transform: scale(1.25);
+            box-shadow: 0 0 20px rgba(233,84,32,0.6);
+            opacity: 1;
+        }
+
+        /* ── Footer ── */
+        .hn-footer {
+            background: #1c0013;
+            border-top: 2px solid rgba(233,84,32,0.18);
+        }
+
+        /* ── Controls ── */
+        #theme-controls #generate-btn { background: #e95420 !important; color: #fff !important; }
     `
 };
 
