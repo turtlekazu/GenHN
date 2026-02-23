@@ -1,8 +1,9 @@
 # GenHN
 
-生成UI (Generative UI) Hacker Newsクライアント。動的にビジュアルDNAを生成し、Hacker Newsのインターフェースを再構築する、実験的プロジェクトです。特徴的なプロダクトのデザインシステムをモチーフにしたプリセットのテーマを用意しました。Gemini APIキーを入れれば、好きなテーマをすぐに生成することもできます。また、ChatGPT・Claude・Geminiなどの外部生成AIにテンプレートプロンプトを渡してCSSを生成し、そのままペーストするだけでビジュアルを切り替えることも可能です。
+| [English](README.md) | 日本語 |
+|:---:|:---:|
 
-[English version (English README)](README.md)
+生成UI (Generative UI) Hacker Newsクライアント。動的にビジュアルDNAを生成し、Hacker Newsのインターフェースを再構築する、実験的プロジェクトです。特徴的なプロダクトのデザインシステムをモチーフにしたプリセットのテーマを用意しました。Gemini APIキーを入れれば、好きなテーマをすぐに生成することもできます。また、ChatGPT・Claude・Geminiなどの外部生成AIにテンプレートプロンプトを渡してCSSを生成し、そのままペーストするだけでビジュアルを切り替えることも可能です。
 
 ![genhn](https://github.com/user-attachments/assets/75e0b0a8-bf25-4e8b-9e0e-aae6fa11d258)
 
