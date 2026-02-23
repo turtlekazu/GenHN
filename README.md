@@ -83,6 +83,8 @@ GenHN can generate new themes on-the-fly using the [Gemini API](https://aistudio
 
 The app calls `gemini-2.5-flash` to produce a complete CSS theme from your prompt, which is then applied immediately without a page reload.
 
+> **Note:** The Gemini API generation currently tends to produce less varied results. For richer and more creative themes, the [Paste CSS workflow](#paste-css-external-ai-workflow) with an external AI is recommended for now.
+
 ## Paste CSS (External AI Workflow)
 
 No API key? Use any AI tool to generate a theme and paste the CSS directly:
@@ -93,7 +95,7 @@ No API key? Use any AI tool to generate a theme and paste the CSS directly:
 4. Open the **Paste CSS** section in the control panel, paste the CSS, and click **Apply**.
 5. Optionally, click **Save as Preset** to store the theme as a custom preset button for quick reuse.
 
-## Adding a New Theme Manually
+## Adding Themes (Clone the Repo)
 
 Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern. Each theme overrides CSS custom properties (and optionally adds component-specific rules).
 
