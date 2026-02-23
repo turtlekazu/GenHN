@@ -1738,21 +1738,18 @@ const App = {
         const hasKey = !!this.getApiKey();
         section.innerHTML = `
             <div id="gemini-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
-                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI</span>
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Generate (Gemini API)</span>
                 <span id="gemini-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s;">▼</span>
             </div>
             <div id="gemini-form" style="flex-direction:column; gap:6px;">
                 <div id="api-key-section" style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">API Key</div>
                     ${hasKey ? `
-                    <div style="font-size:10px; opacity:0.5; display:flex; justify-content:space-between; align-items:center; width:100%;">
-                        <span style="text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Gemini AI: enabled</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <span style="font-size:11px; opacity:0.6;">●●●●●●●●</span>
                         <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
                     </div>` : `
-                    <div id="api-key-toggle" style="cursor:pointer; font-size:10px; opacity:0.5; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
-                        <span style="text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">API Key</span>
-                        <span id="api-key-icon" style="font-size:9px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
-                    </div>
-                    <div id="api-key-form" style="display:none; gap:6px; align-items:center;">
+                    <div id="api-key-form" style="display:flex; gap:6px; align-items:center;">
                         <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0; flex:1;">
                         <button id="api-key-save-btn" style="font-size:11px; white-space:nowrap;">Save Key</button>
                     </div>`}
@@ -1795,13 +1792,6 @@ const App = {
         if (hasKey) {
             section.querySelector('#api-key-clear-btn').addEventListener('click', () => this.clearApiKey());
         } else {
-            section.querySelector('#api-key-toggle').addEventListener('click', () => {
-                const form = section.querySelector('#api-key-form');
-                const icon = section.querySelector('#api-key-icon');
-                const isOpen = form.style.display !== 'none';
-                form.style.display = isOpen ? 'none' : 'flex';
-                icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
-            });
             section.querySelector('#api-key-save-btn').addEventListener('click', () => {
                 const val = section.querySelector('#api-key-input').value.trim();
                 if (!val) return;
@@ -1960,12 +1950,6 @@ const App = {
         if (geminiForm && geminiForm.style.display === 'none') {
             geminiForm.style.display = 'flex';
             if (geminiIcon) geminiIcon.style.transform = 'rotate(0deg)';
-        }
-        const form = document.getElementById('api-key-form');
-        const icon = document.getElementById('api-key-icon');
-        if (form && form.style.display === 'none') {
-            form.style.display = 'flex';
-            if (icon) icon.style.transform = 'rotate(0deg)';
         }
         this.elements.themeControls.classList.remove('is-minimized');
         const input = document.getElementById('api-key-input');
