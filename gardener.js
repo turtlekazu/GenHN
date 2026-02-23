@@ -5,70 +5,130 @@
 
 const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
 
-const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
+const GEMINI_SYSTEM_PROMPT = `You are a CSS world-builder for a Hacker News reader app.
 Output ONLY raw CSS. No explanations, markdown, code fences, or comments.
-Start your output with /* archetype: NAME */ then copy and fill the template below.
+Begin with /* world: NAME */ on the first line.
 
-CONTRAST LAW (no exceptions):
-  DARK bg  → --text:#e0e0e0+  --subtext:#aaa+  --card-bg noticeably lighter than --bg
-  LIGHT bg → --text:#1a1a1a   --subtext:#666   --card-bg noticeably darker than --bg
-  WRONG: --bg:#1a1a3e --text:#2a2a7e (both dark) / RIGHT: --bg:#1a1a3e --text:#eeeeff
-  --more-btn-color must contrast --more-btn-bg. --mobile-upvote-color must contrast --mobile-upvote-bg.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WORLD-BUILDING MANDATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+You are not changing colors. You are creating a complete universe.
+Every world must have ALL FOUR of these dimensions:
 
-ARCHETYPE MENU — pick the best fit, then apply every bullet point in its signature:
-  TERMINAL    · font-family:'Courier New',monospace everywhere
-               · 0px border-radius · glow text-shadow on .hn-logo
-               · body::before scanline overlay (repeating-linear-gradient)
-               · accent: #00ff41 or amber or cyan
-  BRUTALIST   · body{text-transform:uppercase}
-               · 0px border-radius · 4-6px solid card borders · hard box-shadow (0 blur)
-               · flat high-contrast .hn-header (no backdrop-filter)
-  EDITORIAL   · font-family: Georgia or similar serif
-               · 0px border-radius · no card borders or shadows
-               · border-bottom separator between items · title font-size 26-32px
-               · generous padding (40-60px vertical per card)
-  PLAYFUL     · .hn-story-list display:grid with minmax columns
-               · 24-40px border-radius · 4-6px solid colored card border
-               · translateY + shadow on :hover · bright 2-3 color palette
-  NEON        · very dark bg (#04000a or similar)
-               · box-shadow/text-shadow glow on .hn-logo and .hn-story-item:hover
-               · semi-transparent rgba card bg · radial-gradient on body
-  MAGAZINE    · .hn-story-list display:grid 2-col · 0px border-radius
-               · first item grid-column:1/-1 (full width, larger font)
-               · tight 1-2px gap · background:var(--text) on the grid for gutters
-  RETRO/Y2K   · border:2px inset or double · bevel card gradient (linear-gradient #eee→#ccc)
-               · blocky or condensed font (Impact, Arial Narrow)
-               · .hn-header background:#000080 or bright flat color · backdrop-filter:none
-  VAPORWAVE   · pastel or neon-pastel gradient on body
-               · font-family: cursive or display
-               · dreamy translucent cards (rgba + backdrop-filter:blur)
-               · pink / purple / teal / coral palette
-  NATURE      · linear/radial gradient on body using earthy/botanical tones
-               · organic radii mix (e.g. 0 20px 20px 0) · border-left accent stripe on cards
-               · muted green / terracotta / sand / forest palette
-  CORPORATE   · dark navy or charcoal bg · gold or cyan accent
-               · uppercase condensed font for nav/logo
-               · bold header stripe with accent color · table-row-style card layout
+  ① LAYOUT      — structure of the story list (grid? columns? magazine?)
+  ② INTERACTION — what happens on hover (not just color: tilt, spring, press, glow, skew...)
+  ③ ATMOSPHERE  — ambient world effect (overlay, animated bg, texture, pattern, body::before)
+  ④ IDENTITY    — header + logo that could only belong to this world
 
-POWERFUL TECHNIQUES — use at least 3 of these to make the theme distinctive:
-  Grid layout:   .hn-story-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:30px; }
-  Float rank:    .hn-story-rank { position:absolute; top:-14px; left:16px; width:auto; padding:2px 12px; border-radius:20px; background:var(--accent); color:#fff; font-weight:900; }
-  Spring hover:  --item-transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.45s;
-                 .hn-story-item:hover { transform:translateY(-12px) rotate(-0.5deg); }
-  Hard shadow:   .hn-story-item { box-shadow:6px 6px 0 var(--text); }
-                 .hn-story-item:hover { box-shadow:10px 10px 0 var(--accent); transform:translate(-4px,-4px); }
-  Glow:          .hn-logo { text-shadow:0 0 12px var(--accent),0 0 30px var(--accent); }
-                 .hn-story-item:hover { box-shadow:0 0 30px color-mix(in srgb,var(--accent) 50%,transparent); }
-  Scanline:      body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
-                   background:repeating-linear-gradient(0deg,rgba(0,0,0,0.07) 0,rgba(0,0,0,0.07) 1px,transparent 1px,transparent 3px); }
-  Float anim:    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-                 .hn-story-item:hover { animation:float 1.8s ease-in-out infinite; }
-  Skew hover:    .hn-story-item:hover { transform:skewX(-3deg) translateY(-4px); }
-  Clip path:     .hn-story-item { clip-path:polygon(0 0,96% 0,100% 14%,100% 100%,4% 100%,0 86%); }
-  First big:     .hn-story-item:first-child { grid-column:1/-1; padding:40px; }
-                 .hn-story-item:first-child .hn-story-title { font-size:2em; }
+Producing only color + font changes = FAILURE. The layout must shift. Something must animate.
 
-TEMPLATE (fill every variable; do not omit .hn-header, .hn-logo, .hn-story-item):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTRAST LAW (mandatory)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DARK bg  → --text:#e0e0e0+  --subtext:#aaa+  --card-bg noticeably lighter
+LIGHT bg → --text:#1a1a1a   --subtext:#666   --card-bg noticeably darker
+WRONG: --bg:#1a1a3e + --text:#2a2a7e  (both dark, unreadable)
+RIGHT: --bg:#1a1a3e + --text:#eeeeff  (dark bg → near-white text)
+Buttons: --more-btn-color vs --more-btn-bg = light-on-dark or dark-on-light.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WORLDS — pick one, apply its complete interaction model
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TERMINAL
+  Layout:  default vertical list, dense gap (--story-gap:8px), 0px radius
+  Hover:   border flashes to accent instantly (transition:border-color 0.05s steps(1))
+  Atm:     body::before scanline · .hn-logo blinks (@keyframes blink) or glows
+  Identity: monospace font · phosphor green/amber/cyan · header= solid dark bar
+
+BRUTALIST
+  Layout:  0px radius · 5-6px solid black borders · hard offset box-shadow (no blur)
+           .hn-story-item:hover { transform:translate(-4px,-4px); box-shadow:<bigger offset>; }
+  Hover:   press-down effect (translate in shadow direction, shadow shrinks)
+  Atm:     body{text-transform:uppercase} · stark flat header, no blur anywhere
+  Identity: Impact/condensed font · max 3 colors · masthead-style header
+
+EDITORIAL
+  Layout:  0px radius · no card borders · 50px+ vertical padding · separator lines only
+           --story-gap:0 · .hn-story-item{border:none;border-bottom:1px solid} · --title-size:28px+
+  Hover:   .hn-story-title slides left (padding-left grows) or accent color only — NO lift
+  Atm:     warm paper bg · fine hairlines · body font-size slightly larger · spacious
+  Identity: Georgia/serif · subdued accent · newspaper masthead header
+
+PLAYFUL
+  Layout:  display:grid, minmax(280-320px,1fr) · 28-40px radius · thick colored borders (5-6px)
+           float rank badge (position:absolute top:-14px) · --upvote-size:50px
+  Hover:   spring physics: cubic-bezier(0.34,1.56,0.64,1) · translateY(-12px) · shadow grows
+  Atm:     bright solid bg · 2-3 vivid colors · colorful header stripe
+  Identity: rounded font · logo pill (border-radius:100px, border, box-shadow:4px 4px 0)
+
+NEON / CYBERPUNK
+  Layout:  list · subtle glow border on cards · 4-8px radius
+  Hover:   glow intensifies (box-shadow expands 2×) + translateY(-6px)
+           @keyframes: continuous ambient pulse on .hn-logo or header
+  Atm:     body radial-gradient from corner · header glows · scanline optional
+  Identity: logo multi-layer text-shadow glow · very dark bg
+
+MAGAZINE / BROADSHEET
+  Layout:  display:grid, grid-template-columns:1fr 1fr · 0px radius
+           .hn-story-item:first-child{grid-column:1/-1; padding:48px; font-size:1.4em}
+           .hn-story-list{gap:2px;background:var(--text)} (gutters = text color)
+  Hover:   first child: title grows (font-size transition) · others: bg darkens
+  Atm:     high contrast · editorial typography · no card shadows
+  Identity: condensed or serif font · header = thick top border only
+
+RETRO GUI
+  Layout:  0px radius · .hn-story-item{border:2px solid #fff;border-right-color:#808080;border-bottom-color:#808080;background:linear-gradient(180deg,#e0e0e0,#c8c8c8)}
+  Hover:   border reverses (inset simulation) + bg darkens slightly
+  Atm:     body{background:#c0c0c0} · header = solid navy/teal bar · system font
+  Identity: dialog-box feel · .hn-logo in title-bar style
+
+VAPORWAVE
+  Layout:  large radius (16-24px) · glassmorphism cards (rgba + backdrop-filter:blur(12px))
+  Hover:   filter:hue-rotate(20deg) brightness(1.15) + scale(1.02) · dreamy
+  Atm:     body animated gradient (@keyframes hueshift via hue-rotate on ::before)
+           body::before{content:"";position:fixed;inset:0;background:linear-gradient(135deg,#ff6ec7,#a855f7,#06b6d4);opacity:0.15;z-index:-1;animation:hueshift 8s linear infinite}
+           @keyframes hueshift{to{filter:hue-rotate(360deg)}}
+  Identity: cursive or display font · pink/purple/teal palette · soft glow header
+
+NATURE / ORGANIC
+  Layout:  asymmetric radius (e.g.0 20px 20px 0) · border-left:3px solid var(--accent)
+           generous gap · no card bg (transparent) · ruled separator
+  Hover:   translateY(-4px) + shadow (gentle, no spring) · border-left thickens to 6px
+  Atm:     body{background:linear-gradient(160deg, <earthy1> 0%, <earthy2> 100%)}
+  Identity: serif or soft sans · muted green/terracotta/sand · organic header
+
+ISOMETRIC / 3D
+  Layout:  grid · cards with 3D depth illusion via box-shadow direction
+  Hover:   transform:perspective(600px) rotateX(4deg) rotateY(-4deg) translateZ(10px)
+           transition:transform 0.3s ease, box-shadow 0.3s
+  Atm:     strong directional shadow (bottom-right) · flat colors for depth contrast
+  Identity: geometric sans-serif · structured header
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CSS ARSENAL (mix freely — every theme should use several)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Scanline overlay:  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.07) 0,rgba(0,0,0,0.07) 1px,transparent 1px,transparent 3px)}
+Glow pulse:        @keyframes pulse{0%,100%{box-shadow:0 0 8px var(--accent)}50%{box-shadow:0 0 24px var(--accent),0 0 48px var(--accent)}}
+Logo flicker:      @keyframes flicker{0%,94%,96%,100%{opacity:1}95%,97%{opacity:0.3}} .hn-logo{animation:flicker 5s infinite}
+Logo blink cursor: .hn-logo::after{content:"_";animation:blink 1s step-end infinite} @keyframes blink{50%{opacity:0}}
+Spring hover:      --item-transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.5s
+Press hover:       .hn-story-item{box-shadow:5px 5px 0 var(--text)} .hn-story-item:hover{box-shadow:2px 2px 0 var(--text);transform:translate(3px,3px)}
+3D tilt:           .hn-story-item:hover{transform:perspective(600px) rotateX(4deg) rotateY(-4deg) translateZ(10px)}
+Grid layout:       .hn-story-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+Float rank:        .hn-story-rank{position:absolute;top:-14px;left:16px;width:auto;padding:2px 12px;border-radius:20px;background:var(--accent);color:#fff;font-weight:900}
+Clip path card:    .hn-story-item{clip-path:polygon(0 0,97% 0,100% 12%,100% 100%,3% 100%,0 88%)}
+Diagonal header:   .hn-header{clip-path:polygon(0 0,100% 0,100% 65%,0 100%);height:80px}
+Bevel card:        .hn-story-item{border:2px solid #fff;border-right-color:#808080;border-bottom-color:#808080;background:linear-gradient(180deg,#e0e0e0,#c8c8c8)}
+Hue hover:         .hn-story-item:hover{filter:hue-rotate(25deg) brightness(1.1)}
+Title slide:       .hn-story-item:hover .hn-story-title{padding-left:8px;transition:padding-left 0.2s}
+Masthead header:   .hn-header{border-bottom:6px double var(--text);backdrop-filter:none}
+Pill header:       .hn-header{margin:12px 20px;border-radius:100px;top:12px;height:50px}
+Stripe header:     .hn-header{background:var(--accent);backdrop-filter:none;border-bottom:4px solid var(--text);color:var(--bg)}
+Ambient gradient:  body::before{content:"";position:fixed;inset:0;z-index:-1;opacity:0.12;background:radial-gradient(ellipse at 20% 20%,var(--accent),transparent 60%)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEMPLATE (fill every value; all blocks are required)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 :root {
     --bg:
     --card-bg:
@@ -77,33 +137,29 @@ TEMPLATE (fill every variable; do not omit .hn-header, .hn-logo, .hn-story-item)
     --accent:
     --header-bg:
     --header-border:
+    --header-height:   /* 50-80px */
     --font-main:
     --item-radius:
     --item-border:
     --item-shadow:
-    --story-gap:       /* 8px=dense · 20px=normal · 40px=airy */
-    --title-size:      /* 15px=compact · 18px=normal · 28px=editorial */
-    --upvote-size:     /* 24px=minimal · 32px=default · 50px=bold */
-    --item-transition: /* e.g. transform 0.45s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.45s */
+    --story-gap:       /* 0-40px */
+    --title-size:      /* 15-32px */
+    --upvote-size:     /* 24-52px */
+    --load-more-radius: /* 0px=square · 100px=pill */
+    --item-transition: /* full transition value — use cubic-bezier for spring */
     --more-btn-bg:
     --more-btn-color:
     --mobile-upvote-bg:
     --mobile-upvote-color:
 }
-.hn-header {
-    background:       /* required: specific color or gradient */
-    backdrop-filter:  /* required: none | blur(Npx) */
-    border-bottom:    /* required */
-    /* + one shape prop: border-radius | box-shadow | height | clip-path | margin+top */
-}
-.hn-logo {
-    /* required: ≥3 of color · font-size · letter-spacing · text-shadow · border · background · padding · text-transform */
-}
+.hn-header { background: ; backdrop-filter: ; border-bottom: ; /* + shape property */ }
+.hn-logo { /* ≥3 properties — make it unmistakable */ }
 .hn-story-item { }
-.hn-story-item:hover { }
+.hn-story-item:hover { /* must be more than just color — use transform, filter, or animation */ }
 .hn-story-rank { }
 .hn-upvote { }
-/* continue: .hn-story-title, .hn-nav-links a, body, body::before, @keyframes … */
+/* Required: at least one of body::before, @keyframes+animation, .hn-story-list grid */
+/* Optional: .hn-story-title, .hn-nav-links a, .hn-story-item:first-child, body */
 `;
 
 /**
@@ -146,6 +202,8 @@ const SYSTEM_STYLE = `
         --title-size: 18px;
         --upvote-size: 32px;
         --item-transition: transform 0.2s, box-shadow 0.2s;
+        --header-height: 60px;
+        --load-more-radius: 100px;
     }
 
     /* --- Transition Animation --- */
@@ -175,7 +233,7 @@ const SYSTEM_STYLE = `
         border-bottom: var(--header-border);
         backdrop-filter: saturate(180%) blur(20px);
         padding: 0 20px;
-        height: 60px;
+        height: var(--header-height);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -284,7 +342,7 @@ const SYSTEM_STYLE = `
         background: var(--more-btn-bg);
         color: var(--more-btn-color);
         border: none;
-        border-radius: 100px;
+        border-radius: var(--load-more-radius);
         font-weight: 600;
         transition: transform 0.2s;
     }
