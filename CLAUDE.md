@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Acephale is a vanilla JavaScript web application that dynamically reconstructs the Hacker News interface using different design "essences" (brand-inspired visual systems). It's a design experimentation tool with no build system or external dependencies.
+GenHN is a vanilla JavaScript web application that dynamically reconstructs the Hacker News interface using different design "essences" (brand-inspired visual systems). It's a design experimentation tool with no build system or external dependencies.
 
 ## Running the Application
 

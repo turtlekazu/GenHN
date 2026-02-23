@@ -1381,9 +1381,9 @@ const App = {
         this.renderApiKeySection();
         this.bindEvents();
 
-        const savedPreset = localStorage.getItem('acephale-theme');
-        const savedCustom = localStorage.getItem('acephale-custom-css');
-        const savedPrompt = localStorage.getItem('acephale-custom-prompt');
+        const savedPreset = localStorage.getItem('genhn-theme');
+        const savedCustom = localStorage.getItem('genhn-custom-css');
+        const savedPrompt = localStorage.getItem('genhn-custom-prompt');
 
         if (savedCustom) {
             this.applyStyle(savedCustom, null, savedPrompt || 'Custom AI Theme');
@@ -1620,15 +1620,15 @@ const App = {
     },
 
     getApiKey() {
-        return localStorage.getItem('acephale-gemini-key');
+        return localStorage.getItem('genhn-gemini-key');
     },
 
     saveApiKey(key) {
-        localStorage.setItem('acephale-gemini-key', key.trim());
+        localStorage.setItem('genhn-gemini-key', key.trim());
     },
 
     clearApiKey() {
-        localStorage.removeItem('acephale-gemini-key');
+        localStorage.removeItem('genhn-gemini-key');
         this.renderApiKeySection();
     },
 
@@ -1764,13 +1764,13 @@ const App = {
     },
 
     getSavedThemes() {
-        try { return JSON.parse(localStorage.getItem('acephale-saved-themes') || '[]'); }
+        try { return JSON.parse(localStorage.getItem('genhn-saved-themes') || '[]'); }
         catch (_) { return []; }
     },
 
     saveCurrentTheme() {
-        const css = localStorage.getItem('acephale-custom-css');
-        const prompt = localStorage.getItem('acephale-custom-prompt') || 'Custom';
+        const css = localStorage.getItem('genhn-custom-css');
+        const prompt = localStorage.getItem('genhn-custom-prompt') || 'Custom';
         if (!css) return;
 
         const baseName = this.summarizePrompt(prompt);
@@ -1783,14 +1783,14 @@ const App = {
         while (existingNames.has(name)) { name = `${baseName}${i++}`; }
 
         saved.push({ id: Date.now().toString(), name, css, prompt });
-        localStorage.setItem('acephale-saved-themes', JSON.stringify(saved));
+        localStorage.setItem('genhn-saved-themes', JSON.stringify(saved));
         this.renderSavedThemeButtons();
         this.renderSaveButton(false);
     },
 
     deleteSavedTheme(id) {
         const saved = this.getSavedThemes().filter(t => t.id !== id);
-        localStorage.setItem('acephale-saved-themes', JSON.stringify(saved));
+        localStorage.setItem('genhn-saved-themes', JSON.stringify(saved));
         this.renderSavedThemeButtons();
     },
 
@@ -1894,14 +1894,14 @@ const App = {
         this.toggleMenu(false);
 
         if (themeName && STYLE_PRESETS[themeName]) {
-            localStorage.setItem('acephale-theme', themeName);
-            localStorage.removeItem('acephale-custom-css');
-            localStorage.removeItem('acephale-custom-prompt');
+            localStorage.setItem('genhn-theme', themeName);
+            localStorage.removeItem('genhn-custom-css');
+            localStorage.removeItem('genhn-custom-prompt');
             this.renderSaveButton(false);
         } else if (customPrompt) {
-            localStorage.setItem('acephale-custom-css', css);
-            localStorage.setItem('acephale-custom-prompt', customPrompt);
-            localStorage.removeItem('acephale-theme');
+            localStorage.setItem('genhn-custom-css', css);
+            localStorage.setItem('genhn-custom-prompt', customPrompt);
+            localStorage.removeItem('genhn-theme');
         }
 
         const applyFn = () => {

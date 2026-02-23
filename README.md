@@ -1,4 +1,4 @@
-# Acephale — GenHN
+# GenHN
 
 An experimental project that dynamically reconstructs the Hacker News interface using the "essences" of world-renowned product design systems.
 

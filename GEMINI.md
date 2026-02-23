@@ -1,4 +1,4 @@
-# Acephale - Brand Identity Hacker News
+# GenHN
 
 Hacker Newsのインターフェースを、世界的に有名なプロダクトやデザインシステムの「本質（エッセンス）」を用いて動的に再構築する実験的プロジェクトです。
 
