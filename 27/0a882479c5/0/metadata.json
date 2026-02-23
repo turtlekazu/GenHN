@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "270a882479c5",
+  "session_id": "93f41555-98a8-41ed-8ad7-ce937df9adf9",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-23T08:41:09.648572Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "gardener.js",
+    "index.html"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "87136b2d71df",
+  "transcript_identifier_at_start": "26961869-db0b-4275-a9fd-9f113dc483e2",
+  "checkpoint_transcript_start": 934,
+  "transcript_lines_at_start": 934,
+  "token_usage": {
+    "input_tokens": 81,
+    "cache_creation_tokens": 42096,
+    "cache_read_tokens": 7232124,
+    "output_tokens": 10332,
+    "api_call_count": 65
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-23T08:41:05.495073Z",
+    "agent_lines": 14,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 14,
+    "agent_percentage": 100
+  },
+  "transcript_path": ".claude-personal/projects/-Users-turtlekazu-ReactProjects-GenHN/93f41555-98a8-41ed-8ad7-ce937df9adf9.jsonl"
+}
