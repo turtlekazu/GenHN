@@ -1806,6 +1806,9 @@ const App = {
                     <input type="text" id="paste-css-name" placeholder="Theme name (optional)" style="font-size:11px; min-width:0; flex:1;">
                     <button id="paste-css-apply-btn" style="font-size:11px; white-space:nowrap;">Apply</button>
                 </div>
+                <div id="paste-css-save-row" style="display:none; justify-content:flex-end;">
+                    <button id="paste-css-save-btn" style="font-size:11px;">Save as Preset</button>
+                </div>
             </div>`;
 
         section.querySelector('#paste-css-toggle').addEventListener('click', () => {
@@ -1816,13 +1819,30 @@ const App = {
             icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
         });
 
+        const textarea = section.querySelector('#paste-css-input');
+        const saveRow = section.querySelector('#paste-css-save-row');
+        const saveBtn = section.querySelector('#paste-css-save-btn');
+
+        textarea.addEventListener('input', () => {
+            saveRow.style.display = 'none';
+            saveBtn.textContent = 'Save as Preset';
+        });
+
         section.querySelector('#paste-css-apply-btn').addEventListener('click', () => {
-            const css = section.querySelector('#paste-css-input').value.trim();
+            const css = textarea.value.trim();
             if (!css) return;
             const name = section.querySelector('#paste-css-name').value.trim() || 'Custom CSS';
             this.applyStyle(css, null, name);
-            this.togglePresets(true);
-            this.renderSaveButton(true);
+            saveRow.style.display = 'flex';
+            saveBtn.textContent = 'Save as Preset';
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const css = textarea.value.trim();
+            const name = section.querySelector('#paste-css-name').value.trim() || 'Custom CSS';
+            const saved = this.saveThemeAs(css, name);
+            saveBtn.textContent = saved ? 'Saved!' : 'Already saved';
+            setTimeout(() => { saveBtn.textContent = 'Save as Preset'; }, 2000);
         });
 
         this.elements.themeControls.appendChild(section);
@@ -1933,6 +1953,21 @@ const App = {
         localStorage.setItem('genhn-saved-themes', JSON.stringify(saved));
         this.renderSavedThemeButtons();
         this.renderSaveButton(false);
+    },
+
+    saveThemeAs(css, name) {
+        const saved = this.getSavedThemes();
+        if (saved.some(t => t.css === css)) return false;
+
+        let finalName = name;
+        const existingNames = new Set(saved.map(t => t.name));
+        let i = 2;
+        while (existingNames.has(finalName)) { finalName = `${name} ${i++}`; }
+
+        saved.push({ id: Date.now().toString(), name: finalName, css, prompt: name });
+        localStorage.setItem('genhn-saved-themes', JSON.stringify(saved));
+        this.renderSavedThemeButtons();
+        return true;
     },
 
     deleteSavedTheme(id) {
