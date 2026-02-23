@@ -4,6 +4,8 @@ An experimental project that dynamically reconstructs the Hacker News interface 
 
 [日本語版 (Japanese README)](README-ja.md)
 
+![genhn](https://github.com/user-attachments/assets/75e0b0a8-bf25-4e8b-9e0e-aae6fa11d258)
+
 ## Features
 
 - **12 Design Presets**: Instantly switch between design systems inspired by iconic brand aesthetics.
