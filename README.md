@@ -28,6 +28,8 @@ Generative UI [Hacker News](https://news.ycombinator.com) Client. An experimenta
 
 ## Available Design Essences
 
+Each preset is a tribute to a real product's design language — see how many you can identify.
+
 | Theme | Description |
 |-------|-------------|
 | **Minimalist** | Soft white base with glassmorphism header, clean typography, and subtle card shadows. |
