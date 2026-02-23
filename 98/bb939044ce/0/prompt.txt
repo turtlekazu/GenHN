@@ -1,0 +1,157 @@
+Implement the following plan:
+
+# Plan: Split gardener.js into themes file and app logic file
+
+## Context
+
+`gardener.js` は現在 2,315 行あり、テーマ定義（CSS文字列）とアプリロジックが混在している。
+テーマを追加・編集したいユーザーが目的のコードに辿り着きにくいため、分離する。
+
+## Split Strategy
+
+| ファイル | 内容 | 行数（目安） |
+|---------|------|------------|
+| `presets.js` | `STYLE_PRESETS` オブジェクトのみ（14テーマのCSS定義） | ~800行 |
+| `gardener.js` | その他すべて（SYSTEM_STYLE, PANEL_STYLE, AI prompts, HNData, App, init） | ~1,500行 |
+
+`SYSTEM_STYLE` / `PANEL_STYLE` はユーザーが触らない内部フレームワークCSSなので `gardener.js` に残す。
+`STYLE_PRESETS` はテーマ追加・編集の対象なので `presets.js` に分離する。
+
+## 実装手順
+
+### 1. `presets.js` を新規作成
+`gardener.js` の lines 703–1500 の `STYLE_PRESETS` 定義をそのまま切り出す：
+```js
+const STYLE_PRESETS = {
+  "None": ``,
+  "Minimalist": `...`,
+  // ... 14テーマ
+};
+```
+
+### 2. `gardener.js` から `STYLE_PRESETS` を削除
+lines 703–1500 を削除し、代わりに `// STYLE_PRESETS is defined in presets.js` コメントを残す（任意）。
+
+### 3. `index.html` のscriptタグを更新
+```html
+<!-- 現在 -->
+<script src="gardener.js"></script>
+
+<!-- 変更後（presets.js を先に読み込む） -->
+<script src="presets.js"></script>
+<script src="gardener.js"></script>
+```
+`presets.js` は `App` が参照するため、必ず `gardener.js` より先に読み込む。
+
+## 依存関係の確認
+
+`STYLE_PRESETS` を参照している箇所（すべて `App` 内）：
+- App.init()  → `STYLE_PRESETS[savedPreset]`
+- App.renderPresetButtons() → `Object.keys(STYLE_PRESETS)` / `STYLE_PRESETS[themeName]`
+- App.applyStyle() → `STYLE_PRESETS[themeName]` / `for (const key in STYLE_PRESETS)`
+
+グローバル変数として宣言するため、ファイル分割後もそのまま参照可能（変更不要）。
+
+## 検証
+
+1. `index.html` をブラウザで開く
+2. プリセットボタンが全テーマ表示されることを確認
+3. 各テーマのクリックでスタイルが適用されることを確認
+4. localStorage に保存されたテーマが復元されることを確認
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/turtlekazu/.REDACTED.jsonl
+
+---
+
+コミットして
+
+---
+
+テーマ「None」において、subtitle(Unofficial Hacker News client...)の部分にスタイルが適用されているのを修正して
+
+---
+
+素晴らしい。コミットして
+
+---
+
+Gemini.mdno
+
+---
+
+[Request interrupted by user]
+
+---
+
+GEMINI.mdの内容とCLAUDE.mdの内容を更新して
+
+---
+
+GEMINI.mdを英語にし、かつプリセットテーマのような変動性の高い項目の記載を削除して、もっと汎用的な内容に変更して
+
+---
+
+README.mdを、presets.jsを使った記述になるように変更して
+
+---
+
+Releaseタグなど必要ですかね？
+
+---
+
+じゃあ結構ですかね
+
+---
+
+GitHub Pagesの内容がおかしくなってしまいました。そもそも、Show HN: A brand new Hacker News experience with Generative UIなどの要素はもう不要なので削除して大丈夫です。
+
+---
+
+github pagesだと、preset.jsとgardener.jsに分けたせいでうまく表示できなくなってしまいましたかね？
+
+---
+
+強制リロードで治りました。失礼しました。
+
+---
+
+Generative UIの意味的に、もう少し違う気もしてきました。このプロジェクトはGenerative Styleであって、Generative UIではないかな？
+
+---
+
+これはGenerative Styleであり、Generative UIではないという批判がきそうかな?と思っただけです。
+
+---
+
+このリポジトリをXで紹介するための文言を考えてみてください。
+
+---
+
+もっとGenerative UIであることを表現したい
+
+---
+
+Hacker NewsのインターフェースをGenerative UIにする実験的プロジェクトwo
+
+---
+
+Hacker NewsのインターフェースをGenerative UIにする実験的プロジェクトを公開しました。
+
+テンプレートプロンプトから生成AIで好きなスタイルを生成し、貼り付けるだけでスタイルを変えられます（プリセットもあり）。という内容にしました。
+
+---
+
+フッターの各項目に、本家Hacker Newsねのリンクをつけてください。
+
+---
+
+さらに、コントロールパネルのGenerate(Gemini API)の項目に、API取得はGoogle AI Studioで行なってくださいという説明、リンク、並びにgemini-2.5-flashを使用しますという断り書きを小さく追加したいです。
+
+---
+
+Show HNに投稿したいと思います。いい投稿のタイトル・URL・テキストを考えてください。
+
+---
+
+ライブデモのページに、GitHubリポジトリへのリンクボタンを追加したいです。
