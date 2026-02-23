@@ -5,6 +5,8 @@
 
 生成UI (Generative UI) [Hacker News](https://news.ycombinator.com) クライアント。動的にビジュアルDNAを生成し、Hacker Newsのインターフェースを再構築する、実験的プロジェクトです。特徴的なプロダクトのデザインシステムをモチーフにしたプリセットのテーマを用意しました。Gemini APIキーを入れれば、好きなテーマをすぐに生成することもできます。また、ChatGPT・Claude・Geminiなどの外部生成AIにテンプレートプロンプトを渡してCSSを生成し、そのままペーストするだけでビジュアルを切り替えることも可能です。
 
+**[Live Demo](https://turtlekazu.github.io/GenHN/)**
+
 ![genhn](https://github.com/user-attachments/assets/75e0b0a8-bf25-4e8b-9e0e-aae6fa11d258)
 
 ## 特徴
@@ -74,7 +76,7 @@
 
 1. [Google AI Studio](https://aistudio.google.com/apikey) で無料のAPIキーを取得します。
 2. コントロールパネル（右下）を開き、**Generate (Gemini API)** セクションを展開します。
-3. APIキーを貼り付けて **Save Key** をクリック。キーはブラウザの localStorage にのみ保存され、Gemini API以外には送信されません。
+3. APIキーを貼り付けて **Save Key** をクリック。キーはブラウザの localStorage にのみ保存され、Gemini API以外には送信されません。ページをリロードしてもキーは保持されます。APIキーの管理は自己責任でお願いします。
 4. プロンプト入力欄に任意のデザインコンセプトを入力（例：`"brutalist newspaper"`、`"cozy dark cafe"`）し、**Apply** をクリックします。
 
 アプリが `gemini-2.5-flash` を呼び出し、プロンプトからCSSテーマを生成してページリロードなしで即座に適用します。
