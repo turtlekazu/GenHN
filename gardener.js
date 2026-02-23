@@ -1739,29 +1739,43 @@ const App = {
         section.innerHTML = `
             <div id="gemini-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
                 <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI</span>
-                <span id="gemini-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+                <span id="gemini-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s;">▼</span>
             </div>
-            <div id="gemini-form" style="display:none; flex-direction:column; gap:6px;">
+            <div id="gemini-form" style="flex-direction:column; gap:6px;">
                 <div id="api-key-section" style="display:flex; flex-direction:column; gap:6px;">
                     ${hasKey ? `
-                    <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
-                        <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
+                    <div style="font-size:10px; opacity:0.5; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <span style="text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Gemini AI: enabled</span>
                         <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
                     </div>` : `
-                    <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
-                        <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">API Key</span>
-                        <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+                    <div id="api-key-toggle" style="cursor:pointer; font-size:10px; opacity:0.5; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                        <span style="text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">API Key</span>
+                        <span id="api-key-icon" style="font-size:9px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
                     </div>
-                    <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
-                        <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
-                        <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
+                    <div id="api-key-form" style="display:none; gap:6px; align-items:center;">
+                        <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0; flex:1;">
+                        <button id="api-key-save-btn" style="font-size:11px; white-space:nowrap;">Save Key</button>
                     </div>`}
                 </div>
-                <div style="display:flex; gap:10px; align-items:center; width:100%;">
-                    <input type="text" id="prompt-input" placeholder="Enter theme..." style="min-width:0;" ${!hasKey ? 'disabled' : ''}>
-                    <button id="generate-btn" style="white-space:nowrap; font-weight:600;">Apply</button>
+                <div style="display:flex; flex-direction:column; gap:6px; ${!hasKey ? 'opacity:0.35; pointer-events:none;' : ''}">
+                    <div style="font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Prompt</div>
+                    <div style="display:flex; gap:10px; align-items:center; width:100%;">
+                        <input type="text" id="prompt-input" placeholder="Enter theme..." style="min-width:0;" ${!hasKey ? 'disabled' : ''}>
+                        <button id="generate-btn" style="white-space:nowrap; font-weight:600;" ${!hasKey ? 'disabled' : ''}>Apply</button>
+                    </div>
                 </div>
             </div>`;
+
+        // Set initial open/closed state based on whether API key exists
+        const geminiForm = section.querySelector('#gemini-form');
+        const geminiIcon = section.querySelector('#gemini-icon');
+        if (hasKey) {
+            geminiForm.style.display = 'none';
+            geminiIcon.style.transform = 'rotate(-90deg)';
+        } else {
+            geminiForm.style.display = 'flex';
+            geminiIcon.style.transform = 'rotate(0deg)';
+        }
 
         section.querySelector('#gemini-toggle').addEventListener('click', () => {
             const form = section.querySelector('#gemini-form');
