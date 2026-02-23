@@ -4,6 +4,8 @@ Hacker Newsのインターフェースを、世界的に有名なプロダクト
 
 [English version (English README)](README.md)
 
+![genhn](https://github.com/user-attachments/assets/75e0b0a8-bf25-4e8b-9e0e-aae6fa11d258)
+
 ## 特徴
 
 - **12種類のデザインプリセット**: アイコニックなブランド美学にインスパイアされたデザインシステムをワンクリックで切り替え。
