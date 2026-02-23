@@ -14,23 +14,26 @@ Open `index.html` directly in a modern web browser. No build step, package manag
 
 ## Architecture
 
-The entire application lives in two files:
+The application is split across three files:
 
 - **`index.html`** - Static DOM structure (header, story list, control panel)
-- **`gardener.js`** (~1,200 lines) - All application logic organized as:
+- **`presets.js`** (~800 lines) - `STYLE_PRESETS` object only (12 built-in themes as CSS strings). Loaded before `gardener.js`.
+- **`gardener.js`** (~1,500 lines) - All application logic organized as:
   - `SYSTEM_STYLE` - Base CSS with layout, glassmorphism effects, responsive design
-  - `STYLE_PRESETS` - Theme definitions using CSS variables (10 built-in themes)
+  - `PANEL_STYLE` - Control panel CSS (applied in "None" theme instead of SYSTEM_STYLE)
   - `HNData` object - Hacker News API integration (fetching stories by feed type)
   - `App` object - Main controller (theming, rendering, event handling, localStorage persistence)
 
 ### Theme System
 
-Themes are defined in `STYLE_PRESETS` using CSS custom properties. Each theme provides:
+Themes are defined in `STYLE_PRESETS` (`presets.js`) using CSS custom properties. Each theme provides:
 - CSS variables for colors, fonts, spacing
 - Component-specific styles
 - Mobile-specific overrides
 
-To add a new theme: Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern.
+To add a new theme: Add an entry to `STYLE_PRESETS` in `presets.js` following the existing pattern.
+
+**Note:** When `applyStyle` is called with the "None" theme (empty CSS), only `PANEL_STYLE` is injected — `SYSTEM_STYLE` is intentionally omitted so the page renders with no framework styles.
 
 ### API Integration
 
@@ -43,7 +46,7 @@ To add a new theme: Add an entry to `STYLE_PRESETS` in `gardener.js` following t
 From GEMINI.md (project guidelines):
 
 - **Trademark Neutrality**: Reproduce the "color", "shape", and "motion" of brands, not brand names or trademarked elements directly
-- **Surgical Styling**: Add new themes to `STYLE_PRESETS` in `gardener.js`
+- **Surgical Styling**: Add new themes to `STYLE_PRESETS` in `presets.js`
 - **Performance**: Use CSS variables and transitions for smooth theming
 
 ## Code Conventions
