@@ -1128,6 +1128,7 @@ const App = {
             <div id="gemini-form" style="flex-direction:column; gap:6px;">
                 <div id="api-key-section" style="display:flex; flex-direction:column; gap:6px;">
                     <div style="font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">API Key</div>
+                    <div style="font-size:10px; opacity:0.5; line-height:1.5;">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:inherit;">Google AI Studio</a>. Uses <code>gemini-2.5-flash</code>.</div>
                     ${hasKey ? `
                     <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                         <span style="font-size:11px; opacity:0.6;">●●●●●●●●</span>
