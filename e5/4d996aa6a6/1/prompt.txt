@@ -1,0 +1,626 @@
+Implement the following plan:
+
+# AI Theme Generation — Implementation Plan
+
+## Context
+
+現在の `handleGenerate()` はプリセット名の部分一致のみで、AI生成は未実装。
+自由記述のプロンプト（例: "brutalist newspaper with orange ink"）をGemini APIに送り、
+CSSを動的生成してページに反映させる機能を追加する。
+
+**選択API:** Google Gemini 2.0 Flash（無料枠: 1,500 req/日, 15 req/分）
+**アーキテクチャ:** ブラウザ完結。サーバー追加なし。APIキーはlocalStorage保存。
+**index.html 変更なし。gardener.js のみ修正。**
+
+---
+
+## 変更ファイル
+
+- `/Users/turtlekazu/ReactProjects/acephale/gardener.js` — 唯一の変更対象
+
+---
+
+## localStorage キー一覧
+
+| キー | 用途 |
+|------|------|
+| `acephale-theme` | 既存: プリセット名 |
+| `acephale-custom-css` | 新規: AI生成CSSの全文 |
+| `acephale-custom-prompt` | 新規: AI生成時のプロンプト文字列 |
+| `acephale-gemini-key` | 新規: ユーザーのGemini APIキー |
+
+---
+
+## 実装手順（この順で実装すること）
+
+### Step 1: モジュールレベルの定数を追加
+
+`BASE_URL` の直後に追加:
+
+```javascript
+const GEMINI_SYSTEM_PROMPT = `You are a CSS theme generator for a Hacker News reader app.
+Output ONLY raw CSS. No explanations. No markdown. No code fences. No comments.
+
+Define all of these CSS custom properties on :root, then optionally add component overrides:
+
+:root {
+    --bg:                  /* page background */;
+    --card-bg:             /* story card background */;
+    --text:                /* primary text */;
+    --subtext:             /* secondary/meta text */;
+    --accent:              /* links and accent */;
+    --header-bg:           /* header background (rgba allowed) */;
+    --font-main:           /* font stack */;
+    --item-radius:         /* card border-radius */;
+    --item-border:         /* border shorthand or none */;
+    --item-shadow:         /* box-shadow or none */;
+    --more-btn-bg:         /* More button background */;
+    --more-btn-color:      /* More button text color */;
+    --mobile-upvote-bg:    /* upvote bg on mobile */;
+    --mobile-upvote-color: /* upvote text on mobile */;
+}
+
+Optional selectors to override: .hn-header, .hn-story-item, .hn-story-title, .hn-upvote, .hn-logo, body.
+Output nothing except the CSS.`;
+```
+
+---
+
+### Step 2: App オブジェクトに新メソッドを追加
+
+#### APIキー管理（3メソッド）
+
+```javascript
+getApiKey() {
+    return localStorage.getItem('acephale-gemini-key');
+},
+saveApiKey(key) {
+    localStorage.setItem('acephale-gemini-key', key.trim());
+},
+clearApiKey() {
+    localStorage.removeItem('acephale-gemini-key');
+    this.renderApiKeySection();
+},
+```
+
+#### CSS抽出（Geminiがmarkdown fence で返した場合に除去）
+
+```javascript
+extractCss(text) {
+    let cleaned = text.replace(/^```(?:css)?\s*/i, '');
+    cleaned = cleaned.replace(/\s*```\s*$/, '');
+    return cleaned.trim();
+},
+```
+
+#### Gemini API呼び出し
+
+```javascript
+async generateTheme(prompt) {
+    const key = this.getApiKey();
+    if (!key) throw new Error('NO_API_KEY');
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+    const body = {
+        system_instruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },
+        contents: [{ role: 'user', parts: [{ text: `Generate a CSS theme for: ${prompt}` }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 1200 }
+    };
+
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+        const status = response.status;
+        if (status === 400 || status === 403) throw new Error('INVALID_KEY');
+        if (status === 429) throw new Error('RATE_LIMIT');
+        throw new Error(`API_ERROR:${status}`);
+    }
+
+    const data = await response.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) throw new Error('EMPTY_RESPONSE');
+    return this.extractCss(rawText);
+},
+```
+
+#### APIキー設定UI のレンダリング
+
+`init()` から呼ばれる。`clearApiKey()` 後の再描画にも使う。
+`#theme-controls` の末尾に `#api-key-section` として追加する。
+キーが保存済みかどうかで2状態を描画する:
+
+- **State A（キーなし）**: "GEMINI API KEY ▼" トグル + password input + Save ボタン（デフォルト折りたたみ）
+- **State B（キーあり）**: "GEMINI AI: ENABLED" + "clear" ボタン
+
+完全な実装:
+
+```javascript
+renderApiKeySection() {
+    const existing = document.getElementById('api-key-section');
+    if (existing) existing.remove();
+
+    const section = document.createElement('div');
+    section.id = 'api-key-section';
+    section.style.cssText = 'width:100%; display:flex; flex-direction:column; gap:6px;';
+
+    if (this.getApiKey()) {
+        // State B
+        section.innerHTML = `
+            <div style="font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini AI: enabled</span>
+                <button id="api-key-clear-btn" style="font-size:10px; background:none; border:none; padding:0; cursor:pointer; opacity:0.7; color:inherit;">clear</button>
+            </div>`;
+        section.querySelector('#api-key-clear-btn').addEventListener('click', () => this.clearApiKey());
+    } else {
+        // State A
+        section.innerHTML = `
+            <div id="api-key-toggle" style="cursor:pointer; font-size:11px; opacity:0.6; display:flex; justify-content:space-between; align-items:center; width:100%; user-select:none;">
+                <span style="text-transform:uppercase; letter-spacing:1px; font-weight:600;">Gemini API Key</span>
+                <span id="api-key-icon" style="font-size:10px; display:inline-block; transition:transform 0.3s; transform:rotate(-90deg);">▼</span>
+            </div>
+            <div id="api-key-form" style="display:none; flex-direction:column; gap:6px;">
+                <input type="password" id="api-key-input" placeholder="AIza..." style="font-size:11px; min-width:0;">
+                <button id="api-key-save-btn" style="font-size:11px; align-self:flex-end;">Save Key</button>
+            </div>`;
+        section.querySelector('#api-key-toggle').addEventListener('click', () => {
+            const form = section.querySelector('#api-key-form');
+            const icon = section.querySelector('#api-key-icon');
+            const isOpen = form.style.display !== 'none';
+            form.style.display = isOpen ? 'none' : 'flex';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        });
+        section.querySelector('#api-key-save-btn').addEventListener('click', () => {
+            const val = section.querySelector('#api-key-input').value.trim();
+            if (!val) return;
+            this.saveApiKey(val);
+            this.renderApiKeySection();
+        });
+    }
+
+    this.elements.themeControls.appendChild(section);
+},
+```
+
+#### エラー表示（alert廃止 → インライン表示）
+
+```javascript
+showGenerateError(err) {
+    let message;
+    switch (err.message) {
+        case 'NO_API_KEY':    message = 'Please add your Gemini API key.'; this.expandApiKeySection(); break;
+        case 'INVALID_KEY':   message = 'Invalid API key. Please check and re-enter.'; this.expandApiKeySection(); break;
+        case 'RATE_LIMIT':    message = 'Rate limit hit. Please try again in a moment.'; break;
+        case 'EMPTY_RESPONSE':message = 'Gemini returned an empty response. Try rephrasing.'; break;
+        default:              message = `Generation failed: ${err.message}`;
+    }
+    let errEl = document.getElementById('generate-error');
+    if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = 'generate-error';
+        errEl.style.cssText = 'font-size:11px; color:#ff3b30; margin-top:-4px; width:100%;';
+        this.elements.generateBtn.parentElement.insertAdjacentElement('afterend', errEl);
+    }
+    errEl.textContent = message;
+    clearTimeout(this._errorTimeout);
+    this._errorTimeout = setTimeout(() => { errEl.textContent = ''; }, 5000);
+},
+```
+
+#### APIキーセクションを展開するヘルパー
+
+```javascript
+expandApiKeySection() {
+    const form = document.getElementById('api-key-form');
+    const icon = document.getElementById('api-key-icon');
+    if (form && form.style.display === 'none') {
+        form.style.display = 'flex';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+    this.elements.themeControls.classList.remove('is-minimized');
+    const input = document.getElementById('api-key-input');
+    if (input) setTimeout(() => input.focus(), 300);
+},
+```
+
+---
+
+### Step 3: `handleGenerate()` を async に更新
+
+既存の同期版と置き換える。同時リクエスト防止のガードも追加:
+
+```javascript
+async handleGenerate() {
+    const input = this.elements.promptInput.value.trim();
+    if (!input) return;
+    if (this._isGenerating) return;  // 連打防止
+
+    // プリセット一致チェック（既存動作を維持）
+    const presetCss = this.matchStyle(input);
+    if (presetCss) {
+        this.applyStyle(presetCss, input);
+        this.togglePresets(true);
+        return;
+    }
+
+    // キーなし → 入力欄を展開
+    if (!this.getApiKey()) {
+        this.expandApiKeySection();
+        return;
+    }
+
+    // AI生成
+    this._isGenerating = true;
+    const btn = this.elements.generateBtn;
+    const originalText = btn.textContent;
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+
+    try {
+        const css = await this.generateTheme(input);
+        this.applyStyle(css, null, input);
+        this.togglePresets(true);
+    } catch (err) {
+        this.showGenerateError(err);
+    } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        this._isGenerating = false;
+    }
+},
+```
+
+---
+
+### Step 4: `applyStyle()` のシグネチャと永続化ロジックを更新
+
+`applyStyle(css, themeName, customPrompt = null)` に変更:
+
+```javascript
+applyStyle(css, themeName, customPrompt = null) {
+    this.toggleMenu(false);
+
+    if (themeName && STYLE_PRESETS[themeName]) {
+        // プリセット
+        localStorage.setItem('acephale-theme', themeName);
+        localStorage.removeItem('acephale-custom-css');
+        localStorage.removeItem('acephale-custom-prompt');
+    } else if (customPrompt) {
+        // AI生成テーマ
+        localStorage.setItem('acephale-custom-css', css);
+        localStorage.setItem('acephale-custom-prompt', customPrompt);
+        localStorage.removeItem('acephale-theme');
+    }
+
+    const applyFn = () => {
+        this.elements.styleTag.textContent = SYSTEM_STYLE + css;
+    };
+
+    if (!document.startViewTransition) { applyFn(); return; }
+    document.startViewTransition(applyFn);
+},
+```
+
+---
+
+### Step 5: `init()` を更新
+
+`renderApiKeySection()` 呼び出しの追加と、AI生成テーマの復元ロジックを追加:
+
+```javascript
+async init() {
+    this.renderPresetButtons();
+    this.renderApiKeySection();   // 追加
+    this.bindEvents();
+
+    const savedPreset  = localStorage.getItem('acephale-theme');
+    const savedCustom  = localStorage.getItem('acephale-custom-css');
+    const savedPrompt  = localStorage.getItem('acephale-custom-prompt');
+
+    if (savedCustom) {
+        this.applyStyle(savedCustom, null, savedPrompt || 'Custom AI Theme');
+        if (savedPrompt) this.elements.promptInput.value = savedPrompt;
+    } else {
+        const themeToApply = (savedPreset && STYLE_PRESETS[savedPreset]) ? savedPreset : 'Minimalist';
+        this.applyStyle(STYLE_PRESETS[themeToApply], themeToApply);
+    }
+
+    await this.loadInitial();
+},
+```
+
+---
+
+## UIレイアウト（#theme-controls 最終形）
+
+```
+┌─────────────────────────────────────────┐
+│  [drag handle]                          │
+│  PRESETS ▼                              │
+│  [Mini] [Glitch] [Playful] ...          │
+│  [Enter theme.................] [Apply] │
+│  (error message if any)                 │
+│  GEMINI API KEY ▼  ← 折りたたみ済み     │
+│  (or: GEMINI AI: ENABLED        clear)  │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 動作フロー
+
+```
+ユーザーが "brutalist newspaper" と入力 → Apply
+├─ matchStyle() → 一致なし
+├─ getApiKey() → キーなし → expandApiKeySection() → STOP
+│
+└─ getApiKey() → キーあり
+    ├─ ボタン "Generating..." + disabled
+    ├─ Gemini API へ fetch()
+    │   ├─ 200 OK → extractCss() → applyStyle(css, null, prompt)
+    │   │           → View Transition → CSS適用 + localStorage保存
+    │   ├─ 400/403 → showGenerateError("Invalid API key") + 入力欄展開
+    │   ├─ 429    → showGenerateError("Rate limit hit")
+    │   └─ その他 → showGenerateError("Generation failed: ...")
+    └─ finally: ボタン復元
+```
+
+---
+
+## 検証方法
+
+1. ブラウザで `index.html` を開く
+2. "minimalist" と入力 → Apply → プリセット適用される（既存動作の確認）
+3. "brutalist newspaper" と入力 → Apply → API Key セクションが展開される
+4. APIキーを入力して Save → "GEMINI AI: ENABLED" に切り替わる
+5. "brutalist newspaper" と入力 → Apply → "Generating..." 表示後にテーマ適用
+6. ページをリロード → AI生成テーマが復元される
+7. プリセットボタンをクリック → プリセットに切り替わり、custom CSS がクリアされる
+8. clear ボタン → "GEMINI API KEY ▼" に戻る
+
+
+If you need specific details from before exiting plan mode (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/turtlekazu/.REDACTED.jsonl
+
+---
+
+GEMINI API KEYを入れても、Rate limit hitというエラーが出てしまいました。
+
+---
+
+https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flashに変更したらうまくいきました。現在の実装でコミットして
+
+---
+
+生成したテーマを、ローカル上で保存して、Presetsとして選べるようにしたいです。その際、Presetsのボタンとしては1単語にプロンプトを要約し、ボタンの枠線を太くしてください。
+
+---
+
+生成されるテーマが、いまいちバリエーションに欠けているのと、コントラストが悪い配色の時があり、見づらい場合があります。この部分をプロンプトで改良してください。
+
+---
+
+ヘッダーの部分のスタイルがぜんぜん変化しないです。本体と同様に、スタイルを生成し、適用してください。
+
+---
+
+[Request interrupted by user]
+
+---
+
+ヘッダーの部分のスタイルがぜんぜん変化しないです。本体と同様に、スタイルを生成し、適用させるようなプロンプトに改良してください。
+
+---
+
+まだ、ヘッダーのスタイルが変わりませんし、コントラストも悪いスタイルがまだ生成されます。
+
+---
+
+デザインのバリエーションがもっと多様になるように、プロンプトをさらに改良してください。
+
+---
+
+Playfulのテーマを見ていただきたいのですが、これは他のテーマと大幅にスタイルが違いますよね。このテーマへの振れ幅くらい、生成されるテーマのデザインやインタラクション（ホバー時のアニメーションなど）をダイナミックにしていただきたいのです。もしかすると、もっと変更可能なプロパティを多くする必要があるかもしれません。
+
+---
+
+もっとダイナミックなUI生成が可能なように、大きく改善してください。現状だと、フォントと色が変わるだけで、インタラクションなどはどれも同じで画一的で、全時代的です。ただのダイナミックカラーで終わらせないでください。世界観ごと生成するのです。
+
+---
+
+試しに、「RaspberryPi」というプロンプトで生成してみて、プリセットに追加してください。
+
+---
+
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Analysis:
+Let me chronologically analyze this conversation to create a comprehensive summary.
+
+1. **Initial Implementation**: User provided a detailed plan to add Gemini AI theme generation to gardener.js. I implemented all 5 steps from the plan.
+
+2. **Rate Limit Issue**: User got "Rate limit hit" error. I added error body logging and improved the error message. User solved it by changing model from `gemini-2.0-flash` to `gemini-2.5-flash`.
+
+3. **Commit**: User asked to commit. I committed the implementation.
+
+4. **Save AI Themes as Presets**: User wanted to save AI-generated themes locally as preset buttons with 1-word names and thicker borders. I implemented this feature.
+
+5. **Prompt Quality Improvements**:
+   - User said variety was lacking and contrast was poor → I improved GEMINI_SYSTEM_PROMPT with READABILITY rules and VARIETY rules
+   - Header not changing → I added HEADER section with backdrop-filter guidance and `--header-border` variable
+   - Still not working → I rewrote prompt as fill-in template, increased maxOutputTokens 1200→1800, added console logging
+   - More variety needed → I added 10-archetype system
+   - Still too uniform → I added POWERFUL TECHNIQUES section with CSS snippets, added new SYSTEM_STYLE variables (--story-gap, --title-size, --upvote-size, --item-transition)
+   - "World-building" redesign → Complete rewrite with world-building mandate, 10 worlds with full interaction models, CSS Arsenal section, added --header-height and --load-more-radius variables
+
+6. **RaspberryPi Preset**: User asked to generate "RaspberryPi" theme and add as preset. I designed and added it manually to STYLE_PRESETS.
+
+The current work is the RaspberryPi preset addition - I just added it to STYLE_PRESETS but haven't committed yet or verified it fully.
+
+Key files:
+- `/Users/turtlekazu/ReactProjects/acephale/gardener.js` - only modified file
+- `/Users/turtlekazu/ReactProjects/acephale/index.html` - read only, not modified
+
+Key localStorage keys: acephale-theme, acephale-custom-css, acephale-custom-prompt, acephale-gemini-key, acephale-saved-themes
+
+The last action was adding the RaspberryPi preset to STYLE_PRESETS. The edit was applied but no syntax check or commit was done yet.
+
+Summary:
+1. Primary Request and Intent:
+   The user's overarching goal is to enhance a Hacker News reader app (`gardener.js`) with AI-powered CSS theme generation using the Gemini API, with progressively improving quality. Specific requests in order:
+   - Implement the full AI theme generation plan (Gemini API integration, API key management, localStorage persistence, UI controls)
+   - Fix "Rate limit hit" error when using the Gemini API key
+   - Commit working implementation
+   - Save AI-generated themes locally as selectable presets (1-word name summarized from prompt, thicker border `2px`, deletable with × button)
+   - Improve prompt for better contrast and more variety
+   - Fix header not changing with theme generation
+   - Make generated themes more dynamic (more variety, better interactions)
+   - Make themes even more dynamic — "不只是颜色和字体变化" — full world-building with layout changes, animations, interactions
+   - Generate a "RaspberryPi" theme and add it as a built-in preset
+
+2. Key Technical Concepts:
+   - Google Gemini 2.5 Flash API (browser-direct, no server, `v1beta` endpoint)
+   - CSS Custom Properties (variables) for theme system
+   - CSS `View Transition API` for smooth theme switching
+   - localStorage for API key, preset name, custom CSS, custom prompt, and saved themes persistence
+   - CSS `@keyframes`, `cubic-bezier`, `clip-path`, `perspective()`, `backdrop-filter`, `filter`, `mix-blend-mode` for rich interactions
+   - `display: grid` layout overrides for story list
+   - `position: absolute` floating rank badges
+   - `body::before` / `body::after` for atmospheric overlays (scanlines, gradients)
+   - WCAG contrast principles expressed as simple dark/light rules
+   - LLM prompt engineering: instruction-style → fill-in-template → world-building mandate
+   - 10-archetype system with full interaction models per archetype
+   - CSS Arsenal: 17 copy-pasteable CSS technique snippets in the prompt
+
+3. Files and Code Sections:
+   - `/Users/turtlekazu/ReactProjects/acephale/index.html`
+     - Read-only reference; never modified
+     - `#theme-controls` contains `#panel-handle`, `#presets-toggle`, `#preset-buttons`, prompt input row; `renderApiKeySection()` and `renderSaveButton()` append to it dynamically
+   - `/Users/turtlekazu/ReactProjects/acephale/gardener.js`
+     - **Only modified file** throughout the entire session
+     - **`GEMINI_SYSTEM_PROMPT` constant** (after `BASE_URL`): Evolved through 6 iterations; final version is a world-building mandate with CONTRAST LAW, 10 WORLDS with full interaction models (TERMINAL, BRUTALIST, EDITORIAL, PLAYFUL, NEON, MAGAZINE, RETRO GUI, VAPORWAVE, NATURE, ISOMETRIC), CSS ARSENAL (17 snippets), and a TEMPLATE with all variables
+     - **`SYSTEM_STYLE` constant**: Added new CSS variables wired into existing rules:
+       - `--story-gap: 16px` → `.hn-story-list { gap: var(--story-gap) }`
+       - `--title-size: 18px` → `.hn-story-title { font-size: var(--title-size) }`
+       - `--upvote-size: 32px` → `.hn-upvote { width/height: var(--upvote-size) }`
+       - `--item-transition: transform 0.2s, box-shadow 0.2s` → `.hn-story-item { transition: var(--item-transition) }`
+       - `--header-height: 60px` → `.hn-header { height: var(--header-height) }`
+       - `--load-more-radius: 100px` → `.hn-load-more { border-radius: var(--load-more-radius) }`
+     - **`STYLE_PRESETS` object**: Added `"RaspberryPi"` preset at the end
+     - **`App` object** — new methods added:
+       - `getApiKey()`, `saveApiKey(key)`, `clearApiKey()`
+       - `extractCss(text)` — strips markdown fences
+       - `async generateTheme(prompt)` — Gemini API call with structured error handling; logs error body to console; logs generated CSS to console
+       - `renderApiKeySection()` — State A (key absent): collapsible password input; State B (key present): "GEMINI AI: ENABLED" + clear button
+       - `showGenerateError(err)` — inline error display below generate row, auto-clears after 5s; shows `err.detail` for RATE_LIMIT
+       - `expandApiKeySection()` — opens key form, removes `is-minimized`, focuses input
+       - `summarizePrompt(prompt)` — extracts first non-stopword, capitalizes
+       - `getSavedThemes()` / `saveCurrentTheme()` / `deleteSavedTheme(id)`
+       - `renderSavedThemeButtons()` — appends to `#preset-buttons` with `2px solid rgba(0,0,0,0.25)` border and hover-reveal × delete button
+       - `renderSaveButton(show)` — inserts/removes "Save as Preset" button after generate row
+       - `async handleGenerate()` — replaces sync version; preset match → apply; no key → expandApiKeySection; else → AI generate with `_isGenerating` guard, "Generating..." state, calls `renderSaveButton(true)` on success
+       - `matchStyle(input)` — now returns matched key name (not CSS string) for correct localStorage saving
+       - `applyStyle(css, themeName, customPrompt = null)` — updated signature; preset branch clears custom CSS keys and calls `renderSaveButton(false)`; custom prompt branch saves to `acephale-custom-css/prompt`; uses `document.startViewTransition`
+       - `async init()` — calls `renderSavedThemeButtons()`, `renderApiKeySection()`; restores custom CSS on reload with save button if not already saved
+     - **`generateTheme` request body**:
+       ```javascript
+       const body = {
+           system_instruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },
+           contents: [{ role: 'user', parts: [{ text: `Generate a CSS theme for: ${prompt}` }] }],
+           generationConfig: { temperature: 0.9, maxOutputTokens: 1800 }
+       };
+       ```
+     - **RaspberryPi preset** (most recent addition, uncommitted):
+       ```javascript
+       "RaspberryPi": `
+           /* world: TERMINAL — Raspberry Pi official palette */
+           :root {
+               --bg: #0a0a0a; --card-bg: #111318; --text: #e2e8f0; --subtext: #94a3b8;
+               --accent: #c51a4a; --header-bg: #0a0a0a; --header-border: 2px solid #c51a4a;
+               --header-height: 54px; --font-main: 'Courier New', Courier, monospace;
+               --item-radius: 0px; --item-border: 1px solid rgba(197,26,74,0.2);
+               --item-shadow: none; --story-gap: 4px; --title-size: 15px;
+               --upvote-size: 30px; --load-more-radius: 0px;
+               --item-transition: border-color 0.05s steps(1), background 0.1s;
+               --more-btn-bg: #c51a4a; --more-btn-color: #fff;
+               --mobile-upvote-bg: #c51a4a; --mobile-upvote-color: #fff;
+           }
+           .hn-header { background:#0a0a0a; backdrop-filter:none; border-bottom:2px solid #c51a4a; box-shadow:0 0 20px rgba(197,26,74,0.3); }
+           .hn-logo { color:#c51a4a; font-size:20px; letter-spacing:0.2em; text-transform:uppercase; text-shadow:0 0 8px #c51a4a, 0 0 24px rgba(197,26,74,0.5); }
+           .hn-logo::after { content:'_'; animation:rpi-blink 1s step-end infinite; color:#c51a4a; }
+           @keyframes rpi-blink { 50% { opacity:0; } }
+           .hn-nav-links a { font-size:12px; letter-spacing:0.05em; }
+           .hn-nav-links a:hover { color:#2d9e6b; opacity:1; }
+           .hn-story-item { border-left:3px solid #c51a4a; border-top:none; border-right:none; border-bottom:1px solid rgba(197,26,74,0.15); background:#111318; }
+           .hn-story-item:hover { background:#180e14; border-left:3px solid #ff2060; box-shadow:-4px 0 16px rgba(197,26,74,0.4), inset 0 0 40px rgba(197,26,74,0.04); }
+           .hn-story-rank { color:rgba(197,26,74,0.7); font-weight:600; }
+           .hn-upvote { border-radius:0; border:1px solid #2d9e6b; color:#2d9e6b; background:rgba(45,158,107,0.08); opacity:1; }
+           .hn-upvote:hover { background:rgba(45,158,107,0.2); border-color:#3dce8b; color:#3dce8b; opacity:1; }
+           body { letter-spacing:0.02em; }
+           body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
+               background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06) 0,rgba(0,0,0,0.06) 1px,transparent 1px,transparent 3px); }
+           body::after { content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+               background:radial-gradient(ellipse at 10% 90%,rgba(197,26,74,0.08) 0%,transparent 55%),
+                           radial-gradient(ellipse at 90% 10%,rgba(45,158,107,0.06) 0%,transparent 50%); }
+       `
+       ```
+
+4. Errors and fixes:
+   - **Rate limit error on first API call**: User got "Rate limit hit" immediately after entering API key. Added error body JSON logging to console and `err.detail` display in UI. User fixed it independently by changing model from `gemini-2.0-flash` to `gemini-2.5-flash` in the endpoint URL.
+   - **`matchStyle()` returning CSS instead of key name**: `applyStyle(css, input)` was called with raw user input as `themeName`, but `STYLE_PRESETS[input]` fails on case mismatch (e.g. "minimalist" vs "Minimalist"). Fixed by changing `matchStyle` to return the matched key name, and `handleGenerate` to look up `STYLE_PRESETS[presetKey]`.
+   - **Edit tool "string not found" error**: When editing the TEMPLATE section of `GEMINI_SYSTEM_PROMPT`, the exact string match failed because the file had been reformatted. Fixed by re-reading the file to get the exact current content before retrying the edit.
+   - **Header styles not changing**: Even with `.hn-header` overrides in the prompt, the `backdrop-filter: saturate(180%) blur(20px)` was hardcoded in SYSTEM_STYLE, making all headers look frosted regardless of theme. Fixed by adding explicit prompt instructions to set `backdrop-filter: none` and providing header pattern variants. Also added `--header-border` to the variables list.
+   - **Contrast still poor after prompt updates**: Prompt was giving vague instructions like "high contrast". Fixed by adding FORBIDDEN/CORRECT example color pairs and specific hex thresholds (e.g., dark bg → `--text: #e0e0e0+`).
+
+5. Problem Solving:
+   - **AI generates only colors/fonts**: Root cause was the prompt being instruction-based rather than template-based, and not telling the AI about layout-level CSS (grid, absolute positioning, @keyframes). Solved by: (a) rewriting prompt as a fill-in template with required stubs for `.hn-header`, `.hn-logo`, `.hn-story-item:hover`, `.hn-story-rank`, `.hn-upvote`; (b) adding POWERFUL TECHNIQUES section with 11 concrete CSS snippets; (c) complete world-building mandate rewrite with 10 worlds each having full interaction models; (d) adding CSS Arsenal with 17 snippets.
+   - **New SYSTEM_STYLE variables**: Added `--story-gap`, `--title-size`, `--upvote-size`, `--item-transition`, `--header-height`, `--load-more-radius` so AI can control layout via variables AND direct overrides.
+   - **Token truncation**: Increased `maxOutputTokens` from 1200 → 1800 to prevent CSS being cut off before component overrides.
+
+6. All user messages:
+   - "Implement the following plan: [detailed AI theme generation implementation plan]"
+   - "GEMINI API KEYを入れても、Rate limit hitというエラーが出てしまいました。"
+   - "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flashに変更したらうまくいきました。現在の実装でコミットして"
+   - "生成したテーマを、ローカル上で保存して、Presetsとして選べるようにしたいです。その際、Presetsのボタンとしては1単語にプロンプトを要約し、ボタンの枠線を太くしてください。"
+   - "生成されるテーマが、いまいちバリエーションに欠けているのと、コントラストが悪い配色の時があり、見づらい場合があります。この部分をプロンプトで改良してください。"
+   - "ヘッダーの部分のスタイルがぜんぜん変化しないです。本体と同様に、スタイルを生成し、適用してください。[Request interrupted by user]ヘッダーの部分のスタイルがぜんぜん変化しないです。本体と同様に、スタイルを生成し、適用させるようなプロンプトに改良してください。"
+   - "まだ、ヘッダーのスタイルが変わりませんし、コントラストも悪いスタイルがまだ生成されます。"
+   - "デザインのバリエーションがもっと多様になるように、プロンプトをさらに改良してください。"
+   - "Playfulのテーマを見ていただきたいのですが、これは他のテーマと大幅にスタイルが違いますよね。このテーマへの振れ幅くらい、生成されるテーマのデザインやインタラクション（ホバー時のアニメーションなど）をダイナミックにしていただきたいのです。もしかすると、もっと変更可能なプロパティを多くする必要があるかもしれません。"
+   - "もっとダイナミックなUI生成が可能なように、大きく改善してください。現状だと、フォントと色が変わるだけで、インタラクションなどはどれも同じで画一的で、全時代的です。ただのダイナミックカラーで終わらせないでください。世界観ごと生成するのです。"
+   - "試しに、「RaspberryPi」というプロンプトで生成してみて、プリセットに追加してください。"
+   - "[Summary request]"
+
+7. Pending Tasks:
+   - Syntax check and commit the RaspberryPi preset addition (the edit was applied but not yet verified or committed)
+
+8. Current Work:
+   The immediately preceding work was adding the "RaspberryPi" preset to `STYLE_PRESETS` in `/Users/turtlekazu/ReactProjects/acephale/gardener.js`. The preset was designed manually (since Gemini API is not directly callable from the shell without the user's key) following the world-building mandate:
+   - **World**: TERMINAL archetype
+   - **Colors**: Raspberry Red `#c51a4a` (accent), PCB Green `#2d9e6b` (upvote), black bg `#0a0a0a`
+   - **Layout**: Dense `--story-gap: 4px`, border-left stripe cards, 0px radius
+   - **Interaction**: `steps(1)` digital snap transition, red left-border intensifies on hover with glow `box-shadow`
+   - **Atmosphere**: Scanline `body::before` + dual radial gradients `body::after`
+   - **Identity**: Monospace logo with red glow text-shadow + blinking `_` cursor animation (`rpi-blink`), PCB green upvote buttons
+   The edit was successfully applied (no error reported) but no syntax check or `git commit` was run yet.
+
+9. Optional Next Step:
+   Run syntax check and commit the RaspberryPi preset. The user's request was: "試しに、「RaspberryPi」というプロンプトで生成してみて、プリセットに追加してください。" — the preset was added but the session ended before committing. The next step is:
+   ```bash
+   node --input-type=module <<'EOF'
+   import { readFileSync } from 'fs';
+   const src = readFileSync('/Users/turtlekazu/ReactProjects/acephale/gardener.js', 'utf8');
+   try { new Function(src); console.log('Syntax OK'); }
+   catch (e) { console.error('Syntax error:', e.message); }
+   EOF
+   git add gardener.js && git commit -m "Add RaspberryPi built-in preset (TERMINAL world)"
+   ```
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/turtlekazu/.REDACTED.jsonl
+Please continue the conversation from where we left off without asking the user any further questions. Continue with the last task that you were asked to work on.
+
+---
+
+もっと「Plauful」テーマと近い感じにダイナミックに異なるテーマとして「Ubuntu」というテーマを作成してください。
