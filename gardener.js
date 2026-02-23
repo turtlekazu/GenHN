@@ -1097,110 +1097,240 @@ const STYLE_PRESETS = {
     `,
 
     "RaspberryPi": `
-        /* world: TERMINAL — Raspberry Pi official palette: #c51a4a (red) × #2d9e6b (PCB green) */
         :root {
-            --bg: #0a0a0a;
-            --card-bg: #111318;
-            --text: #e2e8f0;
-            --subtext: #94a3b8;
-            --accent: #c51a4a;
-            --header-bg: #0a0a0a;
-            --header-border: 2px solid #c51a4a;
-            --header-height: 54px;
-            --font-main: 'Courier New', Courier, monospace;
-            --item-radius: 0px;
-            --item-border: 1px solid rgba(197,26,74,0.2);
-            --item-shadow: none;
-            --story-gap: 4px;
+            --bg: #0d1a12;
+            --card-bg: #15291d;
+            --text: #e2f0e7;
+            --subtext: #82a88e;
+            --accent: #d81159;
+            --header-bg: #070d09;
+            --header-border: 2px solid #1a3825;
+            --header-height: 60px;
+            --font-main: "SF Mono", "Consolas", "Courier New", monospace;
+            --item-radius: 2px;
+            --item-border: 1px solid #21402c;
+            --item-shadow: 4px 4px 0 #000000;
+            --item-transition: all 0.1s steps(2, end);
+            --story-gap: 20px;
             --title-size: 15px;
-            --upvote-size: 30px;
+            --upvote-size: 36px;
             --load-more-radius: 0px;
-            --item-transition: border-color 0.05s steps(1), background 0.1s;
-            --more-btn-bg: #c51a4a;
-            --more-btn-color: #fff;
-            --mobile-upvote-bg: #c51a4a;
-            --mobile-upvote-color: #fff;
+            --more-btn-bg: #d81159;
+            --more-btn-color: #ffffff;
+            --mobile-upvote-bg: #000000;
+            --mobile-upvote-color: #ffd700;
         }
 
-        /* ── Header ── */
-        .hn-header {
-            background: #0a0a0a;
-            backdrop-filter: none;
-            border-bottom: 2px solid #c51a4a;
-            box-shadow: 0 0 20px rgba(197,26,74,0.3);
-        }
-        .hn-logo {
-            color: #c51a4a;
-            font-size: 20px;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            text-shadow: 0 0 8px #c51a4a, 0 0 24px rgba(197,26,74,0.5);
-        }
-        .hn-logo::after {
-            content: '_';
-            animation: rpi-blink 1s step-end infinite;
-            color: #c51a4a;
-        }
-        @keyframes rpi-blink { 50% { opacity: 0; } }
-
-        .hn-nav-links a { font-size: 12px; letter-spacing: 0.05em; }
-        .hn-nav-links a:hover { color: #2d9e6b; opacity: 1; }
-
-        /* ── Story items ── */
-        .hn-story-item {
-            border-left: 3px solid #c51a4a;
-            border-top: none;
-            border-right: none;
-            border-bottom: 1px solid rgba(197,26,74,0.15);
-            background: #111318;
-        }
-        .hn-story-item:hover {
-            background: #180e14;
-            border-left: 3px solid #ff2060;
-            border-bottom-color: rgba(197,26,74,0.35);
-            box-shadow: -4px 0 16px rgba(197,26,74,0.4), inset 0 0 40px rgba(197,26,74,0.04);
-        }
-        .hn-story-rank { color: rgba(197,26,74,0.7); font-weight: 600; }
-
-        /* ── Upvote: PCB green ── */
-        .hn-upvote {
-            border-radius: 0;
-            border: 1px solid #2d9e6b;
-            color: #2d9e6b;
-            background: rgba(45,158,107,0.08);
-            opacity: 1;
-        }
-        .hn-upvote:hover {
-            background: rgba(45,158,107,0.2);
-            border-color: #3dce8b;
-            color: #3dce8b;
-            opacity: 1;
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
         }
 
-        /* ── Atmosphere: scanline + ambient glow ── */
-        body { letter-spacing: 0.02em; }
+        @keyframes pcb-scan {
+            0% { transform: translateY(-100%); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        @keyframes led-blink {
+            0%, 100% { background-color: #550522; box-shadow: none; }
+            50% { background-color: var(--accent); box-shadow: 0 0 12px var(--accent), inset 0 0 4px #ff6b9e; }
+        }
+
         body::before {
             content: "";
             position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9999;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.06) 0, rgba(0,0,0,0.06) 1px,
-                transparent 1px, transparent 3px
-            );
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(33, 64, 44, 0.4) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(33, 64, 44, 0.4) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
+
         body::after {
             content: "";
             position: fixed;
-            inset: 0;
+            top: 0; left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            z-index: 99;
+            animation: pcb-scan 6s linear infinite;
             pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(ellipse at 10% 90%, rgba(197,26,74,0.08) 0%, transparent 55%),
-                        radial-gradient(ellipse at 90% 10%, rgba(45,158,107,0.06) 0%, transparent 50%);
         }
-        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #c51a4a !important; color: #fff !important; }
+
+        .hn-header {
+            height: var(--header-height);
+            background: var(--header-bg);
+            border-bottom: var(--header-border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(21, 41, 29, 0.8) 10px,
+                rgba(21, 41, 29, 0.8) 20px
+            );
+        }
+
+        .hn-logo {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 32px;
+            border-radius: 50%;
+            border: 2px solid #2b0311;
+            animation: led-blink 1.5s infinite step-end;
+            position: relative;
+        }
+
+        .hn-logo::after {
+            content: "PWR";
+            position: absolute;
+            top: 28px;
+            font-size: 10px;
+            color: #82a88e;
+            letter-spacing: 1px;
+        }
+
+        .hn-story-list {
+            list-style: none;
+            padding: 24px;
+            margin: 0 auto;
+            max-width: 800px;
+            display: grid;
+            gap: var(--story-gap);
+            border-left: 4px solid #1a3825;
+        }
+
+        .hn-story-item {
+            background: var(--card-bg);
+            border: var(--item-border);
+            border-radius: var(--item-radius);
+            box-shadow: var(--item-shadow);
+            padding: 16px;
+            display: grid;
+            grid-template-columns: var(--upvote-size) 1fr;
+            gap: 16px;
+            position: relative;
+            transition: var(--item-transition);
+            margin-left: 12px;
+        }
+
+        .hn-story-item::before {
+            content: "";
+            position: absolute;
+            left: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 12px;
+            background: #ffd700;
+            border: 1px solid #b89600;
+            border-right: none;
+            border-radius: 2px 0 0 2px;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+            transition: var(--item-transition);
+        }
+
+        .hn-story-item:hover {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 #000000;
+            border-color: #ffd700;
+            background: #1a3324;
+        }
+
+        .hn-story-item:hover::before {
+            background: var(--accent);
+            border-color: #8a0b39;
+        }
+
+        .hn-story-rank {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: #070d09;
+            color: #ffd700;
+            font-size: 11px;
+            padding: 4px 8px;
+            border: 2px solid #ffd700;
+            box-shadow: 2px 2px 0 #000000;
+        }
+
+        .hn-upvote {
+            width: var(--upvote-size);
+            height: var(--upvote-size);
+            background: #070d09;
+            border: 2px solid #21402c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--subtext);
+            cursor: pointer;
+            transition: var(--item-transition);
+        }
+
+        .hn-upvote::after {
+            content: "";
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 8px solid currentColor;
+            margin-bottom: 2px;
+        }
+
+        .hn-story-item:hover .hn-upvote {
+            border-color: #ffd700;
+            color: #ffd700;
+            box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .hn-story-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hn-story-title {
+            font-size: var(--title-size);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .hn-story-item:hover .hn-story-title {
+            color: #ffd700;
+            text-shadow: 0 0 4px rgba(255, 215, 0, 0.4);
+        }
+
+        .hn-story-meta {
+            font-size: 12px;
+            color: var(--subtext);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #d81159 !important; color: #fff !important; }
     `,
 
     "Ubuntu": `
