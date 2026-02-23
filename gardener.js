@@ -428,8 +428,8 @@ const SYSTEM_STYLE = `
         display: flex; 
         flex-direction: column; 
         gap: 12px; 
-        align-items: flex-start; 
-        max-width: 350px;
+        align-items: flex-start;
+        width: 400px;
 
         /* Glass Style */
         background: color-mix(in srgb, var(--card-bg) 65%, transparent);
@@ -470,14 +470,7 @@ const SYSTEM_STYLE = `
     }
     
     /* Collapsible Logic */
-    #preset-buttons {
-        display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
-        max-height: 300px; opacity: 1; overflow: hidden;
-        transition: max-height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease, margin 0.4s ease;
-    }
-    #preset-buttons.is-collapsed { max-height: 0 !important; opacity: 0 !important; margin-bottom: 0 !important; pointer-events: none; }
     #presets-icon { display: inline-block; transition: transform 0.3s ease; }
-    .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
 
     /* --- Desktop Panel Toggle (Drag Handle) --- */
     #panel-handle { display: none; }
@@ -583,8 +576,7 @@ const SYSTEM_STYLE = `
 
         /* Mobile Control Panel */
         #theme-controls {
-            bottom: 20px; right: 20px; width: auto;
-            max-width: calc(100vw - 40px);
+            bottom: 20px; right: 20px; width: calc(100vw - 40px);
             padding: 15px; padding-top: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -606,7 +598,7 @@ const SYSTEM_STYLE = `
         }
         .hn-footer { padding: 40px 20px 160px; }
         .hn-footer-links { flex-direction: column; gap: 10px; }
-        #preset-buttons { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
+        #preset-buttons { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         #presets-toggle { margin-bottom: 2px; }
         
         /* Mobile Menu State */
@@ -636,7 +628,7 @@ const PANEL_STYLE = `
         bottom: 20px; right: 20px;
         z-index: 10000; padding: 15px; border-radius: 12px;
         display: flex; flex-direction: column; gap: 12px;
-        align-items: flex-start; max-width: 350px;
+        align-items: flex-start; width: 350px;
         background: color-mix(in srgb, var(--card-bg) 65%, transparent);
         color: var(--text);
         border-color: color-mix(in srgb, var(--text) 10%, transparent);
@@ -659,14 +651,7 @@ const PANEL_STYLE = `
         background: var(--accent) !important; color: #fff;
         border: none; font-weight: 600; padding: 8px 16px;
     }
-    #preset-buttons {
-        display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
-        max-height: 300px; opacity: 1; overflow: hidden;
-        transition: max-height 0.5s cubic-bezier(0.2,0.8,0.2,1), opacity 0.4s ease, margin 0.4s ease;
-    }
-    #preset-buttons.is-collapsed { max-height: 0 !important; opacity: 0 !important; margin-bottom: 0 !important; pointer-events: none; }
     #presets-icon { display: inline-block; transition: transform 0.3s ease; }
-    .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
     #panel-handle { display: none; }
     #mobile-drag-pill { display: none; }
     @media (min-width: 769px) {
@@ -685,8 +670,8 @@ const PANEL_STYLE = `
     }
     @media (max-width: 768px) {
         #theme-controls {
-            bottom: 20px; right: 20px; width: auto;
-            max-width: calc(100vw - 40px); padding: 15px; padding-top: 8px;
+            bottom: 20px; right: 20px; width: calc(100vw - 40px);
+            padding: 15px; padding-top: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -705,7 +690,7 @@ const PANEL_STYLE = `
             content: ""; width: 36px; height: 4px;
             background: currentColor; opacity: 0.2; border-radius: 2px;
         }
-        #preset-buttons { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
+        #preset-buttons { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
         #presets-toggle { margin-bottom: 2px; }
     }
 `;
@@ -1758,9 +1743,11 @@ const App = {
     },
 
     togglePresets(collapse) {
-        const shouldCollapse = collapse !== undefined ? collapse : !this.elements.presetButtons.classList.contains('is-collapsed');
-        this.elements.presetButtons.classList.toggle('is-collapsed', shouldCollapse);
-        this.elements.presetsToggle.classList.toggle('is-collapsed-icon', shouldCollapse);
+        const isCollapsed = this.elements.presetButtons.style.display === 'none';
+        const shouldCollapse = collapse !== undefined ? collapse : !isCollapsed;
+        this.elements.presetButtons.style.display = shouldCollapse ? 'none' : 'flex';
+        const icon = document.getElementById('presets-icon');
+        if (icon) icon.style.transform = shouldCollapse ? 'rotate(-90deg)' : 'rotate(0deg)';
     },
 
     toggleMenu(force) {
