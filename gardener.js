@@ -461,7 +461,7 @@ const SYSTEM_STYLE = `
         font-weight: 500;
         transition: 0.2s;
     }
-    #theme-controls #generate-btn {
+    #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn {
         background: var(--accent) !important;
         color: #fff;
         border: none;
@@ -638,7 +638,7 @@ const PANEL_STYLE = `
         border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
         padding: 6px 12px; font-size: 12px; font-weight: 500; transition: 0.2s;
     }
-    #theme-controls #generate-btn {
+    #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn {
         background: var(--accent) !important; color: #fff;
         border: none; font-weight: 600; padding: 8px 16px;
     }
@@ -720,7 +720,7 @@ const STYLE_PRESETS = {
             color: #000;
         }
         .hn-story-item:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.08); transform: scale(1.01); }
-        #theme-controls #generate-btn { background: var(--accent) !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; }
     `,
 
     "Glitch": `
@@ -765,7 +765,7 @@ const STYLE_PRESETS = {
             padding: 0 10px; width: auto;
         }
         /* Override Common Apply Button for visibility */
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Playful": `
@@ -818,7 +818,7 @@ const STYLE_PRESETS = {
             width: 50px; height: 50px; font-weight: 900; opacity: 1;
         }
         /* Force Apply Button Red */
-        #theme-controls #generate-btn { background: var(--red) !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--red) !important; }
     `,
 
     "Glow": `
@@ -862,7 +862,7 @@ const STYLE_PRESETS = {
             font-size: 18px;
         }
         .hn-upvote { border-color: rgba(255,255,255,0.2); }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Academic": `
@@ -893,7 +893,7 @@ const STYLE_PRESETS = {
         .hn-story-title { font-size: 28px; font-weight: 500; }
         .hn-story-rank { font-size: 24px; font-weight: bold; width: 40px; }
         .hn-upvote { border: 1.5px solid #ccc; width: 36px; height: 36px; }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Search": `
@@ -923,7 +923,7 @@ const STYLE_PRESETS = {
         .hn-story-title { color: #1a0dab; font-weight: 400; text-decoration: none; }
         .hn-story-title:hover { text-decoration: underline; }
         .hn-upvote { border-radius: 4px; width: auto; height: auto; padding: 2px 6px; border: 1px solid #dadce0; font-size: 11px; }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Universal": `
@@ -949,7 +949,7 @@ const STYLE_PRESETS = {
         .hn-story-item:hover { background: #e8e8e8; transform: scale(1.02); }
         .hn-story-title { font-size: 28px; font-weight: 700; margin-bottom: 0; }
         .hn-upvote { background: var(--accent); color: #fff; border: none; width: 40px; height: 40px; font-weight: 700; opacity: 1; }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Intelligence": `
@@ -997,7 +997,7 @@ const STYLE_PRESETS = {
         }
         @keyframes blink { 50% { opacity: 0; } }
         .hn-upvote { border-color: rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 6px; }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "Ghibli": `
@@ -1043,7 +1043,7 @@ const STYLE_PRESETS = {
             border-color: rgba(93, 138, 102, 0.3);
             color: var(--accent);
         }
-        #theme-controls #generate-btn { background: var(--accent) !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: var(--accent) !important; color: #fff !important; }
     `,
 
     "8-Bit": `
@@ -1093,7 +1093,7 @@ const STYLE_PRESETS = {
             border: 4px solid var(--text);
             text-transform: uppercase;
         }
-        #theme-controls #generate-btn { background: #ff00ff !important; color: #fff !important; border-radius: 0 !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #ff00ff !important; color: #fff !important; border-radius: 0 !important; }
     `,
 
     "RaspberryPi": `
@@ -1200,7 +1200,7 @@ const STYLE_PRESETS = {
             background: radial-gradient(ellipse at 10% 90%, rgba(197,26,74,0.08) 0%, transparent 55%),
                         radial-gradient(ellipse at 90% 10%, rgba(45,158,107,0.06) 0%, transparent 50%);
         }
-        #theme-controls #generate-btn { background: #c51a4a !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #c51a4a !important; color: #fff !important; }
     `,
 
     "Ubuntu": `
@@ -1345,7 +1345,7 @@ const STYLE_PRESETS = {
         }
 
         /* ── Controls ── */
-        #theme-controls #generate-btn { background: #e95420 !important; color: #fff !important; }
+        #theme-controls #generate-btn, #theme-controls #paste-css-apply-btn { background: #e95420 !important; color: #fff !important; }
     `
 };
 
@@ -1833,7 +1833,7 @@ const App = {
 .hn-header { backdrop-filter: blur(20px); }" style="font-size:11px; min-width:0; width:100%; height:160px; resize:vertical; font-family:monospace; box-sizing:border-box;"></textarea>
                 <div style="display:flex; gap:6px; align-items:center;">
                     <input type="text" id="paste-css-name" placeholder="Theme name (optional)" style="font-size:11px; min-width:0; flex:1;">
-                    <button id="paste-css-apply-btn" style="font-size:11px; white-space:nowrap;">Apply</button>
+                    <button id="paste-css-apply-btn" style="white-space:nowrap; font-weight:600;">Apply</button>
                 </div>
                 <div id="paste-css-save-row" style="display:none; justify-content:flex-end;">
                     <button id="paste-css-save-btn" style="font-size:11px;">Save as Preset</button>
