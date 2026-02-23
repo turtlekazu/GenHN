@@ -549,6 +549,83 @@ const SYSTEM_STYLE = `
 `;
 
 /**
+ * Panel-only CSS — applied when the "None" theme is active.
+ * Contains just the control panel styles + the minimal :root variables
+ * they depend on, so the panel renders correctly with no other CSS loaded.
+ */
+const PANEL_STYLE = `
+    :root {
+        --bg: #ffffff; --text: #333333; --subtext: #888888;
+        --accent: #007aff; --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* --- Control Panel (Glassmorphism) --- */
+    #theme-controls {
+        view-transition-name: theme-ui;
+        position: fixed;
+        bottom: 20px; right: 20px;
+        z-index: 10000; padding: 15px; border-radius: 12px;
+        display: flex; flex-direction: column; gap: 12px;
+        align-items: flex-start; max-width: 350px;
+        background: color-mix(in srgb, var(--card-bg) 65%, transparent);
+        color: var(--text);
+        border-color: color-mix(in srgb, var(--text) 10%, transparent);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15), inset 0 0 0 0.5px rgba(255,255,255,0.1);
+        backdrop-filter: saturate(180%) blur(30px);
+        -webkit-backdrop-filter: saturate(180%) blur(30px);
+        transition: all 0.3s;
+    }
+    #theme-controls input {
+        background: var(--bg); color: var(--text);
+        border: 1px solid var(--subtext);
+        padding: 8px 12px; border-radius: 6px; outline: none; flex: 1; opacity: 0.8;
+    }
+    #theme-controls button {
+        background: rgba(0,0,0,0.05); color: var(--text);
+        border: 1px solid rgba(0,0,0,0.1); border-radius: 6px;
+        padding: 6px 12px; font-size: 12px; font-weight: 500; transition: 0.2s;
+    }
+    #theme-controls #generate-btn {
+        background: var(--accent) !important; color: #fff;
+        border: none; font-weight: 600; padding: 8px 16px;
+    }
+    #preset-buttons {
+        display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;
+        max-height: 300px; opacity: 1; overflow: hidden;
+        transition: max-height 0.5s cubic-bezier(0.2,0.8,0.2,1), opacity 0.4s ease, margin 0.4s ease;
+    }
+    #preset-buttons.is-collapsed { max-height: 0 !important; opacity: 0 !important; margin-bottom: 0 !important; pointer-events: none; }
+    #presets-icon { display: inline-block; transition: transform 0.3s ease; }
+    .is-collapsed-icon #presets-icon { transform: rotate(-90deg); }
+    #panel-handle { display: none; }
+    @media (min-width: 769px) {
+        #panel-handle {
+            display: block; position: absolute; top: 0; left: 0;
+            width: 20px; height: 100%; background: transparent; cursor: ew-resize; z-index: 20;
+        }
+        #panel-handle::before {
+            content: ""; position: absolute; top: 50%; left: 8px; width: 4px; height: 30px;
+            background: currentColor; opacity: 0.15; border-radius: 2px; transform: translateY(-50%); transition: 0.2s;
+        }
+        #panel-handle:hover::before { opacity: 0.4; }
+        #theme-controls { padding-left: 20px; transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1); }
+        #theme-controls.is-minimized { transform: translateX(calc(100% - 20px)); }
+        #theme-controls.is-minimized > *:not(#panel-handle) { opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    }
+    @media (max-width: 768px) {
+        #theme-controls {
+            bottom: 20px; right: 20px; width: auto;
+            max-width: calc(100vw - 40px); padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        #preset-buttons { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; width: 100%; }
+        #presets-toggle { margin-bottom: 2px; }
+    }
+`;
+
+/**
  * Themes
  * Define variables and minimal specific overrides.
  */
@@ -1828,7 +1905,7 @@ const App = {
         }
 
         const applyFn = () => {
-            this.elements.styleTag.textContent = css === "" ? "" : SYSTEM_STYLE + css;
+            this.elements.styleTag.textContent = css === "" ? PANEL_STYLE : SYSTEM_STYLE + css;
         };
 
         if (!document.startViewTransition) { applyFn(); return; }
