@@ -2207,7 +2207,6 @@ const App = {
             btn.addEventListener('click', () => {
                 this.applyStyle(theme.css, null, theme.prompt);
                 this.renderSaveButton(false);
-                this.togglePresets(true);
             });
 
             const delBtn = document.createElement('button');
