@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "96cb74da041e",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "gardener.js",
+    "index.html",
+    "presets.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/96/cb74da041e/0/metadata.json",
+      "transcript": "/96/cb74da041e/0/full.jsonl",
+      "context": "/96/cb74da041e/0/context.md",
+      "content_hash": "/96/cb74da041e/0/content_hash.txt",
+      "prompt": "/96/cb74da041e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 23,
+    "cache_creation_tokens": 36010,
+    "cache_read_tokens": 813586,
+    "output_tokens": 2506,
+    "api_call_count": 19
+  }
+}
