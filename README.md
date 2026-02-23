@@ -38,6 +38,22 @@ An experimental project that dynamically reconstructs the Hacker News interface 
 | **Circuit** | Deep green background with PCB grid overlay, gold connector tabs on cards, and LED blink on the logo — hardware maker aesthetic. |
 | **Aubergine** | Deep aubergine background with warm orange accents, bold card grid, and desktop OS-inspired typography. |
 
+| Minimalism | Intelligence | Search |
+|---|---|---|
+| <img src="https://github.com/user-attachments/assets/0603ca7a-be6b-464a-be30-c7e2de7eeda2" width="512px" /> | <img src="https://github.com/user-attachments/assets/ac751806-6dd6-4f16-8515-85335ceb4fcf" width="512px" /> | <img src="https://github.com/user-attachments/assets/2d07f6f9-68f2-4e04-adcf-41c5ea0c66a2" width="512px" /> |
+
+| Universal | Glitch | Playful |
+|---|---|---|
+| <img src="https://github.com/user-attachments/assets/9b73c8fb-c541-4ce2-9c7d-d60919b6ee34" width="512px" /> | <img src="https://github.com/user-attachments/assets/12377a18-cbf6-42e1-851d-b4590a217b10" width="512px" /> | <img src="https://github.com/user-attachments/assets/7eea56ed-c987-4caa-8179-14c8e07df07f" width="512px" /> |
+
+| Glow | Academic | Washi |
+|---|---|---|
+| <img src="https://github.com/user-attachments/assets/ec261baf-74d3-40dc-8045-3c822fc530c8" width="512px" /> | <img src="https://github.com/user-attachments/assets/752bb862-b3c5-435b-8caf-8ca4d735f910" width="512px" /> | <img src="https://github.com/user-attachments/assets/e64950a9-0682-4d2f-946d-0ea6c9b926af" width="512px" /> |
+
+| 8-bit | Circuit | Aubergine |
+|---|---|---|
+| <img src="https://github.com/user-attachments/assets/1c177f6a-aaad-494b-9244-fa9b26057ef0" width="512px" /> | <img src="https://github.com/user-attachments/assets/6a30b550-55ad-4b82-a304-ae0ed842a21f" width="512px" /> | <img src="https://github.com/user-attachments/assets/389fdba3-70bd-4747-a732-cc660475efce" width="512px" /> |
+
 ## Architecture
 
 The entire application lives in two files:
