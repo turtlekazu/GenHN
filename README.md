@@ -95,3 +95,7 @@ Add an entry to `STYLE_PRESETS` in `gardener.js` following the existing pattern.
 ## Disclaimer
 
 This project is for design experimentation purposes only and has no direct affiliation with any existing brands. All trademarks and direct brand representations have been excluded.
+
+## License
+
+[MIT](LICENSE)
