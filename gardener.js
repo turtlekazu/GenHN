@@ -306,7 +306,7 @@ const SYSTEM_STYLE = `
         color: var(--accent);
         view-transition-name: main-logo;
     }
-    .hn-site-subtitle { font-size: 11px; opacity: 0.5; margin: 0 0 24px; text-align: center; }
+    .hn-site-subtitle { font-size: 11px; opacity: 0.5; margin: 0 0 24px; }
     .hn-nav-links { display: flex; gap: 24px; }
     .hn-nav-links a { font-size: 14px; font-weight: 500; color: var(--subtext); }
     .hn-nav-links a:hover { color: var(--text); }
