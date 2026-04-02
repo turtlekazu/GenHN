@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenHN</title>
+    <link id="boot-style" rel="stylesheet" href="boot.css">
     <style id="generated-style"></style>
-    </head>
+    <script>
+        (() => {
+            const activeStyle = localStorage.getItem('genhn-active-style');
+            const styleTag = document.getElementById('generated-style');
+            const bootStyle = document.getElementById('boot-style');
+            if (!activeStyle) return;
+            if (styleTag) styleTag.textContent = activeStyle;
+            if (bootStyle) bootStyle.remove();
+        })();
+    </script>
+</head>
 <body>
     <div id="theme-controls">
         <div id="mobile-drag-pill"></div>

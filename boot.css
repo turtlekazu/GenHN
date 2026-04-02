@@ -1,0 +1,245 @@
+/*
+ * Critical boot styles.
+ * Keep this in sync with the app's default shell so reloads never expose raw HTML.
+ */
+
+:root {
+    --bg: #f5f5f7;
+    --text: #1d1d1f;
+    --subtext: #86868b;
+    --accent: #0066cc;
+    --card-bg: #ffffff;
+    --header-bg: rgba(251, 251, 253, 0.8);
+    --header-border: 1px solid rgba(0,0,0,0.1);
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --item-padding: 24px;
+    --item-radius: 12px;
+    --item-border: 1px solid rgba(0,0,0,0.05);
+    --item-shadow: none;
+    --item-gap: 20px;
+    --mobile-upvote-bg: #e8e8ed;
+    --mobile-upvote-color: inherit;
+    --mobile-upvote-border: none;
+    --mobile-upvote-radius: 50%;
+    --mobile-rank-opacity: 0.5;
+    --mobile-rank-color: inherit;
+    --more-btn-bg: #0066cc;
+    --more-btn-color: #fff;
+    --story-gap: 16px;
+    --title-size: 18px;
+    --upvote-size: 32px;
+    --item-transition: transform 0.2s, box-shadow 0.2s;
+    --header-height: 50px;
+    --load-more-radius: 100px;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-main);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+ul, ol { list-style: none; padding: 0; margin: 0; }
+a { text-decoration: none; color: inherit; transition: opacity 0.2s; }
+button { font-family: inherit; cursor: pointer; }
+
+.hn-header {
+    background: rgba(255, 255, 255, 0.7);
+    border: 0.5px solid rgba(0,0,0,0.05);
+    border-bottom: var(--header-border);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+    padding: 0 20px;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+    margin: 12px 20px;
+    border-radius: 100px;
+}
+.hn-nav {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.hn-logo {
+    font-weight: 300;
+    font-size: 14px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+.hn-site-title { font-weight: 600; }
+.hn-site-subtitle { font-size: 11px; opacity: 0.5; margin: 0 0 24px; text-align: center; }
+.hn-site-subtitle a { color: inherit; text-decoration: underline; }
+.hn-nav-links { display: flex; gap: 24px; }
+.hn-nav-links a { font-size: 14px; font-weight: 500; color: var(--subtext); }
+.hn-auth a { font-size: 13px; font-weight: 600; color: var(--accent); }
+.hn-github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.hn-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1;
+    width: 100%;
+}
+.hn-story-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--story-gap);
+}
+.hn-story-item {
+    background: var(--card-bg);
+    border: var(--item-border);
+    border-radius: var(--item-radius);
+    padding: var(--item-padding);
+    box-shadow: var(--item-shadow);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--item-gap);
+    transition: var(--item-transition);
+    position: relative;
+}
+.hn-story-item:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    transform: scale(1.01);
+}
+.hn-story-rank {
+    order: -2;
+    font-size: 16px;
+    color: var(--subtext);
+    width: 30px;
+    text-align: right;
+    font-feature-settings: "tnum";
+}
+.hn-story-content { flex: 1; min-width: 0; }
+.hn-story-title {
+    display: block;
+    font-size: var(--title-size);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+}
+.hn-story-title:hover { color: var(--accent); }
+.hn-story-domain { font-size: 13px; color: var(--subtext); font-weight: 400; margin-left: 8px; }
+.hn-story-meta { font-size: 13px; color: var(--subtext); }
+.hn-upvote {
+    order: -1;
+    background: #e8e8ed;
+    border: none;
+    color: var(--text);
+    width: var(--upvote-size);
+    height: var(--upvote-size);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    transition: 0.2s;
+    opacity: 0.6;
+}
+
+.hn-load-more {
+    display: block;
+    margin: 60px auto;
+    padding: 12px 40px;
+    background: var(--more-btn-bg);
+    color: var(--more-btn-color);
+    border: none;
+    border-radius: var(--load-more-radius);
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.hn-footer {
+    padding: 60px 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    text-align: center;
+    font-size: 13px;
+    color: var(--subtext);
+    background: var(--bg);
+}
+.hn-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+#theme-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    padding: 15px 15px 15px 32px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    width: 400px;
+    background: color-mix(in srgb, var(--card-bg) 65%, transparent);
+    color: var(--text);
+    border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15), inset 0 0 0 0.5px rgba(255,255,255,0.1);
+    backdrop-filter: saturate(180%) blur(30px);
+    -webkit-backdrop-filter: saturate(180%) blur(30px);
+}
+
+#mobile-drag-pill,
+#panel-handle,
+.hn-menu-toggle { display: none; }
+
+@media (max-width: 768px) {
+    .hn-header {
+        padding: 0 15px;
+        height: 60px;
+        top: 0;
+        margin: 0;
+        border-radius: 0;
+    }
+    .hn-nav-links,
+    .hn-auth { display: none; }
+    .hn-main { padding: 20px 15px; }
+    .hn-story-item {
+        padding: 15px;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    .hn-story-title { font-size: 17px; }
+    .hn-footer {
+        padding: 40px 20px 60px;
+    }
+    .hn-footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #theme-controls {
+        width: calc(100vw - 40px);
+        padding: 15px;
+    }
+}

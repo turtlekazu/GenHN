@@ -1494,6 +1494,9 @@ const App = {
     applyStyle(css, themeName, customPrompt = null) {
         this.toggleMenu(false);
 
+        const resolvedStyle = css === "" ? PANEL_STYLE : SYSTEM_STYLE + css;
+        const bootStyle = document.getElementById('boot-style');
+
         if (themeName && STYLE_PRESETS[themeName]) {
             localStorage.setItem('genhn-theme', themeName);
             localStorage.removeItem('genhn-custom-css');
@@ -1505,8 +1508,11 @@ const App = {
             localStorage.removeItem('genhn-theme');
         }
 
+        localStorage.setItem('genhn-active-style', resolvedStyle);
+
         const applyFn = () => {
-            this.elements.styleTag.textContent = css === "" ? PANEL_STYLE : SYSTEM_STYLE + css;
+            this.elements.styleTag.textContent = resolvedStyle;
+            if (bootStyle) bootStyle.remove();
         };
 
         if (!document.startViewTransition) { applyFn(); return; }
