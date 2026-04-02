@@ -5,12 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenHN</title>
     <link id="boot-style" rel="stylesheet" href="boot.css">
+    <style>
+        html.panel-minimized #theme-controls {
+            transform: translateX(calc(100% - 20px));
+        }
+
+        html.panel-minimized #theme-controls > *:not(#panel-handle) {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            html.panel-hidden-mobile #theme-controls {
+                transform: translateY(calc(100% - 24px));
+            }
+
+            html.panel-hidden-mobile #theme-controls > *:not(#mobile-drag-pill) {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+        }
+    </style>
     <style id="generated-style"></style>
     <script>
         (() => {
+            const panelStateRaw = localStorage.getItem('genhn-panel-state');
             const activeStyle = localStorage.getItem('genhn-active-style');
             const styleTag = document.getElementById('generated-style');
             const bootStyle = document.getElementById('boot-style');
+            const isMobile = window.innerWidth < 769;
+            const root = document.documentElement;
+
+            try {
+                const panelState = panelStateRaw ? JSON.parse(panelStateRaw) : {};
+                if (isMobile && panelState.mobileHidden) {
+                    root.classList.add('panel-hidden-mobile');
+                }
+                if (!isMobile && panelState.desktopMinimized) {
+                    root.classList.add('panel-minimized');
+                }
+            } catch (_) {}
+
             if (!activeStyle) return;
             if (styleTag) styleTag.textContent = activeStyle;
             if (bootStyle) bootStyle.remove();

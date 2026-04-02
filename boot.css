@@ -210,6 +210,15 @@ button { font-family: inherit; cursor: pointer; }
     -webkit-backdrop-filter: saturate(180%) blur(30px);
 }
 
+html.panel-minimized #theme-controls {
+    transform: translateX(calc(100% - 20px));
+}
+
+html.panel-minimized #theme-controls > *:not(#panel-handle) {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
 #mobile-drag-pill,
 #panel-handle,
 .hn-menu-toggle { display: none; }
@@ -241,5 +250,14 @@ button { font-family: inherit; cursor: pointer; }
     #theme-controls {
         width: calc(100vw - 40px);
         padding: 15px;
+    }
+
+    html.panel-hidden-mobile #theme-controls {
+        transform: translateY(calc(100% - 24px));
+    }
+
+    html.panel-hidden-mobile #theme-controls > *:not(#mobile-drag-pill) {
+        opacity: 0 !important;
+        pointer-events: none;
     }
 }

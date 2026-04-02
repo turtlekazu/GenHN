@@ -761,6 +761,7 @@ const HNData = {
 const App = {
     currentOffset: 0,
     isLoading: false,
+    panelStateKey: 'genhn-panel-state',
 
     elements: {
         styleTag: document.getElementById('generated-style'),
@@ -785,6 +786,7 @@ const App = {
         this.renderPasteCssSection();
         this.renderPromptTemplateSection();
         this.bindEvents();
+        this.applySavedPanelState();
 
         const savedPreset = localStorage.getItem('genhn-theme');
         const savedCustom = localStorage.getItem('genhn-custom-css');
@@ -832,6 +834,7 @@ const App = {
     bindEvents() {
         this.elements.loadMoreBtn.addEventListener('click', () => this.loadMore());
         this.elements.menuToggle.addEventListener('click', () => this.toggleMenu());
+        window.addEventListener('resize', () => this.applySavedPanelState());
         
         if (this.elements.presetsToggle) {
             this.elements.presetsToggle.addEventListener('click', () => this.togglePresets());
@@ -906,6 +909,7 @@ const App = {
                         tc.classList.remove('is-minimized');
                     }
                 }
+                this.persistPanelState();
             };
 
             // Desktop: drag handle (left edge)
@@ -960,6 +964,59 @@ const App = {
         this.elements.navLinks.classList.toggle('is-open', shouldOpen);
         this.elements.header.classList.toggle('is-open-active', shouldOpen);
         document.body.style.overflow = shouldOpen ? 'hidden' : '';
+    },
+
+    getSavedPanelState() {
+        try {
+            const savedRaw = localStorage.getItem(this.panelStateKey);
+            if (!savedRaw) {
+                return {
+                    desktopMinimized: false,
+                    mobileHidden: false
+                };
+            }
+            const saved = JSON.parse(savedRaw);
+            return {
+                desktopMinimized: !!saved.desktopMinimized,
+                mobileHidden: !!saved.mobileHidden
+            };
+        } catch (_) {
+            return {
+                desktopMinimized: false,
+                mobileHidden: false
+            };
+        }
+    },
+
+    persistPanelState() {
+        const tc = this.elements.themeControls;
+        if (!tc) return;
+        const nextState = {
+            desktopMinimized: tc.classList.contains('is-minimized'),
+            mobileHidden: tc.classList.contains('is-hidden-mobile')
+        };
+        localStorage.setItem(this.panelStateKey, JSON.stringify(nextState));
+        document.documentElement.classList.toggle('panel-minimized', nextState.desktopMinimized);
+        document.documentElement.classList.toggle('panel-hidden-mobile', nextState.mobileHidden);
+    },
+
+    applySavedPanelState() {
+        const tc = this.elements.themeControls;
+        if (!tc) return;
+
+        const { desktopMinimized, mobileHidden } = this.getSavedPanelState();
+        const isMobile = window.innerWidth < 769;
+        const root = document.documentElement;
+
+        tc.classList.remove('is-minimized', 'is-hidden-mobile');
+        root.classList.remove('panel-minimized', 'panel-hidden-mobile');
+        if (isMobile) {
+            tc.classList.toggle('is-hidden-mobile', mobileHidden);
+            root.classList.toggle('panel-hidden-mobile', mobileHidden);
+            return;
+        }
+        tc.classList.toggle('is-minimized', desktopMinimized);
+        root.classList.toggle('panel-minimized', desktopMinimized);
     },
 
     async switchFeed(type) {
@@ -1339,7 +1396,8 @@ const App = {
             geminiForm.style.display = 'flex';
             if (geminiIcon) geminiIcon.style.transform = 'rotate(0deg)';
         }
-        this.elements.themeControls.classList.remove('is-minimized');
+        this.elements.themeControls.classList.remove('is-minimized', 'is-hidden-mobile');
+        this.persistPanelState();
         const input = document.getElementById('api-key-input');
         if (input) setTimeout(() => input.focus(), 300);
     },
